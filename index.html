@@ -9,80 +9,209 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600&family=Source+Sans+3:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400&display=swap">
 <link rel="stylesheet" href="assets/kit.css">
+<style>
+/* Home only. Uses the kit.css tokens; nothing here applies to the plays or stories. */
+.home .wrap{max-width:1120px}
+
+/* cover: intro on the left, the three stages on the right */
+.home .hero .wrap{padding-block:40px 36px;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:28px 48px;align-items:center}
+.home .hero h1{font-size:clamp(30px,4.4vw,44px);max-width:none}
+.h-intro{display:grid;gap:14px;align-content:start}
+.h-count{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.h-count span{font:600 13.5px var(--sans);color:var(--on-navy-2);border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:4px 12px}
+.h-count b{color:var(--on-navy);font-weight:700;margin-right:4px}
+.h-stages{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16);border-radius:8px;padding:18px 20px;display:grid;gap:4px}
+.h-stages .kicker{color:var(--on-navy-2)}
+.h-stages ol{list-style:none;margin:6px 0 0;padding:0;display:grid}
+.h-stages li{display:grid;grid-template-columns:34px 1fr;gap:2px 12px;padding:11px 0;border-top:1px solid rgba(255,255,255,.12)}
+.h-stages li:first-child{border-top:0}
+.h-stages .n{grid-row:span 2;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font:700 14px var(--sans);background:#FFFFFF;color:var(--navy)}
+.h-stages .who{font:600 11.5px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--on-navy-2)}
+.h-stages .what{color:var(--on-navy);font-weight:600;font-size:16px;line-height:1.35}
+.h-stages .what small{display:block;font-weight:400;font-size:14.5px;color:var(--on-navy-2);margin-top:2px}
+
+/* section heads */
+.h-head{display:flex;flex-wrap:wrap;gap:10px 24px;align-items:end;justify-content:space-between;padding-bottom:18px;border-bottom:1px solid var(--line)}
+.h-head > div:first-child{display:grid;gap:6px}
+.h-head .kicker{color:var(--accent)}
+.h-head h2{font:600 clamp(23px,3vw,29px)/1.25 var(--display)}
+.h-head p{color:var(--text-sec);font-size:15.5px;max-width:60ch}
+
+/* kits in the field */
+.h-feature{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.h-kit{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:24px;display:grid;gap:14px;align-content:start;border-top:4px solid var(--good)}
+.h-kit.prog{border-top-color:var(--warn)}
+.h-kit .meta{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;font-size:14px;color:var(--text-dim)}
+.h-kit h3{font:600 clamp(22px,2.4vw,26px)/1.2 var(--display)}
+.h-kit h3 small{display:block;font:500 14.5px var(--sans);color:var(--text-dim);margin-top:4px}
+.h-kit > p{color:var(--text-sec);font-size:15.5px}
+.h-kit .note{font-size:14.5px;color:var(--warn);background:var(--tint-warn);border-radius:4px;padding:8px 12px}
+.h-kit{grid-template-rows:auto auto auto 1fr}
+.h-kit.prog{grid-template-rows:auto auto auto auto 1fr}
+.h-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:4px;align-self:end}
+.h-link{display:grid;gap:2px;text-decoration:none;border:1px solid var(--line);border-radius:6px;padding:12px 14px;color:var(--text);background:var(--card);transition:border-color .15s,background-color .15s}
+.h-link .l{font:600 11.5px var(--sans);letter-spacing:.07em;text-transform:uppercase;color:var(--text-dim)}
+.h-link .t{font-weight:600;font-size:16px;display:flex;justify-content:space-between;gap:8px}
+.h-link:hover{border-color:var(--accent)}
+.h-link:hover .t{color:var(--accent)}
+.h-link.play{background:var(--navy);border-color:var(--navy);color:var(--on-navy)}
+.h-link.play .l{color:var(--on-navy-2)}
+.h-link.play:hover{background:#22406A;border-color:#22406A}
+.h-link.play:hover .t{color:var(--on-navy)}
+.h-link:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* roadmap */
+.h-road{display:grid;border:1px solid var(--line);border-radius:8px;background:var(--card);overflow:hidden}
+.h-step{display:grid;grid-template-columns:220px minmax(0,1fr);border-top:1px solid var(--line)}
+.h-step:first-child{border-top:0}
+.h-when{padding:18px 20px;background:var(--surface);display:grid;gap:2px;align-content:start}
+.h-when .k{font:600 11.5px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.h-when b{font-weight:600;font-size:15.5px;line-height:1.35}
+.h-prods{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr))}
+.h-prod{padding:16px 20px;display:grid;gap:6px;align-content:start;border-left:1px solid var(--line)}
+.h-prod:first-child{border-left:0}
+.h-prod .top{display:flex;gap:10px;align-items:baseline;justify-content:space-between}
+.h-prod h3{font:600 18px/1.3 var(--display)}
+.h-prod p{color:var(--text-sec);font-size:15px}
+.h-prod .go{display:flex;gap:14px;font-size:14px}
+.h-prod .go a{color:var(--text-dim);text-underline-offset:3px}
+.h-prod .go a:hover{color:var(--accent)}
+
+/* what is in a kit */
+.h-what{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.h-what .card{display:grid;gap:8px;align-content:start;padding:20px 22px}
+.h-what .card b{font:600 18px/1.3 var(--display)}
+.h-what .card p{color:var(--text-sec);font-size:15px}
+.h-access{font-size:14.5px;color:var(--text-sec);border-top:1px solid var(--line);padding-top:18px}
+.h-access b{color:var(--text)}
+
+@media (max-width:860px){
+  .home .hero .wrap{grid-template-columns:1fr}
+  .h-feature,.h-what{grid-template-columns:1fr}
+  .h-step{grid-template-columns:1fr}
+  .h-when{border-bottom:1px solid var(--line)}
+}
+@media (max-width:640px){
+  .h-prod{border-left:0;border-top:1px solid var(--line)}
+  .h-prod:first-child{border-top:0}
+}
+@media (max-width:420px){
+  .h-links{grid-template-columns:1fr}
+  .h-kit{padding:20px 18px}
+}
+@media (prefers-reduced-motion:reduce){.h-link{transition:none}}
+</style>
 </head>
-<body>
+<body class="home">
 <header class="hero">
   <div class="wrap">
-    <span class="brand">TestMu AI · Sales Kits · Internal and confidential</span>
-    <h1>TestMu AI Sales Kits</h1>
-    <p>One place for every product's sales play and SE demo story. Each sales play follows the same three stages: BDRs book the meeting, AEs win the deal, SEs prove it with a demo and POC.</p>
+    <div class="h-intro">
+      <span class="brand">TestMu AI · Sales Kits · Internal and confidential</span>
+      <h1>TestMu AI Sales Kits</h1>
+      <p>One place for every product's sales play and SE demo story. Every play follows the same three stages, so reps learn one layout and use it for every product.</p>
+      <div class="h-count" aria-label="Kit status">
+        <span><b>8</b>products</span>
+        <span><b>1</b>live</span>
+        <span><b>1</b>in progress</span>
+        <span><b>6</b>planned</span>
+      </div>
+    </div>
+    <div class="h-stages">
+      <span class="kicker">How every play runs</span>
+      <ol>
+        <li><span class="n">1</span><span class="who">Stage 1 · BDR</span><span class="what">Book the meeting<small>Personas, signals, outreach and qualifying questions</small></span></li>
+        <li><span class="n">2</span><span class="who">Stage 2 · AE + SE</span><span class="what">Win the deal<small>Discovery, the problem, comparisons, ROI and the proposal</small></span></li>
+        <li><span class="n">3</span><span class="who">Stage 3 · SE</span><span class="what">Prove it<small>Demo on the story page, then a POC with agreed criteria</small></span></li>
+      </ol>
+    </div>
   </div>
 </header>
+
 <main><div class="wrap">
-  <section class="view">
-    <div class="vhead">
-      <span class="kicker">Products</span>
-      <h2>Sales kits by product</h2>
+
+  <section class="block" aria-labelledby="field">
+    <div class="h-head">
+      <div>
+        <span class="kicker">Available now</span>
+        <h2 id="field">Kits in the field</h2>
+      </div>
       <div class="legend"><span><span class="pill p-live">Live</span> ready for the field</span><span><span class="pill p-prog">In progress</span> being built now</span><span><span class="pill p-plan">Planned</span> placeholder</span></div>
     </div>
-    <div class="portal-grid">
-      <div class="card kit">
-        <div class="top"><h3>Performance Testing</h3><span class="pill p-live">Live</span></div>
+    <div class="h-feature">
+      <article class="h-kit">
+        <div class="meta"><span class="pill p-live">Live</span><span>Timing: Live</span></div>
+        <h3>Performance Testing<small>on HyperExecute</small></h3>
         <p>Load, stress, spike and soak tests with existing JMeter, Gatling and k6 scripts, split across multiple regions in one job.</p>
-        <dl><dt>Timing</dt><dd>Live</dd></dl>
-        <div class="go"><a class="primary" href="plays/performance-testing/">Sales play</a><a href="stories/performance-testing/">SE demo story</a></div>
-      </div>
-      <div class="card kit">
-        <div class="top"><h3>Test Manager</h3><span class="pill p-prog">In progress</span></div>
+        <div class="h-links">
+          <a class="h-link play" href="plays/performance-testing/"><span class="l">Internal · BDR, AE, SE</span><span class="t">Sales play <span aria-hidden="true">&rarr;</span></span></a>
+          <a class="h-link" href="stories/performance-testing/"><span class="l">Customer-facing · Stage 3</span><span class="t">SE demo story <span aria-hidden="true">&rarr;</span></span></a>
+        </div>
+      </article>
+      <article class="h-kit prog">
+        <div class="meta"><span class="pill p-prog">In progress</span><span>Timing: This week</span></div>
+        <h3>Test Manager</h3>
         <p>AI-assisted test case management with Jira and Azure DevOps sync, and migration from other test management tools.</p>
-        <dl><dt>Timing</dt><dd>This week</dd></dl>
-        <div class="go"><a class="primary" href="plays/test-manager/">Sales play</a><a href="stories/test-manager/">SE demo story</a></div>
-      </div>
-      <div class="card kit">
-        <div class="top"><h3>KaneAI</h3><span class="pill p-plan">Planned</span></div>
-        <p>AI-native test authoring: plain-English tests that heal themselves and export to code.</p>
-        <dl><dt>Timing</dt><dd>After Test Manager feedback</dd></dl>
-        <div class="go"><a class="" href="plays/kaneai/">Sales play</a><a href="stories/kaneai/">SE demo story</a></div>
-      </div>
-      <div class="card kit">
-        <div class="top"><h3>Kane CLI</h3><span class="pill p-plan">Planned</span></div>
-        <p>KaneAI from the terminal and CI pipelines.</p>
-        <dl><dt>Timing</dt><dd>After Test Manager feedback</dd></dl>
-        <div class="go"><a class="" href="plays/kane-cli/">Sales play</a><a href="stories/kane-cli/">SE demo story</a></div>
-      </div>
-      <div class="card kit">
-        <div class="top"><h3>Agent Testing</h3><span class="pill p-plan">Planned</span></div>
-        <p>Testing chat, voice and phone AI agents before they go live.</p>
-        <dl><dt>Timing</dt><dd>After KaneAI and Kane CLI</dd></dl>
-        <div class="go"><a class="" href="plays/agent-testing/">Sales play</a><a href="stories/agent-testing/">SE demo story</a></div>
-      </div>
-      <div class="card kit">
-        <div class="top"><h3>Accessibility Testing</h3><span class="pill p-plan">Planned</span></div>
-        <p>Accessibility checks for web and mobile apps.</p>
-        <dl><dt>Timing</dt><dd>Later</dd></dl>
-        <div class="go"><a class="" href="plays/accessibility/">Sales play</a><a href="stories/accessibility/">SE demo story</a></div>
-      </div>
-      <div class="card kit">
-        <div class="top"><h3>SmartUI</h3><span class="pill p-plan">Planned</span></div>
-        <p>Visual regression testing.</p>
-        <dl><dt>Timing</dt><dd>Later</dd></dl>
-        <div class="go"><a class="" href="plays/smartui/">Sales play</a><a href="stories/smartui/">SE demo story</a></div>
-      </div>
-      <div class="card kit">
-        <div class="top"><h3>HyperExecute</h3><span class="pill p-plan">Planned</span></div>
-        <p>Test orchestration for functional suites: faster runs and less infrastructure.</p>
-        <dl><dt>Timing</dt><dd>Longer term</dd></dl>
-        <div class="go"><a class="" href="plays/hyperexecute/">Sales play</a><a href="stories/hyperexecute/">SE demo story</a></div>
-      </div>
+        <p class="note">Being built now. Content may still change.</p>
+        <div class="h-links">
+          <a class="h-link play" href="plays/test-manager/"><span class="l">Internal · BDR, AE, SE</span><span class="t">Sales play <span aria-hidden="true">&rarr;</span></span></a>
+          <a class="h-link" href="stories/test-manager/"><span class="l">Customer-facing · Stage 3</span><span class="t">SE demo story <span aria-hidden="true">&rarr;</span></span></a>
+        </div>
+      </article>
     </div>
-    <div class="block">
-      <h3>What is in each kit</h3>
-      <div class="grid2 two">
-        <div class="card qual"><b>Sales play</b><p>Internal. Personas, signals, outreach scripts, discovery questions, problem framing, competitive views, ROI, proposal builder, POC plan and objections, with a New logo and an Existing TestMu customer view.</p></div>
-        <div class="card qual"><b>SE demo story</b><p>Customer-facing. The interactive walkthrough SEs present in Stage 3, with a view for prospects and one for existing customers.</p></div>
+  </section>
+
+  <section class="block" aria-labelledby="road">
+    <div class="h-head">
+      <div>
+        <span class="kicker">Coming next</span>
+        <h2 id="road">Roadmap</h2>
+      </div>
+      <p>Planned kits, in the order they will be built. Each links to a placeholder that lists what the kit will contain.</p>
+    </div>
+    <div class="h-road">
+      <div class="h-step">
+        <div class="h-when"><span class="k">Next</span><b>After Test Manager feedback</b></div>
+        <div class="h-prods">
+          <div class="h-prod"><div class="top"><h3>KaneAI</h3><span class="pill p-plan">Planned</span></div><p>AI-native test authoring: plain-English tests that heal themselves and export to code.</p><div class="go"><a href="plays/kaneai/">Sales play</a><a href="stories/kaneai/">SE demo story</a></div></div>
+          <div class="h-prod"><div class="top"><h3>Kane CLI</h3><span class="pill p-plan">Planned</span></div><p>KaneAI from the terminal and CI pipelines.</p><div class="go"><a href="plays/kane-cli/">Sales play</a><a href="stories/kane-cli/">SE demo story</a></div></div>
+        </div>
+      </div>
+      <div class="h-step">
+        <div class="h-when"><span class="k">Then</span><b>After KaneAI and Kane CLI</b></div>
+        <div class="h-prods">
+          <div class="h-prod"><div class="top"><h3>Agent Testing</h3><span class="pill p-plan">Planned</span></div><p>Testing chat, voice and phone AI agents before they go live.</p><div class="go"><a href="plays/agent-testing/">Sales play</a><a href="stories/agent-testing/">SE demo story</a></div></div>
+        </div>
+      </div>
+      <div class="h-step">
+        <div class="h-when"><span class="k">After that</span><b>Later</b></div>
+        <div class="h-prods">
+          <div class="h-prod"><div class="top"><h3>Accessibility Testing</h3><span class="pill p-plan">Planned</span></div><p>Accessibility checks for web and mobile apps.</p><div class="go"><a href="plays/accessibility/">Sales play</a><a href="stories/accessibility/">SE demo story</a></div></div>
+          <div class="h-prod"><div class="top"><h3>SmartUI</h3><span class="pill p-plan">Planned</span></div><p>Visual regression testing.</p><div class="go"><a href="plays/smartui/">Sales play</a><a href="stories/smartui/">SE demo story</a></div></div>
+        </div>
+      </div>
+      <div class="h-step">
+        <div class="h-when"><span class="k">Further out</span><b>Longer term</b></div>
+        <div class="h-prods">
+          <div class="h-prod"><div class="top"><h3>HyperExecute</h3><span class="pill p-plan">Planned</span></div><p>Test orchestration for functional suites: faster runs and less infrastructure.</p><div class="go"><a href="plays/hyperexecute/">Sales play</a><a href="stories/hyperexecute/">SE demo story</a></div></div>
+        </div>
       </div>
     </div>
   </section>
+
+  <section class="block" aria-labelledby="what">
+    <div class="h-head">
+      <div>
+        <span class="kicker">Format</span>
+        <h2 id="what">What is in each kit</h2>
+      </div>
+    </div>
+    <div class="h-what">
+      <div class="card"><span class="pill p-info" style="justify-self:start">Internal</span><b>Sales play</b><p>Personas, signals, outreach scripts, discovery questions, problem framing, competitive views, ROI, proposal builder, POC plan and objections, with a New logo and an Existing TestMu customer view.</p></div>
+      <div class="card"><span class="pill p-strong" style="justify-self:start">Customer-facing</span><b>SE demo story</b><p>The interactive walkthrough SEs present in Stage 3, with a view for prospects and one for existing customers.</p></div>
+    </div>
+    <p class="h-access"><b>Sharing:</b> sales plays are internal and confidential, so do not send them to customers. Demo stories are written for customers and can be shown or shared.</p>
+  </section>
+
 </div></main>
 </body>
 </html>
