@@ -1,0 +1,66 @@
+[
+  {
+    "slug": "performance-testing",
+    "name": "Performance Testing",
+    "sub": "on HyperExecute",
+    "line": "Load, stress, spike and soak tests with existing JMeter, Gatling and k6 scripts, split across multiple regions in one job.",
+    "status": "live",
+    "when": "Live"
+  },
+  {
+    "slug": "test-manager",
+    "name": "Test Manager",
+    "sub": "",
+    "line": "AI-assisted test case management with Jira and Azure DevOps sync, and migration from other test management tools.",
+    "status": "prog",
+    "when": "This week"
+  },
+  {
+    "slug": "kaneai",
+    "name": "KaneAI",
+    "sub": "",
+    "line": "AI-native test authoring: plain-English tests that heal themselves and export to code.",
+    "status": "plan",
+    "when": "After Test Manager feedback"
+  },
+  {
+    "slug": "kane-cli",
+    "name": "Kane CLI",
+    "sub": "",
+    "line": "KaneAI from the terminal and CI pipelines.",
+    "status": "plan",
+    "when": "After Test Manager feedback"
+  },
+  {
+    "slug": "agent-testing",
+    "name": "Agent Testing",
+    "sub": "",
+    "line": "Testing chat, voice and phone AI agents before they go live.",
+    "status": "plan",
+    "when": "After KaneAI and Kane CLI"
+  },
+  {
+    "slug": "accessibility",
+    "name": "Accessibility Testing",
+    "sub": "",
+    "line": "Accessibility checks for web and mobile apps.",
+    "status": "plan",
+    "when": "Later"
+  },
+  {
+    "slug": "smartui",
+    "name": "SmartUI",
+    "sub": "",
+    "line": "Visual regression testing.",
+    "status": "plan",
+    "when": "Later"
+  },
+  {
+    "slug": "hyperexecute",
+    "name": "HyperExecute",
+    "sub": "",
+    "line": "Test orchestration for functional suites: faster runs and less infrastructure.",
+    "status": "plan",
+    "when": "Longer term"
+  }
+]

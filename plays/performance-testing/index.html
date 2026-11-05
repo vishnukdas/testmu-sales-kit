@@ -1,0 +1,876 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Performance Testing Sales Play</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600&family=Source+Sans+3:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400&display=swap">
+<link rel="stylesheet" href="../../assets/kit.css">
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <a class="back" href="../../">&larr; All sales kits</a>
+    <div class="brandrow">
+      <span class="brand">TestMu AI · Sales Play · Internal and confidential</span>
+      <div class="aud" role="group" aria-label="Account type">
+        <button type="button" id="audNew" aria-pressed="true">New logo</button>
+        <button type="button" id="audEx" aria-pressed="false">Existing TestMu customer</button>
+      </div>
+    </div>
+    <h1>Win performance testing deals with HyperExecute</h1>
+    <p>A field guide for BDRs, AEs and SEs: who to target, how to qualify, and how to win against self-hosted load rigs and BlazeMeter. The technical story for Stage 3 lives in the <a href="../../stories/performance-testing/" target="_blank" rel="noopener">performance testing presentation</a>. Switch the account type above and the scripts change with it.</p>
+  </div>
+</header>
+
+<nav class="stagebar" aria-label="Stages">
+  <div class="wrap tabs" role="tablist">
+    <button class="tab" role="tab" data-v="overview" data-c="ov"><span class="who">The play</span><span class="nm">Overview</span></button>
+    <button class="tab" role="tab" data-v="bdr" data-c="bdr"><span class="who">Stage 1 · BDR</span><span class="nm">Book the meeting</span></button>
+    <button class="tab" role="tab" data-v="ae" data-c="ae"><span class="who">Stage 2 · AE + SE</span><span class="nm">Win the deal</span></button>
+    <button class="tab" role="tab" data-v="se" data-c="se"><span class="who">Stage 3 · SE</span><span class="nm">Prove it</span></button>
+    <button class="tab" role="tab" data-v="objections" data-c="obj"><span class="who">Any stage</span><span class="nm">Objections</span></button>
+  </div>
+</nav>
+
+<main><div class="wrap">
+
+<!-- ============ OVERVIEW ============ -->
+<section class="view" id="v-overview" hidden>
+  <div class="vhead">
+    <span class="kicker">Overview</span>
+    <h2>How to use this play</h2>
+    <p class="audnote" data-aud="ex" hidden>You are viewing the existing customer play: for accounts that already buy from TestMu, whether or not they use HyperExecute today. It is an expansion motion with the account manager involved from the first step. Stages 1 and 2 change; the problem framing, alternatives and objections still apply.</p>
+    <p>The buyer already has load scripts. They run them on servers they maintain, or pay a separate tool like BlazeMeter. HyperExecute runs the same JMeter, Gatling and k6 scripts with load split across multiple regions in one job, creates the load generators for each run and removes them after, and sits on the same platform as their functional tests.</p>
+  </div>
+
+  <div class="flow">
+    <div class="stage bdr">
+      <span class="num">Stage 1 · For BDRs</span>
+      <h3>Book the first meeting</h3>
+      <ol data-aud="new"><li>Find the right account and persona</li><li>Spot a buying signal</li><li>Qualify with five questions</li><li>Handle the brush-off and book the call</li></ol>
+      <div class="exit" data-aud="new"><b>Exit:</b> a meeting with someone who runs or owns load testing, and the handoff note filled in.</div>
+      <ol data-aud="ex" hidden><li>Check the account and align with the AM</li><li>Map who you know and who you need</li><li>Ask the champion for the load testing owner</li><li>Qualify with five expansion questions and book the call</li></ol>
+      <div class="exit" data-aud="ex" hidden><b>Exit:</b> an expansion call with the load testing owner, the AM and the AE.</div>
+    </div>
+    <div class="stage ae">
+      <span class="num">Stage 2 · For AEs, with an SE</span>
+      <h3>Win the deal</h3>
+      <ol><li>Learn how they load test today</li><li>Name the problem</li><li>Map each problem to HyperExecute</li><li>Beat the "JMeter is free" objection</li><li>Build the business case and propose</li></ol>
+      <div class="exit"><b>Exit:</b> scripts, a reachable test environment, a named technical owner and written POC success criteria.</div>
+    </div>
+    <div class="stage se">
+      <span class="num">Stage 3 · For SEs</span>
+      <h3>Prove it</h3>
+      <ol><li>Demo on the story page</li><li>Dry run on their own plan</li><li>Parity run against their baseline</li><li>Read out and hand back to the AE</li></ol>
+      <div class="exit"><b>Exit:</b> the parity run meets the agreed criteria and the AE sends a proposal.</div>
+    </div>
+  </div>
+  <p class="target"><b>Target market:</b> enterprise companies in India and the Americas whose customer-facing apps face traffic peaks.</p>
+  <p class="coach"><b>Coach's note</b>BDRs own Stage 1 and hand over a qualified meeting. AEs pick up with discovery, the problem framing, the HyperExecute mapping, the "JMeter is free" comparison and the business case. SEs join Stage 2 when the buyer is technical and run Stage 3.</p>
+
+  <div class="block">
+    <h3>Where to focus</h3>
+    <div class="grid3">
+      <div class="card"><span class="kicker">Industries</span><p style="margin-top:6px">E-commerce and retail, BFSI (banking, insurance, payments, broking), travel and ticketing, media, streaming and gaming, public digital platforms, B2B SaaS.</p></div>
+      <div class="card"><span class="kicker">Regions</span><p style="margin-top:6px">India and the Americas. Load can come from multiple regions across the Americas and Asia in the same job.</p></div>
+      <div class="card"><span class="kicker">Fastest path</span><p style="margin-top:6px">Existing HyperExecute customers first, then TestMu customers on other products, then new logos with a BlazeMeter or self-hosted JMeter setup.</p></div>
+    </div>
+  </div>
+
+  <div class="guard">
+    <h3>Do not say</h3>
+    <ul>
+      <li>That Locust or LoadRunner scripts run as they are. They do not.</li>
+      <li>A price. Pricing comes from deal desk. The report screens in the presentation are illustrative.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ STAGE 1 BDR ============ -->
+<section class="view bdr" id="v-bdr" hidden>
+  <div class="vhead">
+    <span class="kicker">Stage 1 · For BDRs</span>
+    <h2 data-aud="new">Find the right people, spot the moment, qualify fast and book the meeting.</h2>
+    <p data-aud="new">You do not need to explain performance testing. You need the right person, a signal, and five questions that show whether there is a deal.</p>
+    <h2 data-aud="ex" hidden>Expand into accounts that already buy from TestMu.</h2>
+    <p data-aud="ex" hidden>This is an expansion, not a cold sale. The account may run HyperExecute already, or only other TestMu products such as the browser and device cloud, KaneAI or Test Manager. Check which, align with the AM, use the champion you already have to reach the load testing owner, and book the call.</p>
+  </div>
+
+  <div class="gate bdr" data-aud="ex" hidden>
+    <div><span class="kicker">Goal</span><p>An expansion call with the load testing owner, the AM and the AE.</p></div>
+    <div><span class="kicker">Book the meeting when</span><ul><li>Someone in the account runs load tests, or plans to in the next two quarters</li><li>The AM agrees the account is healthy enough to expand</li><li>You have a name for the load testing owner, or an intro from the champion</li></ul></div>
+    <div><span class="kicker">Hand off</span><ul><li>Fill in the expansion handoff note at the bottom</li><li>Tag the opportunity as an expansion with HyperExecute performance testing as the product in play</li></ul></div>
+  </div>
+
+  <div class="block" data-aud="ex" hidden>
+    <h3>Check the account before you reach out</h3>
+    <p class="sub">You already have data on this customer. Use it before the first message.</p>
+    <div class="tw"><table>
+      <thead><tr><th>Check</th><th>Where</th><th>What it tells you</th></tr></thead>
+      <tbody>
+        <tr><td><b>TestMu products, plans and renewal dates</b></td><td>Salesforce, the HyperExecute GTM dashboard</td><td>Whether they are on HyperExecute already, and whether to add mid-term or co-term with a renewal</td></tr>
+        <tr><td><b>Usage trend of their TestMu products over the last 90 days</b></td><td>HyperExecute GTM dashboard</td><td>Growing usage is a green light. Falling usage or idle licences: fix adoption first</td></tr>
+        <tr><td><b>Account manager and open opportunities</b></td><td>Salesforce</td><td>Who owns the relationship, and whether a deal is already in flight</td></tr>
+        <tr><td><b>Open escalations or support tickets</b></td><td>Support tool, the AM</td><td>Do not pitch an add-on into an unhappy account</td></tr>
+        <tr><td><b>The champion and the admin</b></td><td>Salesforce contacts, onboarding notes</td><td>Who can introduce you to the load testing owner</td></tr>
+      </tbody>
+    </table></div>
+    <p class="coach"><b>Coach's note</b>Talk to the AM before anyone at the customer hears from you. Agree who reaches out, what the AM wants to avoid, and how the opportunity is tagged. An expansion that surprises the AM costs more goodwill than it earns.</p>
+  </div>
+
+  <div class="gate bdr" data-aud="new">
+    <div><span class="kicker">Goal</span><p>A discovery call with the AE.</p></div>
+    <div><span class="kicker">Book the meeting when</span><ul><li>They run load tests today, or plan to in the next two quarters</li><li>The person runs, owns or influences the load testing tool</li></ul></div>
+    <div><span class="kicker">Hand off</span><ul><li>Fill in the handoff note at the bottom</li><li>Tag the opportunity with HyperExecute performance testing as the product in play</li></ul></div>
+  </div>
+
+  <div class="block" data-aud="ex" hidden>
+    <h3>Map the account: who you know, who you need</h3>
+    <div class="roles">
+      <div class="card role"><span class="pill p-info">Already know</span><b>Your way in</b><ul><li>QA Automation Lead / SDET Lead (champion)</li><li>TestMu account admin or owner</li><li>Test Architect who set up their TestMu integration (HyperExecute CLI, grid or KaneAI)</li><li>Your own account manager</li></ul></div>
+      <div class="card role"><span class="pill p-info">Need to find</span><b>The load testing owner</b><ul><li>Performance Test Lead or Architect</li><li>Performance Engineering Manager</li><li>SRE or Platform lead who owns the load rig</li></ul></div>
+      <div class="card role"><span class="pill p-info">Signs off</span><b>Budget for the add-on</b><ul><li>Head of SRE or Head of Platform</li><li>Head of Performance Engineering</li><li>Whoever signed the last TestMu renewal</li></ul></div>
+      <div class="card role"><span class="pill p-info">Influencer</span><b>Already approved us once</b><ul><li>Security (approved TestMu, approves IP allowlisting)</li><li>Procurement (holds the renewal date)</li><li>DevOps / Release Manager</li></ul></div>
+    </div>
+    <p class="coach"><b>Coach's note</b>Start with the champion you already have and ask one question: "Who runs load testing here?" A warm intro from a happy TestMu user beats any cold sequence. The load testing team often has its own tool and budget, so expect to sell to a new group inside a known account.</p>
+  </div>
+
+  <div class="block" data-aud="new">
+    <h3>Four personas own performance quality</h3>
+    <div class="roles">
+      <div class="card role"><span class="pill p-info">Owns the decision</span><b>Reliability and platform leaders</b><ul><li>Head of SRE / Director of SRE</li><li>Head of Platform / Director of Platform Engineering</li><li>Head of Performance Engineering</li></ul></div>
+      <div class="card role"><span class="pill p-info">Key influencer</span><b>Performance engineering leads</b><ul><li>Performance Test Lead / Manager</li><li>Performance Architect</li><li>Performance Engineering Manager</li></ul></div>
+      <div class="card role"><span class="pill p-info">Feels the pain</span><b>The people who run the tests</b><ul><li>Performance Test Engineer</li><li>Performance Engineer</li><li>Load Test Engineer</li><li>SRE on call during peaks</li></ul></div>
+      <div class="card role"><span class="pill p-info">Supports</span><b>Release and security</b><ul><li>DevOps Engineer / Release Manager</li><li>Platform or Cloud Engineer</li><li>Security (approves IP allowlisting)</li></ul></div>
+    </div>
+    <p class="coach"><b>Coach's note</b>Heads of SRE and Platform own performance and the load rig, so they own this decision. Performance Test Leads and Architects shape it: win them first and they bring the case to their head. Do not target CTOs, IT Directors or automation engineers for this play; performance rarely sits with them.</p>
+  </div>
+
+  <div class="block" data-aud="ex" hidden>
+    <h3>Qualifiers: is the account ready to expand?</h3>
+    <p class="sub">An account that meets all four and shows one strong signal below is a priority.</p>
+    <div class="grid2 two">
+      <div class="card qual"><b>Active, healthy TestMu usage</b><p>Tests running every week on any TestMu product, no open escalations, the AM is comfortable.</p></div>
+      <div class="card qual"><b>Load testing happens somewhere in the account</b><p>A performance team, a perf engineer, or JMeter, Gatling, k6, LoadRunner or BlazeMeter in their stack.</p></div>
+      <div class="card qual"><b>Customer-facing app with traffic peaks</b><p>The same apps they already test on TestMu.</p></div>
+      <div class="card qual"><b>A known renewal date</b><p>For their TestMu contract or for their current load tool. One of them sets the timeline.</p></div>
+    </div>
+  </div>
+
+  <div class="block" data-aud="new">
+    <h3>Qualifiers: is it a fit?</h3>
+    <p class="sub">Check these first. An account that meets them and shows one strong signal below is a priority.</p>
+    <div class="grid2 two">
+      <div class="card qual"><b>Customer-facing web app or APIs with traffic peaks</b><p>Retail, BFSI, travel, ticketing, media, public platforms, SaaS.</p></div>
+      <div class="card qual"><b>Load testing already happens</b><p>A performance team or engineer, or JMeter, Gatling or k6 in their stack.</p></div>
+      <div class="card qual"><b>Enterprise size</b><p>Mid-market is not a target for this play.</p></div>
+      <div class="card qual"><b>India or the Americas</b><p>The two target regions this quarter.</p></div>
+    </div>
+  </div>
+
+  <div class="block" data-aud="ex" hidden>
+    <h3>Signals: reach out now</h3>
+    <p class="sub">Two medium signals are worth as much as one strong one.</p>
+    <div class="sig">
+      <div class="row"><span class="pill p-strong">Strong</span><b>TestMu renewal in the next two quarters</b><span class="d">Adding performance testing at renewal is the easiest commercial path. Start the POC early enough to finish before it.</span></div>
+      <div class="row"><span class="pill p-strong">Strong</span><b>A load tool contract coming up for renewal</b><span class="d">BlazeMeter, LoadRunner, NeoLoad or a cloud load testing service renewing soon. The champion or procurement often knows the date.</span></div>
+      <div class="row"><span class="pill p-strong">Strong</span><b>Already on HyperExecute</b><span class="d">Load testing runs on the account and CLI they already use. The shortest path to a trial run.</span></div>
+      <div class="row"><span class="pill p-strong">Strong</span><b>TestMu usage growing</b><span class="d">More tests, more concurrency, new teams onboarding on any TestMu product. The account is investing in us.</span></div>
+      <div class="row"><span class="pill p-strong">Strong</span><b>A peak event on their calendar</b><span class="d">Festive or Black Friday sales, a launch, a new market. Their functional suites will be busy before it, and so will their load rig.</span></div>
+      <div class="row"><span class="pill p-med">Medium</span><b>Performance engineer job posts at the account</b><span class="d">Posts naming JMeter, LoadRunner, NeoLoad, BlazeMeter, Gatling or k6.</span></div>
+      <div class="row"><span class="pill p-med">Medium</span><b>A recent slowdown or outage</b><span class="d">Status page incidents or news about the app failing under load.</span></div>
+      <div class="row"><span class="pill p-med">Medium</span><b>Champion mentions performance in a QBR or support call</b><span class="d">Check call notes and QBR decks for "load", "performance" or "peak".</span></div>
+      <div class="row"><span class="pill p-no">Park</span><b>Falling usage, idle licences or an open escalation</b><span class="d">Fix adoption first. The AM decides when the account is ready.</span></div>
+    </div>
+  </div>
+
+  <div class="block" data-aud="new">
+    <h3>Signals: reach out now</h3>
+    <p class="sub">Two medium signals are worth as much as one strong one.</p>
+    <div class="sig">
+      <div class="row"><span class="pill p-strong">Strong</span><b>Hiring a performance engineer</b><span class="d">Job posts that name JMeter, BlazeMeter, LoadRunner, NeoLoad, Gatling, k6, Locust, OctoPerf or Artillery. The tool in the post tells the AE which story to lead with.</span></div>
+      <div class="row"><span class="pill p-strong">Strong</span><b>Already a TestMu customer</b><span class="d">Switch to the Existing TestMu customer view at the top. That play starts with the account manager, not a cold sequence.</span></div>
+      <div class="row"><span class="pill p-strong">Strong</span><b>A peak event on the calendar</b><span class="d">Black Friday and Christmas, Diwali sales, US open enrollment, ticket drops, launches, a new market going live. See the peak season calendar below.</span></div>
+      <div class="row"><span class="pill p-strong">Strong</span><b>On the BlazeMeter list in Salesforce</b><span class="d">About 1,800 BlazeMeter contacts are already in the CRM. Work this list first; the BlazeMeter migration path is ready.</span></div>
+      <div class="row"><span class="pill p-strong">Strong</span><b>BlazeMeter or LoadRunner user with a renewal coming</b><span class="d">The renewal date is the deadline for a parity run. Ask the AE or check account notes.</span></div>
+      <div class="row"><span class="pill p-med">Medium</span><b>A public slowdown or outage</b><span class="d">Status page incidents, news or social posts about the app failing under load.</span></div>
+      <div class="row"><span class="pill p-med">Medium</span><b>Expansion into new regions</b><span class="d">Users in India, Latin America or Southeast Asia while the app is hosted elsewhere. Fits a multi-region load test.</span></div>
+      <div class="row"><span class="pill p-med">Medium</span><b>Engineers posting about distributed JMeter</b><span class="d">Talks or posts about JMeter on EC2, Kubernetes or a self-built grid. Someone is maintaining that rig.</span></div>
+      <div class="row"><span class="pill p-med">Medium</span><b>Cloud migration or re-platforming</b><span class="d">New architecture needs a new performance baseline.</span></div>
+      <div class="row"><span class="pill p-no">Park</span><b>Locust only, or fully air-gapped</b><span class="d">Locust is not supported. Fully air-gapped apps with no allowlisting option cannot take load from cloud generators. Note it and move on.</span></div>
+    </div>
+    <p class="coach"><b>Coach's note</b>Qualifiers tell you whether the account is a fit; signals tell you when to call. Peak events are public: plan sequences around the run-up to festive sales, Black Friday, ticket drops and financial year-end in each market.</p>
+  </div>
+
+  <div class="block">
+    <h3>Peak season calendar</h3>
+    <p class="sub">Lead with the customer's next peak. Start outreach early enough for a POC to finish before their change freeze.</p>
+    <div class="tw"><table>
+      <thead><tr><th>Industry and market</th><th>Peak</th><th>When the traffic hits</th><th>Start outreach</th></tr></thead>
+      <tbody>
+        <tr><td><b>Retail and e-commerce, Americas</b></td><td>Halloween, Black Friday, Cyber Monday, Christmas</td><td>October to December</td><td>June to August</td></tr>
+        <tr><td><b>Retail and e-commerce, India and APAC</b></td><td>Diwali and festive season sales</td><td>October to November</td><td>June to August</td></tr>
+        <tr><td><b>Healthcare and insurance, US</b></td><td>Open enrollment</td><td>From October</td><td>June to August</td></tr>
+        <tr><td><b>Any account</b></td><td>Their own launches, sales and new markets</td><td>Ask in discovery</td><td>Three months before</td></tr>
+      </tbody>
+    </table></div>
+    <p class="coach"><b>Coach's note</b>Once a peak has started, most teams freeze changes and will not run a new tool. Change the pitch: ask what broke or nearly broke this season, and book the POC for the next one. A post-peak review is the best discovery call of the year.</p>
+  </div>
+
+  <div class="block">
+    <h3>Finding the person on LinkedIn</h3>
+    <div class="grid2">
+      <div class="card" style="display:grid;gap:8px"><span class="kicker">Titles</span><p><b>Decision owners:</b> Head of SRE, Director of SRE, Head of Platform, Director of Platform Engineering, Head of Performance Engineering</p><p><b>Influencers and users:</b> Performance Test Lead, Performance Architect, Performance Engineering Manager, Performance Test Engineer, Load Test Engineer</p></div>
+      <div class="card" style="display:grid;gap:8px"><span class="kicker">Keywords in profile or skills</span><p>JMeter, BlazeMeter, LoadRunner (OpenText, formerly Micro Focus), NeoLoad, Gatling, k6 or Grafana k6, Locust, Taurus, OctoPerf, Artillery, WebLOAD, Azure Load Testing, load testing, performance testing, capacity planning</p></div>
+    </div>
+    <div class="script"><header><span class="t">Sales Navigator search: decision owners</span><button class="btn" data-copy="bool2">Copy</button></header>
+      <code class="bool" id="bool2">("head of SRE" OR "director of SRE" OR "head of site reliability" OR "head of platform" OR "director of platform engineering" OR "head of performance engineering")</code>
+    </div>
+    <div class="script"><header><span class="t">Sales Navigator search: performance testers</span><button class="btn" data-copy="bool">Copy</button></header>
+      <code class="bool" id="bool">("performance test" OR "performance engineer" OR "load test" OR "performance architect") AND (JMeter OR BlazeMeter OR LoadRunner OR NeoLoad OR Gatling OR k6 OR Locust OR Taurus OR OctoPerf OR Artillery OR WebLOAD)</code>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>Outreach</h3>
+    <p class="sub">Replace the highlighted fields. Keep the signal specific: the job post, the event, the tool.</p>
+    <div class="scripts" id="outreach"></div>
+  </div>
+
+
+  <div class="block" data-aud="ex" hidden>
+    <h3>Five expansion questions</h3>
+    <p class="sub">For the champion or the load testing owner. Short enough for a QBR or a quick call.</p>
+    <div class="tw"><table>
+      <thead><tr><th>Ask</th><th>Good answer</th><th>Watch out</th></tr></thead>
+      <tbody>
+        <tr><td><b>Who runs load or performance tests here, and with which tool?</b><br><span class="dim">Prompt with names: JMeter, BlazeMeter, LoadRunner, NeoLoad, Gatling, k6</span></td><td>A named team, JMeter, Gatling or k6</td><td>LoadRunner means a script rebuild. Locust only: park.</td></tr>
+        <tr><td><b>Is that a separate contract from TestMu? When does it renew?</b></td><td>A separate tool or self-managed servers, with a date</td><td>No contract and no servers: ask how they test before peaks.</td></tr>
+        <tr><td><b>What is your next peak event or major release?</b></td><td>A date in the next two quarters</td><td>No date: keep warm, do not push.</td></tr>
+        <tr><td><b>Would you try one of your load scripts under your current TestMu account?</b></td><td>Yes, or "let me ask the perf team"</td><td>Use the answer to ask for the intro.</td></tr>
+        <tr><td><b>Who would approve adding performance testing to your plan?</b></td><td>A name, and whether it waits for renewal</td><td>Share it with the AM straight away.</td></tr>
+      </tbody>
+    </table></div>
+    <p class="coach"><b>Coach's note</b>Questions 1 and 2 show whether there is a deal, 3 sets the timeline, and 4 turns a happy user into your door opener. A separate load contract renewing before the TestMu renewal is the strongest sign of a real opportunity.</p>
+  </div>
+
+  <div class="block" data-aud="new">
+    <h3>Short on time? Ask these five</h3>
+    <p class="sub">Numbers refer to the full discovery list in Stage 2.</p>
+    <div class="tw"><table>
+      <thead><tr><th>#</th><th>Ask</th><th>Good answer</th><th>Watch out</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">5</td><td><b>Do you run load tests today? With which tool?</b><br><span class="dim">Prompt with names: JMeter, BlazeMeter, LoadRunner, NeoLoad, Gatling, k6, Locust</span></td><td>JMeter, Gatling or k6, or BlazeMeter running JMeter</td><td>LoadRunner means a script rebuild. Locust only: park.</td></tr>
+        <tr><td class="mono">6</td><td><b>Where do the load generators run, and who maintains them?</b></td><td>Own servers or cloud VMs, or BlazeMeter</td><td>"Someone else handles it": ask who, and get that name.</td></tr>
+        <tr><td class="mono">13</td><td><b>What happened the last time a performance issue reached production?</b></td><td>A slowdown during a sale, launch or deadline</td><td>Nothing comes to mind: ask about the next peak instead.</td></tr>
+        <tr><td class="mono">18</td><td><b>When is your next peak event, release or tool renewal?</b></td><td>A date in the next two quarters</td><td>No date: nurture, do not book.</td></tr>
+        <tr><td class="mono">19</td><td><b>Who else would be involved in choosing a tool, and who signs off budget?</b></td><td>A name and a role</td><td>Use it to bring the right people into the AE call.</td></tr>
+      </tbody>
+    </table></div>
+    <p class="coach"><b>Coach's note</b>On a short cold call, these five show whether there is a fit (5, 6), pain (13), urgency (18) and a path to budget (19). A self-managed load rig plus a peak event or renewal in the next two quarters is the strongest sign of a real opportunity. Write down every number they give you: the AE reuses them in the business case.</p>
+  </div>
+
+  <div class="block" data-aud="ex" hidden>
+    <h3>Turn the brush-off into a conversation</h3>
+    <p class="sub">Existing customers push back differently. They like the platform; the question is scope and timing.</p>
+    <div class="tw"><table>
+      <thead><tr><th>They say</th><th>It usually means</th><th>You say</th></tr></thead>
+      <tbody>
+        <tr><td><b>"We're happy with what we have from TestMu."</b></td><td>No reason to change yet</td><td>"Good to hear. Where do your load tests run today, and who looks after that?"</td></tr>
+        <tr><td><b>"Load testing is another team."</b></td><td>A new buyer inside the account</td><td>"Makes sense. Could you introduce me to whoever leads it?"</td></tr>
+        <tr><td><b>"We just renewed."</b></td><td>Timing, not fit</td><td>"Understood. It can be added mid-term or at the next renewal. Worth a trial run on your current account first?"</td></tr>
+        <tr><td><b>"Our perf team uses BlazeMeter / LoadRunner."</b></td><td>An incumbent tool and contract</td><td>"When does that renew? Your JMeter scripts would run under the TestMu account you already have."</td></tr>
+        <tr><td><b>"Talk to procurement."</b></td><td>The commercial path, not a no</td><td>"Will do, with our AM. Who on the technical side should see a trial run?"</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <div class="block" data-aud="ex" hidden>
+    <h3>Expansion handoff note</h3>
+    <div class="script"><header><span class="t">Paste into the opportunity or Slack, and copy the AM</span><button class="btn" data-copy="handoffEx">Copy</button></header>
+<pre id="handoffEx">Account:
+Account manager:
+TestMu products, plans and renewal dates:
+On HyperExecute today: Yes / No
+Usage trend (last 90 days):
+Champion and how they feel about TestMu:
+Load testing owner (name and role):
+Load tool today and its renewal date:
+Next peak event or major release:
+Who approves the add-on:
+What they said, in their words:</pre></div>
+  </div>
+
+  <div class="block" data-aud="new">
+    <h3>Turn the brush-off into a conversation</h3>
+    <p class="sub">Do not argue with the first objection. Acknowledge it, then ask one question about how they load test.</p>
+    <div class="tw"><table>
+      <thead><tr><th>They say</th><th>It usually means</th><th>You say</th></tr></thead>
+      <tbody>
+        <tr><td><b>"We already have a tool."</b></td><td>An incumbent, often BlazeMeter or their own JMeter servers</td><td>"Most teams do. Is it on the same platform as your functional testing, or a separate contract?"</td></tr>
+        <tr><td><b>"JMeter is free."</b></td><td>The infrastructure cost is not counted</td><td>"Who keeps the load servers running between tests?"</td></tr>
+        <tr><td><b>"We don't really load test."</b></td><td>No pain yet, or no owner</td><td>"What happened the last time traffic spiked, during a sale or a launch?"</td></tr>
+        <tr><td><b>"Just send me an email."</b></td><td>A polite brush-off</td><td>"Happy to. So it's useful, which tool do you write your load scripts in?"</td></tr>
+        <tr><td><b>"No budget right now."</b></td><td>Timing, not fit</td><td>"Understood. When does your current load tool or server contract renew? Worth 20 minutes before then."</td></tr>
+        <tr><td><b>"That's not my area."</b></td><td>Wrong persona</td><td>"Who runs load tests before a big release? Can I say you suggested I reach out?"</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <div class="block" data-aud="new">
+    <h3>Handoff note to the AE</h3>
+    <div class="script"><header><span class="t">Paste into the opportunity or Slack</span><button class="btn" data-copy="handoff">Copy</button></header>
+<pre id="handoff">Account:
+Contact and role:
+Existing TestMu customer: Yes / No (if yes, use the Existing TestMu customer view)
+Signal that started this:
+Load tool today (JMeter / Gatling / k6 / LoadRunner / BlazeMeter / other):
+Where the generators run:
+How often they run load tests:
+Next peak event or tool renewal date:
+Other people involved:
+What they said, in their words:</pre></div>
+  </div>
+</section>
+
+<!-- ============ STAGE 2 AE ============ -->
+<section class="view ae" id="v-ae" hidden>
+  <div class="vhead">
+    <span class="kicker">Stage 2 · For AEs, with an SE</span>
+    <h2>Learn how they test today, name the problem, map it to HyperExecute and build the case.</h2>
+    <p data-aud="new">Run discovery first, then use only the problems the buyer confirmed. Bring an SE if the buyer is a performance engineer; they will ask technical questions early.</p>
+    <p data-aud="ex" hidden>You already know how they test with TestMu, so skip most of group A. Run groups B and D with the load testing owner, agree the commercial path with the AM, and build the case around their renewal.</p>
+  </div>
+
+  <div class="gate ae" data-aud="ex" hidden>
+    <div><span class="kicker">Goal</span><p>Performance testing added to their TestMu contract, mid-term or at renewal.</p></div>
+    <div><span class="kicker">Move to Stage 3 when</span><ul><li>The load testing owner is engaged, not only the champion</li><li>They have JMeter, Gatling or k6 scripts for at least one key journey</li><li>Success criteria are written down (users, p90, error rate)</li><li>The AM agrees the commercial path</li></ul></div>
+    <div><span class="kicker">Stay in Stage 2 when</span><ul><li>Only the champion is involved</li><li>No date drives it: no peak, no renewal</li></ul></div>
+  </div>
+
+  <div class="gate ae" data-aud="new">
+    <div><span class="kicker">Goal</span><p>A proposal the buyer agrees is worth testing in a POC.</p></div>
+    <div><span class="kicker">Move to Stage 3 when</span><ul><li>They have JMeter, Gatling or k6 scripts for at least one key journey</li><li>The test environment is reachable, or can allowlist our IPs</li><li>A technical owner is named for the POC</li><li>Success criteria are written down (users, p90, error rate)</li></ul></div>
+    <div><span class="kicker">Stay in Stage 2 when</span><ul><li>No scripts exist yet</li><li>No date drives the decision (event, renewal, release)</li></ul></div>
+  </div>
+
+  <div class="block" id="disc"></div>
+
+  <div class="block">
+    <h3>Six reasons load testing breaks down</h3>
+    <div class="grid3">
+      <div class="card prob"><b>Peak pressure</b><p>Sales, launches and deadlines bring traffic the app has never seen, with little time to rehearse.</p></div>
+      <div class="card prob"><b>Load rig upkeep</b><p>Generators to build, patch, scale and pay for, even when no test is running.</p></div>
+      <div class="card prob"><b>One location</b><p>Load from a single place misses the latency, CDN and network paths users in other markets get.</p></div>
+      <div class="card prob"><b>Late results</b><p>Reports are pieced together after the run, so the release waits or ships without them.</p></div>
+      <div class="card prob"><b>Untrusted results</b><p>When a test fails, nobody can say whether the app or the load rig gave out first.</p></div>
+      <div class="card prob"><b>Two of everything</b><p>A separate tool, contract, credentials and security review for load, next to functional testing.</p></div>
+    </div>
+    <div class="cost"><span class="kicker">The cost</span><span>Slowdowns at peak</span><span>Releases wait</span><span>Idle infrastructure spend</span><span>A second contract</span></div>
+    <p class="coach"><b>Coach's note</b>Use the discovery answers to pick the two or three problems this customer actually has; do not read all six. Impact when load testing falls short: checkout or login slows during a sale, payments time out, SLAs are missed and the incident review asks why it was not caught.</p>
+  </div>
+
+  <div class="block">
+    <h3>Every problem has a HyperExecute answer</h3>
+    <div class="tw"><table>
+      <thead><tr><th>The problem</th><th>How HyperExecute answers</th><th>Show in the demo</th></tr></thead>
+      <tbody>
+        <tr><td><b>Peak pressure</b></td><td>Load, stress, spike and soak tests in one subscription. Right-sized runs nightly with Workflows, or in CI with the CLI for Gatling and k6, so the peak is a rehearsal and not the first test.</td><td>Test types, Tools and CI</td></tr>
+        <tr><td><b>Load rig upkeep</b></td><td>Load generators are created for each run and removed when it ends. They pay for runs, not servers.</td><td>The problem</td></tr>
+        <tr><td><b>One location</b></td><td>Load split across multiple regions in the same job, users divided by percentage, on any plan.</td><td>Global load</td></tr>
+        <tr><td><b>Late results</b></td><td>Live reports with p90, p95 and p99, throughput and error rate while the test runs.</td><td>Reports</td></tr>
+        <tr><td><b>Untrusted results</b></td><td>Task Metrics shows generator CPU and memory during the run, next to the app's response times.</td><td>Reports</td></tr>
+        <tr><td><b>Two of everything</b></td><td><span data-aud="new">One platform for functional and load testing: one contract, one set of credentials, one security review.</span><span data-aud="ex" hidden>Load testing under the TestMu account they already have: same login and credentials, and the same CLI if they use HyperExecute.</span></td><td>One platform</td></tr>
+        <tr><td><b>Switching cost</b></td><td>.jmx plans with CSV data, Gatling Java DSL and k6 scripts run as they are. Nothing to rewrite.</td><td>See a run, Moving from BlazeMeter</td></tr>
+      </tbody>
+    </table></div>
+    <p class="coach"><b>Coach's note</b>Lead with the row that matches the pain you heard in discovery. If their staging is not public, static outbound IPs are available through support so they can allowlist the generators. Teams can keep BlazeMeter for anything still blocked and move the rest first.</p>
+  </div>
+
+  <div class="block">
+    <h3>HyperExecute vs the alternatives · technical view</h3>
+    <div class="grid2">
+      <div class="card cmp">
+        <span class="kicker">vs self-hosted JMeter, Gatling or k6</span>
+        <h4>Why the open-source rig alone falls short</h4>
+        <ul>
+          <li><b>Servers between tests.</b> Someone builds, patches and pays for the load rig even when nothing runs.</li>
+          <li><b>Scale is a ticket.</b> Doubling the users means requesting and configuring more machines.</li>
+          <li><b>One location.</b> Load from several regions means a rig in each region.</li>
+          <li><b>Reports by hand.</b> Results are pieced together after the run.</li>
+          <li><b>App or rig?</b> No easy view of generator health when a test fails.</li>
+        </ul>
+        <p class="warnline">Do not run down JMeter, Gatling or k6. They are strong tools and the customer keeps their scripts. Win on running them.</p>
+      </div>
+      <div class="card cmp">
+        <span class="kicker">vs BlazeMeter</span>
+        <h4>Same scripts, one platform</h4>
+        <ul>
+          <li><b>Consolidation.</b> Functional and load testing on one contract, one set of credentials, one security review.</li>
+          <li><b>Existing customers.</b> Load testing under the TestMu account they already use.</li>
+          <li><b>No rewrite.</b> .jmx plans and CSV data move over as they are.</li>
+          <li><b>Renewal timing.</b> A parity run before the BlazeMeter renewal date.</li>
+        </ul>
+        <p class="warnline">Do not pitch "no servers to manage" against BlazeMeter: it is cloud-hosted too. BlazeMeter is stronger on Locust, Private Locations and built-in pass/fail criteria, so qualify those out early.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>Ten reasons HyperExecute beats "free" · business view</h3>
+    <div class="reasons">
+      <div class="card reason"><span class="n">01</span><b>Free is not free</b><p>Servers, patching and engineer time recur with every test.</p></div>
+      <div class="card reason"><span class="n">02</span><b>No idle fleet</b><p>Generators exist only while a test runs.</p></div>
+      <div class="card reason"><span class="n">03</span><b>Scale on demand</b><p>Raise the users in the run form, not with a ticket.</p></div>
+      <div class="card reason"><span class="n">04</span><b>Closer to users</b><p>Load split across multiple regions in one job.</p></div>
+      <div class="card reason"><span class="n">05</span><b>Lower risk</b><p>Catch slowdowns before the peak, not during it.</p></div>
+      <div class="card reason"><span class="n">06</span><b>Faster sign-off</b><p>Live reports instead of one built after the run.</p></div>
+      <div class="card reason"><span class="n">07</span><b>Trust the result</b><p>Generator health shown next to the app's numbers.</p></div>
+      <div class="card reason"><span class="n">08</span><b>One vendor</b><p>Functional and load on one contract and one security review.</p></div>
+      <div class="card reason"><span class="n">09</span><b>No rewrite</b><p>Keep the JMeter, Gatling and k6 scripts they have.</p></div>
+      <div class="card reason"><span class="n">10</span><b>Value in a week</b><p>First parity run in week one of the POC.</p></div>
+    </div>
+    <p class="coach"><b>Coach's note</b>Use this with economic buyers who care about cost, speed and risk. Key ask for point 1: "What did the load rig cost last quarter, including the weeks it sat idle?" Point 5: if one engineer owns the self-built rig and leaves, the knowledge goes with them.</p>
+  </div>
+
+  <div class="block">
+    <h3>Numbers to put in front of buyers</h3>
+    <div class="stats">
+      <div class="card stat"><span class="v">Multiple</span><span class="l">load regions in the same job, users split by percentage</span></div>
+      <div class="card stat"><span class="v">8,000</span><span class="l">concurrent users on Pro, custom on Enterprise</span></div>
+      <div class="card stat"><span class="v">0</span><span class="l">load generators left running after a test</span></div>
+      <div class="card stat"><span class="v">p90 · p95 · p99</span><span class="l">live during the run, with throughput and error rate</span></div>
+      <div class="card stat"><span class="v">1 platform</span><span class="l">for functional and load testing, one contract</span></div>
+      <div class="card stat"><span class="v">Isolated VMs</span><span class="l">a fresh VM per task, encrypted logs, a secrets vault, 60-day default retention</span></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>ROI: build the business case with their own numbers</h3>
+    <div class="tw"><table>
+      <thead><tr><th>What to measure</th><th>Ask the customer</th></tr></thead>
+      <tbody>
+        <tr><td><b>Load servers × monthly cloud or hardware cost</b></td><td>"What does the load rig cost per month, including when it sits idle?"</td></tr>
+        <tr><td><b>Engineer hours per month on the rig × engineer cost</b></td><td>"How many hours a month go into patching, scaling and fixing it?"</td></tr>
+        <tr><td><b>Separate load tool contract per year</b></td><td>"What do you pay for your load testing tool today?"</td></tr>
+        <tr><td><b>Cost of one performance incident</b></td><td>"What did the last slowdown during a peak cost in orders, penalties or support load?"</td></tr>
+        <tr><td><b>Release days waiting on load results</b></td><td>"How many days does a release wait for load test sign-off?"</td></tr>
+      </tbody>
+    </table></div>
+    <div class="roi card" id="roi">
+      <div class="roi-head"><span class="kicker">ROI calculator</span><span class="note">Example values below. Replace them with the customer's numbers on the call.</span>
+        <label class="cur" for="rCur">Currency <select id="rCur"><option value="USD">USD $</option><option value="INR">INR ₹</option></select></label></div>
+      <div class="roi-grid">
+        <div class="roi-in">
+          <fieldset><legend>Load rig today</legend>
+            <div class="field"><label for="rSrv">Load servers or VMs kept for testing</label><input type="number" id="rSrv" min="0" value="8"></div>
+            <div class="field"><label for="rSrvCost">Monthly cost per server</label><input type="number" id="rSrvCost" min="0" value="350"></div>
+            <div class="field"><label for="rHours">Engineer hours per month maintaining the rig</label><input type="number" id="rHours" min="0" value="40"></div>
+            <div class="field"><label for="rRate">Loaded cost per engineer hour</label><input type="number" id="rRate" min="0" value="60"></div>
+            <div class="field"><label for="rRed">Share of those hours saved</label><input type="number" id="rRed" min="0" max="100" value="75"><span class="hint">Percent. Agree this figure with the customer.</span></div>
+          </fieldset>
+          <fieldset><legend>Tools and risk</legend>
+            <div class="field"><label for="rTool">Separate load testing tool, per year</label><input type="number" id="rTool" min="0" value="0"><span class="hint">BlazeMeter, LoadRunner, NeoLoad or similar. 0 if none.</span></div>
+            <div class="field"><label for="rInc">Cost of one peak-day incident</label><input type="number" id="rInc" min="0" value="50000"><span class="hint">Lost orders, SLA penalties, support load.</span></div>
+            <div class="field"><label for="rIncN">Incidents a year you expect to prevent</label><input type="number" id="rIncN" min="0" step="0.5" value="1"></div>
+          </fieldset>
+          <fieldset><legend>Proposal</legend>
+            <div class="field"><label for="rQuote">HyperExecute performance testing, per year</label><input type="number" id="rQuote" min="0" value="30000"><span class="hint">From deal desk.</span></div>
+          </fieldset>
+        </div>
+        <div class="roi-out" aria-live="polite">
+          <div class="kpi"><span class="l">What load testing costs them today, per year</span><span class="v" id="oNow"></span></div>
+          <div class="kpi"><span class="l">Savings and risk avoided, per year</span><span class="v" id="oSave"></span></div>
+          <div class="kpi main"><span class="l">Net benefit after the HyperExecute cost</span><span class="v" id="oNet"></span></div>
+          <div class="kpi2"><div><span class="l">ROI</span><span class="v" id="oRoi"></span></div><div><span class="l">Payback</span><span class="v" id="oPay"></span></div></div>
+          <table class="brk"><tbody id="oBrk"></tbody></table>
+          <div class="script"><header><span class="t">ROI summary for the proposal</span><button class="btn" data-copy="oTxt">Copy</button></header><pre id="oTxt"></pre></div>
+        </div>
+      </div>
+    </div>
+    <p class="formula" data-aud="new"><b>Savings</b> = idle infrastructure + rig maintenance + the separate contract, set against the cost of the plan. Incident and delay costs make the case for testing more often.</p>
+    <p class="formula" data-aud="ex" hidden><b>Savings</b> = the separate load contract + idle infrastructure + rig maintenance, set against the cost of adding performance testing to the TestMu contract they already pay for. One vendor, one renewal, one security review.</p>
+    <p class="coach"><b>Coach's note</b>Reuse the numbers the BDR captured and the answers to discovery questions 13 to 16. Fill the model in live with the customer: numbers they give you are far more persuasive than benchmarks you bring.</p>
+  </div>
+
+  <div class="block" data-aud="ex" hidden>
+    <h3>Pick the commercial path with the AM</h3>
+    <div class="tw"><table>
+      <thead><tr><th>Path</th><th>When it fits</th><th>What to propose</th></tr></thead>
+      <tbody>
+        <tr><td><b>Add mid-term</b></td><td>A peak event or a load tool renewal comes before the TestMu renewal</td><td>POC on their current account, then an amendment that adds performance testing now</td></tr>
+        <tr><td><b>Co-term at renewal</b></td><td>Their TestMu renewal is within two quarters</td><td>POC now, performance testing priced into the renewal so both renew together</td></tr>
+        <tr><td><b>Replace the load tool at its renewal</b></td><td>A separate load contract ends first</td><td>Parity run before that date, then move the budget across</td></tr>
+      </tbody>
+    </table></div>
+    <p class="coach"><b>Coach's note</b>The AM owns the account, pricing and forecast. Your job is the technical win and the business case. Tag the opportunity as influenced in Salesforce so the work is credited.</p>
+  </div>
+
+  <div class="close">
+    <span class="kicker">The one-line pitch</span>
+    <q data-aud="new">"JMeter is free to download but expensive to run. HyperExecute runs the same scripts without the load rig."</q>
+    <p data-aud="new">Your team finds performance problems before your users do, from where your users are, with nothing to maintain between tests.</p>
+    <q data-aud="ex" hidden>"You already test with TestMu. Your load tests can run there too, under the same account."</q>
+    <p data-aud="ex" hidden>Same login and credentials, no new vendor or infrastructure, and load generators that exist only while a test runs.</p>
+    <div class="pathchips"><span>Keep your JMeter, Gatling and k6 scripts</span><span>Move the tests where upkeep hurts most</span><span>Keep the old tool for anything blocked until renewal</span></div>
+  </div>
+  <p class="coach"><b>Coach's note</b>Close on the one-liner and the low-risk path: keep the scripts, move the tests where the rig hurts most, and cut over at renewal. Suggest a POC scoped to their next peak event or release.</p>
+
+  <div class="block">
+    <h3>Write the proposal</h3>
+    <p class="sub">Fill in what you learned on the call. You get a starting plan, risks to raise with the SE, and a recap email.</p>
+    <div class="builder">
+      <div class="card form">
+        <div class="field"><label for="bCo">Company</label><input type="text" id="bCo" value="Acme Retail"></div>
+        <div class="field"><label for="bName">Contact first name</label><input type="text" id="bName" value="Priya"></div>
+        <div class="grid2">
+          <div class="field"><label for="bUsers">Peak concurrent users</label><input type="number" id="bUsers" min="1" step="100" value="5000"><span class="hint">The most they need to simulate</span></div>
+          <div class="field"><label for="bHours">Longest test (hours)</label><input type="number" id="bHours" min="0.25" step="0.25" value="2"></div>
+        </div>
+        <div class="field"><span class="lb">Load from more than one region?</span><div class="chips" data-group="multi"><button type="button" class="chip" data-val="no" aria-pressed="true">One region is fine</button><button type="button" class="chip" data-val="yes" aria-pressed="false">Several regions</button></div></div>
+        <div class="field"><span class="lb">Tools they use</span><div class="chips" data-group="tools" data-multi="1">
+          <button type="button" class="chip" data-val="JMeter" aria-pressed="true">JMeter</button>
+          <button type="button" class="chip" data-val="Gatling" aria-pressed="false">Gatling</button>
+          <button type="button" class="chip" data-val="k6" aria-pressed="false">k6</button>
+          <button type="button" class="chip" data-val="LoadRunner" aria-pressed="false">LoadRunner</button>
+          <button type="button" class="chip" data-val="Locust" aria-pressed="false">Locust</button>
+        </div></div>
+        <div class="field"><span class="lb">Where they run today</span><div class="chips" data-group="today">
+          <button type="button" class="chip" data-val="self" aria-pressed="true">Own servers or VMs</button>
+          <button type="button" class="chip" data-val="BlazeMeter" aria-pressed="false">BlazeMeter</button>
+          <button type="button" class="chip" data-val="other" aria-pressed="false">Another SaaS</button>
+          <button type="button" class="chip" data-val="none" aria-pressed="false">Not yet</button>
+        </div></div>
+        <div class="field"><span class="lb">Problems they confirmed</span><div class="chips" data-group="pains" data-multi="1">
+          <button type="button" class="chip" data-val="infra" aria-pressed="true">Idle load servers</button>
+          <button type="button" class="chip" data-val="twotools" aria-pressed="false">Separate tool and contract</button>
+          <button type="button" class="chip" data-val="region" aria-pressed="false">Single location</button>
+          <button type="button" class="chip" data-val="late" aria-pressed="false">Results come late</button>
+          <button type="button" class="chip" data-val="rig" aria-pressed="false">App or rig unclear</button>
+          <button type="button" class="chip" data-val="rare" aria-pressed="true">Only before events</button>
+          <button type="button" class="chip" data-val="private" aria-pressed="false">Staging not public</button>
+        </div></div>
+        <div class="field"><label for="bDate">Deadline that drives it</label><input type="text" id="bDate" value="the Diwali sale in November"><span class="hint">An event, a renewal or a release</span></div>
+      </div>
+      <div class="out">
+        <div class="rec" id="rec"></div>
+        <div class="flags" id="flags"></div>
+        <div class="script"><header><span class="t">Recap email after the call</span><button class="btn" data-copy="recap">Copy</button></header><pre id="recap"></pre></div>
+      </div>
+    </div>
+    <p class="note">Plan limits from the public JMeter Load Testing page: Free 100 users and 40 minutes, Basic 2,000 users and 2 hours, Pro 8,000 users and 6 hours, Enterprise custom. Multi-region load works on every plan. Plan for about 2,000 users per JMeter generator. Pricing comes from deal desk.</p>
+  </div>
+</section>
+
+<!-- ============ STAGE 3 SE ============ -->
+<section class="view se" id="v-se" hidden>
+  <div class="vhead">
+    <span class="kicker">Stage 3 · SE</span>
+    <h2>Show it on the story page, then prove it on their own plan.</h2>
+    <p>The demo uses the performance testing presentation. The POC runs one of their real scripts against their own environment and compares it with the numbers they have today.</p>
+  </div>
+
+  <div class="gate se">
+    <div><span class="kicker">Goal</span><p>A parity run that meets the success criteria agreed in Stage 2.</p></div>
+    <div><span class="kicker">Before the POC</span><ul><li>Their .jmx, Gatling or k6 script and data files</li><li>Target environment URL and allowlisting sorted</li><li>Last baseline: p90, throughput, error rate</li></ul></div>
+    <div><span class="kicker">Hand back to the AE</span><ul><li>Readout with their numbers next to ours</li><li>Plan size from the Load lab</li></ul></div>
+  </div>
+
+  <div class="block">
+    <h3>Demo path</h3>
+    <p class="sub" data-aud="new">For a new logo, lead with the problem and global load. Open the presentation in its New to HyperExecute view.</p>
+    <p class="sub" data-aud="ex" hidden>For a HyperExecute customer, lead with "same account" and CI, and open the presentation in its Already a customer view. For a TestMu customer on other products, open the New to HyperExecute view and lead with "same TestMu account".</p>
+    <div class="links" id="demoLinks"></div>
+  </div>
+
+  <div class="block">
+    <h3>POC plan</h3>
+    <p class="sub" data-aud="ex" hidden>No new account or credentials: the POC runs under the TestMu account they already have. If they are not on HyperExecute yet, ask the account team to enable it for the POC, and check whether security wants to review HyperExecute specifically. Include the AM in the readout.</p>
+    <div class="steps">
+      <div class="st"><span class="when">Day 0</span><div><b>Scope</b><p>Pick one to three plans for the journeys that matter most. Agree target users, duration, regions and pass criteria in writing.</p></div></div>
+      <div class="st"><span class="when">Day 1 to 2</span><div><b>Dry run</b><p>Upload the plan and run it at 5 to 10 percent of target load in one region. Plugin or sampler failures show up here.</p></div></div>
+      <div class="st"><span class="when">Week 1</span><div><b>Parity run</b><p>Run at target load with the Total Load Distribution override on. Compare p90, throughput and error rate with their last baseline for the same build.</p></div></div>
+      <div class="st"><span class="when">Week 2</span><div><b>Make it routine</b><p>Gatling and k6: add hyperexecute.yaml and the CLI step to their pipeline. JMeter: schedule nightly runs with Workflows.</p></div></div>
+      <div class="st"><span class="when">Readout</span><div><b>Hand back to the AE</b><p>Their baseline next to the parity run, what moved over cleanly, what still needs work, and the plan size.</p></div></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>POC success criteria</h3>
+    <div class="script"><header><span class="t">Agree this before the dry run</span><button class="btn" data-copy="crit">Copy</button></header>
+<pre id="crit">Plans in scope:
+Target environment:
+Target concurrent users:            Duration:            Regions:
+Pass when:
+  - The plan runs without changes, or with these agreed changes:
+  - p90 response time for the key transaction is within    % of our baseline
+  - Error rate under    %
+  - Report shared with:
+Decision owner:                     Decision date:</pre></div>
+  </div>
+</section>
+
+<!-- ============ OBJECTIONS ============ -->
+<section class="view obj" id="v-objections" hidden>
+  <div class="vhead">
+    <span class="kicker">Any stage</span>
+    <h2>Objections and how to answer them.</h2>
+    <p>Ask a question back first. Some of these mean the deal is not a fit, and the answer says so.</p>
+  </div>
+  <input class="search" id="oSearch" type="search" placeholder="Search, for example: BlazeMeter, security, budget" aria-label="Search objections">
+  <div class="objs" id="objs"></div>
+  <p class="note" id="oEmpty" hidden>No objection matches that search. Check the FAQs in the presentation or ask in the product GTM channel.</p>
+</section>
+
+
+</div></main>
+
+<script>
+(function(){
+var STORY='../../stories/performance-testing/';
+var aud='new';
+function $(s){return document.querySelector(s)}
+function $$(s){return Array.prototype.slice.call(document.querySelectorAll(s))}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function ph(s){return esc(s).replace(/\{([^}]+)\}/g,'<span class="ph">{$1}</span>')}
+
+/* ---------- outreach scripts ---------- */
+var OUT={
+ new:[
+  {t:'Cold call opener',m:'30 seconds',b:"Hi {name}, it's {you} from TestMu AI. I'll be quick. I saw {signal}. Teams that load test with tools like JMeter, LoadRunner, NeoLoad or BlazeMeter usually keep load servers alive between tests, or pay for a separate tool just for load. We run existing JMeter, Gatling and k6 scripts with load split across multiple regions, with no servers to look after. Which tool does your team use for load testing today?"},
+  {t:'LinkedIn connection note',m:'Under 300 characters',b:"Hi {name}, saw you work on performance testing with {tool, e.g. JMeter, LoadRunner, BlazeMeter}. I'm at TestMu AI, where teams run their existing JMeter, Gatling and k6 scripts from multiple regions without managing load servers. Would be good to connect."},
+  {t:'Cold email',m:'Day 1',b:"Subject: load servers between tests\n\nHi {name},\n\nSaw {signal}. Teams at {company}'s scale that load test with JMeter, LoadRunner, NeoLoad or BlazeMeter usually keep load generators running between tests, or pay for a load tool next to their functional testing platform.\n\nHyperExecute runs your existing .jmx, Gatling and k6 scripts as they are, with load split across multiple regions in one test, and removes the generators when the run ends. You watch p90, p95 and p99 live during the test.\n\nWorth 20 minutes to see if it fits how you test today?\n\n{you}"},
+  {t:'Follow-up email',m:'Day 4',b:"Subject: re: load servers between tests\n\nQuick one, {name}: do you run load tests with JMeter, Gatling or k6 on your own servers, or with a tool like BlazeMeter, LoadRunner or NeoLoad?\n\nIf it's JMeter or BlazeMeter, your .jmx files and CSV data move over unchanged. Happy to show a run on one of your own plans.\n\n{you}"},
+  {t:'Last email',m:'Day 10',b:"Subject: closing the loop\n\nHi {name}, I'll stop here. If load testing comes up before {event}, reply with one word and I'll set up 20 minutes with our team.\n\n{you}"},
+  {t:'Voicemail',m:'20 seconds',b:"Hi {name}, {you} from TestMu AI. I'm calling about how {company} runs load tests. We run your existing JMeter, Gatling or k6 scripts from multiple regions without load servers to maintain. I'll send a short email. My number is {phone}."}
+ ],
+ ex:[
+  {t:'Ask the account champion',m:'Slack or email to your existing contact',b:"Hi {name}, TestMu now offers performance testing on HyperExecute, under the same account your team already uses. Who on your side owns load or performance testing, for example whoever runs JMeter, LoadRunner or BlazeMeter? I'd like to show them how their JMeter or k6 scripts would run here."},
+  {t:'Cold call opener',m:'30 seconds',b:"Hi {name}, it's {you} from TestMu AI. Your team already tests with {TestMu product}. The same TestMu account can now run JMeter, Gatling and k6 load tests on HyperExecute: same login, load generators created for each run. Who looks after performance testing on your side, whoever runs JMeter, LoadRunner or BlazeMeter today?"},
+  {t:'LinkedIn connection note',m:'Under 300 characters',b:"Hi {name}, {company} already tests with TestMu. Load testing now sits under the same account, so your JMeter and k6 scripts can run there too. Would be good to connect."},
+  {t:'Cold email',m:'Day 1',b:"Subject: load tests on your TestMu account\n\nHi {name},\n\nYour team already tests with {TestMu product}. Performance testing on HyperExecute now sits under the same account: upload a .jmx, or use the HyperExecute CLI for Gatling and k6. No new vendor, infrastructure or credentials.\n\nTeams use it to run a right-sized load test next to their functional tests on every release, not only before big events.\n\nOpen to 20 minutes with {ae} to see if it could replace {current}?\n\n{you}"},
+  {t:'Follow-up email',m:'Day 4',b:"Subject: re: load tests on your TestMu account\n\nHi {name}, one question: where do your load tests run today? If it's your own JMeter servers or a separate tool like BlazeMeter, LoadRunner or NeoLoad, we can run one of your existing plans under your TestMu account so you can compare.\n\n{you}"},
+  {t:'Voicemail',m:'20 seconds',b:"Hi {name}, {you} from TestMu AI. Your team already tests with TestMu, and the same account can now run your load tests. I'll send a short note. My number is {phone}."}
+ ]};
+function renderOut(){
+  var box=$('#outreach');box.innerHTML='';
+  OUT[aud].forEach(function(o,i){
+    var id='out'+i;
+    var d=document.createElement('div');d.className='script';
+    d.innerHTML='<header><span><span class="t">'+esc(o.t)+'</span> <span class="m">'+esc(o.m)+'</span></span><button class="btn" data-copy="'+id+'">Copy</button></header><pre id="'+id+'">'+ph(o.b)+'</pre>';
+    box.appendChild(d);
+  });
+}
+
+/* ---------- discovery ---------- */
+var DISC=[
+ {n:'A',h:'Landscape and ownership',qs:[
+  {q:'Which apps or services matter most at peak, and where are they hosted?',l:'Checkout, login, payments, search, APIs; cloud and region',p:'Picks the journeys for the POC'},
+  {q:'Where are your users: which countries and regions?',l:'Users in several markets, app hosted in one',p:'Load split across multiple regions in one job'},
+  {q:'Who owns performance testing: a performance team, QA, SRE or a partner?',l:'A named team or person',p:'Your champion and POC owner'},
+  {q:'Is your test environment reachable from the internet, or does it need IP allowlisting?',l:'Private staging, VPN, firewall rules',p:'Static outbound IPs through support'}
+ ]},
+ {n:'B',h:'Current testing approach',qs:[
+  {q:'Do you run load tests today? With which tool (JMeter, LoadRunner, NeoLoad, BlazeMeter, Gatling, k6, Locust)?',l:'The tool and how many journeys are scripted',p:'JMeter, Gatling and k6 run as they are. LoadRunner needs a rebuild. Locust is not supported.'},
+  {q:'Where do the load generators run, and who maintains them?',l:'Own EC2 or Kubernetes rig, BlazeMeter, another SaaS',p:'Own rig: generators per run. BlazeMeter: migration path.'},
+  {q:'How often do you run load tests: every release, nightly, or only before big events?',l:'Only before big events',p:'Workflows for nightly JMeter, CLI in CI for Gatling and k6'},
+  {q:'What is the most concurrent users you test to, and your longest run?',l:'Peak users and hours',p:'Plan sizing in the proposal builder'},
+  {q:'Are load tests part of your CI/CD pipeline, or run by hand?',l:'Run by hand from someone’s machine or a jump box',p:'CLI with an exit code for Gatling and k6'}
+ ]},
+ {n:'C',h:'Release speed and process',qs:[
+  {q:'How long does a release wait for load test results?',l:'Days, or the release ships without them',p:'Live reports during the run'},
+  {q:'What happens when you need to test more users than usual?',l:'Requesting servers, waiting on another team, paying for capacity',p:'Raise users in the run form'},
+  {q:'Has a test ever failed and you were not sure if it was the app or the load rig?',l:'Yes, and the run had to be repeated',p:'Task Metrics shows generator health'}
+ ]},
+ {n:'D',h:'Pain, cost and risk',qs:[
+  {q:'What happened the last time a performance issue reached production?',l:'A slowdown during a sale, lost orders, missed SLAs',p:'Right-sized runs every release catch drift earlier'},
+  {q:'How many engineer hours a month go into keeping the load setup working?',l:'Patching, scaling, fixing the rig',p:'Business case: rig maintenance'},
+  {q:'What do the load servers and your load testing tool cost per year?',l:'Cloud spend, licences, a separate contract',p:'Business case: idle infrastructure and the second contract'},
+  {q:'Do you test from the locations your users are in?',l:'No, everything comes from one region',p:'Multiple regions in the same job'}
+ ]},
+ {n:'E',h:'Priority and buying process',qs:[
+  {q:'Is performance testing a priority this year, and what is driving it?',l:'An incident, a peak event, a cost review, a tool renewal',p:'The reason to act now'},
+  {q:'When is your next peak event, release or tool renewal?',l:'A date',p:'The POC deadline'},
+  {q:'Who else would be involved in choosing a tool, and who signs off budget?',l:'Names, roles, the proof they want',p:'Write it into the POC success criteria'},
+  {q:'What would success look like six months after switching?',l:'Load tests every release, no rig, fewer peak incidents',p:'Becomes the readout after the POC'}
+ ]}
+];
+(function(){
+  var h='<h3>Discovery: map how they load test today</h3><p class="sub">Twenty questions in five groups. Spend most of the call on B and D, and quantify in D before you propose anything.</p><div class="disc">';
+  var k=0;
+  DISC.forEach(function(s){
+    h+='<div class="phase"><span class="n">'+s.n+'</span><h4>'+esc(s.h)+'</h4></div>';
+    s.qs.forEach(function(x){k++;h+='<div class="q"><div class="qt"><span class="qn">'+k+'</span>'+esc(x.q)+'</div><div class="meta"><div><span class="k">Listen for</span>'+esc(x.l)+'</div><div><span class="k">Points to</span>'+esc(x.p)+'</div></div></div>'});
+  });
+  h+='</div><p class="coach"><b>Coach’s note</b>These questions turn a technical conversation into a business one. Listen for a named tool in 5 and for "we only test before big events" in 7: both open the HyperExecute story. Write down every number they give you in 8 and 13 to 15; the business case reuses them.</p>';
+  $('#disc').innerHTML=h;
+})();
+
+/* ---------- proposal builder ---------- */
+var PAIN={
+ infra:'Load generators are created for each run and removed when it ends, so there are no servers to keep alive between tests.',
+ twotools:'Load testing sits on the same platform as functional testing: one contract, one set of credentials.',
+ region:'Load can be split across multiple regions in the same job, with users divided by percentage.',
+ late:'Reports update live during the run, with p90, p95 and p99, throughput and error rate.',
+ rig:'Task Metrics shows the generators’ CPU and memory, so you can see whether the app or the load setup hit its limit first.',
+ rare:'Right-sized runs can go nightly with Workflows, or into CI with the CLI for Gatling and k6, so issues show up before the big event.',
+ private:'Static outbound IPs are available through support, so your team can allowlist the generators on staging.'
+};
+function sel(g){return $$('[data-group="'+g+'"] .chip[aria-pressed="true"]').map(function(b){return b.dataset.val})}
+function fmt(n){return Number(n).toLocaleString('en-US')}
+function build(){
+  var users=Math.max(1,parseFloat($('#bUsers').value)||0), hrs=Math.max(0,parseFloat($('#bHours').value)||0);
+  var multi=sel('multi')[0]==='yes', tools=sel('tools'), today=sel('today')[0]||'self', pains=sel('pains');
+  var co=$('#bCo').value.trim()||'{company}', nm=$('#bName').value.trim()||'{name}', dl=$('#bDate').value.trim()||'{deadline}';
+  var plan,why;
+  if(users>8000||hrs>6){plan='Enterprise';why='Above Pro limits of 8,000 users or 6 hours.'}
+  else if(users>2000||hrs>2){plan='Pro';why='Up to 8,000 users and 6-hour runs.'}
+  else if(users>100||hrs>40/60){plan='Basic';why='Up to 2,000 users and 2-hour runs.'}
+  else{plan='Free to start';why='100 users for 40 minutes is enough to prove their plans run.'}
+  var gens=Math.ceil(users/2000);
+  var rec='<span class="kicker">Starting plan</span><div class="plan">'+esc(plan)+'</div><ul><li>'+esc(why)+'</li><li>About '+fmt(gens)+' JMeter generator'+(gens>1?'s':'')+' for '+fmt(users)+' users at the 2,000-per-generator planning cap.</li>';
+  if(multi)rec+='<li>Split users across regions by percentage with the Total Load Distribution override on. Works on this plan.</li>';
+  if(aud==='ex')rec+='<li>Existing customer: the account team adds performance testing to their current TestMu contract.</li>';
+  else rec+='<li>Offer the Free plan first so their engineer can upload one plan before the POC.</li>';
+  $('#rec').innerHTML=rec+'</ul>';
+  var f=[];
+  if(tools.indexOf('Locust')>-1)f.push(['b','Locust is not supported. Only move ahead if they also have JMeter, Gatling or k6 scripts.']);
+  if(tools.indexOf('LoadRunner')>-1)f.push(['w','LoadRunner scripts do not run as they are. Scope a rebuild of the top journeys in JMeter or k6 with the SE before proposing.']);
+  if(tools.indexOf('k6')>-1)f.push(['w','k6 runs through hyperexecute.yaml and the CLI. Check their k6 version in the dry run.']);
+  if(tools.indexOf('JMeter')>-1)f.push(['','JMeter runs from the portal and can be scheduled with Workflows. Validate any Plugins Manager components in the dry run.']);
+  if(today==='BlazeMeter')f.push(['w','Moving from BlazeMeter: export run history and baselines before the contract ends. Private Locations map to static IPs through support. Use the migration chapter.']);
+  if(today==='none')f.push(['w','No load testing today. Confirm they have scripts or someone to write them, or this stays in Stage 2.']);
+  if(pains.indexOf('rare')>-1&&tools.length&&tools.every(function(t){return t==='JMeter'}))f.push(['','For JMeter, CI gating is not available from the CLI. Position nightly runs with Workflows instead.']);
+  if(!pains.length)f.push(['b','No confirmed problem yet. Go back to discovery before proposing.']);
+  $('#flags').innerHTML=f.map(function(x){return '<div class="flag '+x[0]+'">'+esc(x[1])+'</div>'}).join('');
+  var toolTxt=tools.filter(function(t){return t!=='Locust'&&t!=='LoadRunner'});
+  toolTxt=toolTxt.length?toolTxt.join(', ').replace(/, ([^,]*)$/,' and $1'):'your';
+  var lines=pains.map(function(p){return '- '+PAIN[p]}).join('\n');
+  var regionLine=multi?'from several regions':'from one region';
+  var t='Subject: load testing at '+co+': next steps\n\nHi '+nm+',\n\nThanks for the time today. What I heard:\n';
+  t+=pains.length?pains.map(function(p){return '- '+{infra:'Load servers have to be kept and maintained between tests.',twotools:'Load testing is a separate tool and contract from functional testing.',region:'Load comes from one location while users are in several.',late:'Results come together only after the run.',rig:'It is hard to tell whether the app or the load setup failed first.',rare:'Load tests run mainly before big events.',private:'Staging is not reachable from the internet.'}[p]}).join('\n'):'- {what you heard}';
+  t+='\n\nHow HyperExecute helps:\n'+(lines||'- {value}')+'\n';
+  t+='\n'+(aud==='ex'?'This runs under the TestMu account your team already uses, with the same login and credentials.':'Your '+toolTxt+' scripts run as they are.')+'\n';
+  t+='\nProposed next step: a POC on one of your plans at '+fmt(users)+' users '+regionLine+', compared with your current p90, throughput and error rate, finished before '+dl+'.\n\nCould you share the plan and your last results, and confirm who from your team will join the setup call?\n\nThanks,\n{you}';
+  $('#recap').innerHTML=ph(t);
+}
+$$('.chips').forEach(function(g){
+  var multi=g.dataset.multi==='1';
+  g.addEventListener('click',function(e){
+    var b=e.target.closest('.chip');if(!b)return;
+    if(multi){b.setAttribute('aria-pressed',String(b.getAttribute('aria-pressed')!=='true'))}
+    else{$$('[data-group="'+g.dataset.group+'"] .chip').forEach(function(x){x.setAttribute('aria-pressed',String(x===b))})}
+    build();
+  });
+});
+['#bCo','#bName','#bUsers','#bHours','#bDate'].forEach(function(s){$(s).addEventListener('input',build)});
+
+
+/* ---------- ROI ---------- */
+(function(){
+  var ids=['rSrv','rSrvCost','rHours','rRate','rRed','rTool','rInc','rIncN','rQuote'];
+  function v(id){var x=parseFloat(document.getElementById(id).value);return isFinite(x)&&x>0?x:0}
+  function calc(){
+    var inr=document.getElementById('rCur').value==='INR';
+    var sym=inr?'₹':'$', loc=inr?'en-IN':'en-US';
+    var m=function(n){return (n<0?'-':'')+sym+Math.round(Math.abs(n)).toLocaleString(loc)};
+    var rig=v('rSrv')*v('rSrvCost')*12, hrs=v('rHours')*v('rRate')*12, red=Math.min(v('rRed'),100)/100;
+    var tool=v('rTool'), risk=v('rInc')*v('rIncN'), q=v('rQuote');
+    var now=rig+hrs+tool, save=rig+hrs*red+tool+risk, net=save-q;
+    document.getElementById('oNow').textContent=m(now);
+    document.getElementById('oSave').textContent=m(save);
+    document.getElementById('oNet').textContent=m(net);
+    document.getElementById('oRoi').textContent=q?Math.round(net/q*100)+'%':'Add the quote';
+    document.getElementById('oPay').textContent=(q&&save)?(q/(save/12)<1?'Under 1 month':(q/(save/12)).toFixed(1)+' months'):'Add the quote';
+    var rows=[['Load servers no longer kept',rig],['Engineer time on the rig',hrs*red],['Separate load tool removed',tool],['Peak incidents avoided',risk],['HyperExecute performance testing',-q]];
+    document.getElementById('oBrk').innerHTML=rows.map(function(r){return '<tr'+(r[1]<0?' class="neg"':'')+'><td>'+r[0]+'</td><td>'+m(r[1])+'</td></tr>'}).join('');
+    var co=(document.getElementById('bCo')||{}).value||'{company}';
+    document.getElementById('oTxt').textContent='Load testing at '+co+' costs about '+m(now)+' a year today: '+m(rig)+' in load servers, '+m(hrs)+' in engineer time maintaining them'+(tool?', and '+m(tool)+' for a separate load testing tool':'')+'.\n\nWith HyperExecute performance testing, load generators exist only while a test runs. Based on your figures, that saves about '+m(save-risk)+' a year'+(risk?', plus about '+m(risk)+' in peak-day incidents avoided':'')+'.\n\nAgainst a HyperExecute cost of '+m(q)+' a year, the net benefit is about '+m(net)+(q&&save?', with payback in '+document.getElementById('oPay').textContent.toLowerCase()+'.':'.');
+  }
+  ids.concat(['rCur']).forEach(function(id){document.getElementById(id).addEventListener('input',calc)});
+  document.getElementById('rCur').addEventListener('change',calc);
+  document.getElementById('bCo').addEventListener('input',calc);
+  calc();
+})();
+
+/* ---------- demo links ---------- */
+var DEMO={new:[['problem','The problem'],['why','One platform'],['global','Global load'],['run','See a run'],['reports','Reports'],['migrate','Moving from BlazeMeter'],['lab','Size a test'],['start','Get started']],
+ ex:[['why','Same account'],['tools','Tools and CI'],['run','See a run'],['reports','Reports'],['lab','Size a test'],['faq','FAQs'],['start','Get started']]};
+function renderDemo(){$('#demoLinks').innerHTML=DEMO[aud].map(function(d,i){return '<a href="'+STORY+'#'+d[0]+'" target="_blank" rel="noopener">'+(i+1)+'. '+esc(d[1])+'</a>'}).join('')+'<a href="'+STORY+'#'+(aud==='ex'?'existing':'new')+'" target="_blank" rel="noopener">Open full presentation</a>'}
+
+/* ---------- objections ---------- */
+var OBJ=[
+ {au:'ex',s:'We just renewed with TestMu.',a:'When does your load testing tool or server contract renew?',r:'Performance testing can be added to the current plan mid-term, or co-termed so it renews with their TestMu contract. The AM decides the commercial path. Start with a trial run on the account they already have.',sh:'Get started'},
+ {au:'ex',s:'Load testing is another team, with its own budget.',a:'Who leads that team, and could you introduce us?',r:'That is the normal case. Ask the champion for an intro and position consolidation: the load team keeps its scripts and gets the platform and security approval the QA team already has.',sh:'One platform'},
+ {au:'ex',s:'We are happy with TestMu as it is. Why add more?',a:'Where do your load tests run today, and who looks after that?',r:'Nothing in their current TestMu setup changes. Load jobs use the same login, and for HyperExecute users the same CLI, with functional suites still scaling while a load job runs. The ask is one trial run on one of their plans.',sh:'FAQs'},
+ {au:'ex',s:'Procurement will not add anything mid-contract.',a:'When is your renewal, and who runs it on your side?',r:'Run the POC now and co-term performance testing with their TestMu renewal. The AM leads the commercial side; tag the opportunity as influenced.',sh:''},
+ {au:'new',s:'Security will not approve another vendor.',a:'What does security need to see?',r:'Each task runs on a fresh isolated VM, logs are encrypted, secrets sit in a built-in vault, and data is kept 60 days by default, custom on Enterprise. Generators are removed after each run.',sh:'FAQs'},
+ {s:'We already use BlazeMeter.',a:'When does the contract renew, and how many of your tests use more than one location?',r:'Your .jmx plans and CSV data move over unchanged, and so does the generated .jmx from Taurus-only tests. The usual path is a parity run on one plan before the renewal date. Locust tests and Private Locations need a check first, and run history does not move, so export baselines before switching.',sh:'Moving from BlazeMeter'},
+ {s:'We run JMeter on our own servers. It costs us nothing.',a:'Who maintains those servers, and what happens when you need twice the users?',r:'JMeter is free; the servers, patching and the engineer time are not. HyperExecute creates generators for each run and removes them after, and can send load from several regions, which a single rig usually cannot.',sh:'The problem, Size a test'},
+ {s:'We use LoadRunner.',a:'Which protocols do your scripts use, and are new apps being tested with LoadRunner too?',r:'LoadRunner scripts do not run on HyperExecute. The fit is newer web and API apps, with the top journeys rebuilt in JMeter or k6, often as part of a tool consolidation. Qualify carefully; this is a longer deal.',sh:'Tools and CI'},
+ {s:'We use k6 Cloud or Grafana.',a:'Do your functional tests and load tests sit with the same vendor?',r:'k6 scripts run through hyperexecute.yaml and the CLI. The case is one platform and one contract for functional and load. Check their k6 version in the dry run.',sh:'One platform, Tools and CI'},
+ {s:'We use Locust.',a:'Is everything in Locust, or are some tests in JMeter or k6?',r:'Locust is not supported. If they have no JMeter, Gatling or k6 scripts, park the opportunity and say so plainly.',sh:''},
+ {s:'Our app is not on the public internet.',a:'Can your team allowlist outbound IPs for staging?',r:'Static outbound IPs are available through support so the generators can be allowlisted. A fully air-gapped environment with no allowlisting is not a fit for cloud generators.',sh:'FAQs'},
+ {au:'ex',s:'Security will need to review this.',a:'Is TestMu already approved by your security team?',r:'Each task runs on a fresh isolated VM, logs are encrypted, secrets sit in a built-in vault, and data is kept 60 days by default, custom on Enterprise. Generators are removed after each run. For existing customers there is no new vendor.',sh:'FAQs'},
+ {s:'We only load test before big events.',a:'What went wrong the last time an issue showed up just before an event?',r:'That is the case for small, regular runs: nightly with Workflows, or in CI for Gatling and k6, so slowdowns show up release by release. Size the big event run separately.',sh:'Tools and CI'},
+ {s:'Can a load test fail our build?',a:'Which tool are those tests written in?',r:'For k6, thresholds in the script set the CLI exit code. Gatling runs from the CLI with an exit code. JMeter runs from the portal; teams review p90, throughput and error rate in the Summary after each run. Do not promise JMeter build gating.',sh:'Tools and CI'},
+ {s:'Can you handle our user numbers?',a:'What is your peak concurrent user count, and for how long?',r:'Pro covers 8,000 concurrent users and 6-hour runs, Enterprise is custom. Plan for about 2,000 users per JMeter generator, fewer with heavy payloads. Size it live in the Load lab.',sh:'Size a test'},
+ {s:'We have no budget this year.',a:'When does your current load tool or server contract renew?',r:'The Free plan runs 100 users for 40 minutes, enough to prove their plans run. Existing customers add it to their current plan. Tie the decision to the renewal date of what they pay for today.',sh:'Get started'},
+ {s:'Do we have to move functional testing too?',a:'',r:'No. They can start with load testing alone on Free, Basic or Pro and add functional testing later.',sh:'FAQs'},
+ {s:'Does this test the browser experience?',a:'Are you trying to measure server response or page rendering?',r:'Load tests are protocol level and measure how the servers respond. Page behaviour is tested with Selenium or Playwright on the same platform.',sh:'FAQs'}
+];
+(function(){
+  $('#objs').innerHTML=OBJ.map(function(o){
+    return '<details class="o"'+(o.au?' data-aud="'+o.au+'"':'')+' data-q="'+esc((o.s+' '+o.a+' '+o.r).toLowerCase())+'"><summary><span class="s">“'+esc(o.s)+'”</span>'+(o.sh?'<span class="pill p-info">'+esc(o.sh.split(',')[0])+'</span>':'')+'</summary><div class="body">'+
+      (o.a?'<div><span class="k">Ask back</span>'+esc(o.a)+'</div>':'')+
+      '<div><span class="k">Answer</span><p>'+esc(o.r)+'</p></div>'+
+      (o.sh?'<div><span class="k">Show</span>'+esc(o.sh)+'</div>':'')+'</div></details>';
+  }).join('');
+  $('#oSearch').addEventListener('input',function(){
+    var q=this.value.toLowerCase().trim(),n=0;
+    $$('details.o').forEach(function(d){var m=(!q||d.dataset.q.indexOf(q)>-1)&&(!d.dataset.aud||d.dataset.aud===aud);d.hidden=!m;if(m)n++;if(q&&m)d.open=true});
+    $('#oEmpty').hidden=n>0;
+  });
+})();
+
+/* ---------- copy ---------- */
+document.addEventListener('click',function(e){
+  var b=e.target.closest('[data-copy]');if(!b)return;
+  var el=document.getElementById(b.dataset.copy);var txt=el.innerText;
+  function ok(){b.textContent='Copied';b.classList.add('done');setTimeout(function(){b.textContent='Copy';b.classList.remove('done')},1500)}
+  function fallback(){var r=document.createRange();r.selectNodeContents(el);var s=window.getSelection();s.removeAllRanges();s.addRange(r);b.textContent='Selected, press Ctrl+C'}
+  try{navigator.clipboard.writeText(txt).then(ok,fallback)}catch(err){fallback()}
+});
+
+/* ---------- audience ---------- */
+function setAud(a){
+  aud=a;
+  $('#audNew').setAttribute('aria-pressed',String(a==='new'));$('#audEx').setAttribute('aria-pressed',String(a==='ex'));
+  $$('[data-aud]').forEach(function(x){x.hidden=x.dataset.aud!==a});
+  renderOut();renderDemo();build();
+  try{localStorage.setItem('perfplay-aud',a)}catch(e){}
+}
+$('#audNew').onclick=function(){setAud('new')};$('#audEx').onclick=function(){setAud('ex')};
+
+/* ---------- views ---------- */
+var VIEWS=['overview','bdr','ae','se','objections'];
+function show(v,push){
+  if(VIEWS.indexOf(v)<0)v='overview';
+  VIEWS.forEach(function(x){$('#v-'+x).hidden=x!==v});
+  $$('.tab').forEach(function(t){t.setAttribute('aria-selected',String(t.dataset.v===v))});
+  if(push){try{history.replaceState(null,'','#'+v)}catch(e){}window.scrollTo(0,0)}
+}
+$$('.tab').forEach(function(t){t.addEventListener('click',function(){show(t.dataset.v,true)})});
+window.addEventListener('hashchange',function(){show((location.hash||'').slice(1))});
+
+var a0='new';try{a0=localStorage.getItem('perfplay-aud')||'new'}catch(e){}
+setAud(a0==='ex'?'ex':'new');
+show((location.hash||'').slice(1));
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,1748 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Performance testing on HyperExecute: run JMeter, Gatling and k6 load tests from multiple regions in a single job, with managed load generators and live reports.">
+<style>:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<title>HyperExecute Performance Testing</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap">
+</head>
+<body>
+<style>
+/* Layout: one chapter at a time inside sticky chrome (brand, chapter rail, progress), chapter-to-chapter wipe transitions. Light enterprise theme by choice: navy type, royal-blue accent, teal for "your app" and outcomes. */
+:root{
+  --bg:#F4F6FA; --surface:#EDF1F7; --card:#FFFFFF; --raise:#F7F9FC;
+  --border:rgba(16,32,64,.10); --border-hi:rgba(16,32,64,.18);
+  --text:#0B1A3A; --text-sec:#475674; --text-dim:#7A87A3;
+  --load:#1E56E3; --exec:#0D9488; --intel:#0891B2; --plan:#7C3AED;
+  --good:#0F9D58; --warn:#B7791F; --bad:#D93A52; --pink:#DB2777; --slate:#64748B;
+  --navy:#0B1A3A; --navy-2:#13306F; --on-navy:#FFFFFF;
+  --code-bg:#0E1A33; --code-fg:#DCE4F5; --ink-on-accent:#FFFFFF;
+  --shadow:0 1px 2px rgba(16,32,64,.05),0 10px 28px -14px rgba(16,32,64,.18);
+  --sans:'Plus Jakarta Sans',system-ui,-apple-system,sans-serif;
+  --mono:'DM Mono',ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.55;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px));padding-block:0 120px;min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--bg)}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+input,select,textarea{font:inherit;color:var(--text)}
+button:focus-visible,input:focus-visible,a:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--load);outline-offset:2px}
+a{color:var(--exec)}
+.bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:radial-gradient(rgba(16,32,64,.07) 1px,transparent 1px);background-size:32px 32px;-webkit-mask-image:radial-gradient(ellipse 80% 80% at 50% 40%,#000 25%,transparent 100%);mask-image:radial-gradient(ellipse 80% 80% at 50% 40%,#000 25%,transparent 100%)}
+.blob{position:fixed;border-radius:50%;filter:blur(110px);pointer-events:none;z-index:0;opacity:.10}
+.blob.a{width:520px;height:300px;background:var(--load);top:-120px;left:8%}
+.blob.b{width:400px;height:260px;background:var(--exec);top:40px;right:4%}
+.wrap{max-width:1280px;margin-inline:auto;position:relative;z-index:1}
+
+/* chrome */
+.chrome{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;margin-left:calc(-1*max(20px,env(safe-area-inset-left,0px)));margin-right:calc(-1*max(20px,env(safe-area-inset-right,0px)));padding:12px max(20px,env(safe-area-inset-right,0px)) 0 max(20px,env(safe-area-inset-left,0px));background:rgba(255,255,255,.88);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
+.chrome-row{display:flex;align-items:center;gap:14px;max-width:1280px;margin-inline:auto}
+.brand{display:flex;align-items:center;gap:12px;white-space:nowrap}
+.brand img{height:20px;width:auto;display:block;filter:brightness(0);opacity:.88}
+.brand .div{width:1px;height:20px;background:var(--border-hi)}
+.he-mark{display:inline-flex;align-items:center;gap:7px;font-weight:800;font-size:15px;letter-spacing:-.01em}
+.he-mark svg{width:20px;height:20px;flex:none;color:var(--load)}
+.he-mark small{font:500 11px var(--mono);color:var(--load);letter-spacing:.08em;text-transform:uppercase;margin-left:2px}
+.rail{flex:1;min-width:0;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;padding:2px}
+.rail::-webkit-scrollbar{display:none}
+.rail button{flex:none;font-size:12.5px;font-weight:600;color:var(--text-sec);padding:7px 12px;border-radius:999px;border:1px solid transparent;white-space:nowrap;transition:.2s}
+.rail button:hover{color:var(--text);border-color:var(--border)}
+.rail button[aria-current=true]{color:var(--text);background:rgba(30,86,227,.13);border-color:rgba(30,86,227,.45)}
+.rail button .lk{font-size:10px;color:var(--text-dim);margin-left:5px}
+.tools{display:flex;gap:8px;flex:none;align-items:center}
+.pill{font-size:12px;font-weight:700;letter-spacing:.04em;padding:7px 14px;border-radius:999px;border:1px solid var(--border-hi);color:var(--text-sec);transition:.2s;white-space:nowrap}
+.pill:hover{color:var(--text);border-color:var(--load)}
+.progress{height:3px;background:transparent;margin-top:10px;margin-left:calc(-1*max(20px,env(safe-area-inset-left,0px)));margin-right:calc(-1*max(20px,env(safe-area-inset-right,0px)))}
+.progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--navy-2),var(--load),var(--exec));transition:width .6s cubic-bezier(.2,.8,.2,1)}
+@media(max-width:860px){.chrome-row{flex-wrap:wrap}.brand{order:1}.tools{order:2;margin-left:auto}.rail{order:3;flex-basis:100%}}
+@media(max-width:480px){.brand img,.brand .div{display:none}}
+
+.seg{position:relative;display:inline-flex;padding:4px;gap:4px;background:var(--surface);border:1px solid var(--border);border-radius:999px;flex-wrap:wrap}
+.seg-thumb{position:absolute;z-index:0;border-radius:999px;background:var(--card);box-shadow:0 1px 2px rgba(16,32,64,.08),0 4px 12px -4px rgba(16,32,64,.22);transition:left .42s cubic-bezier(.2,.8,.2,1),top .42s cubic-bezier(.2,.8,.2,1),width .42s cubic-bezier(.2,.8,.2,1),height .42s;pointer-events:none}
+.seg button{position:relative;z-index:1;font-size:13px;font-weight:700;padding:8px 16px;border-radius:999px;color:var(--text-sec);transition:color .3s}
+.seg button[aria-pressed=true]{color:var(--navy)}
+.seg:not(.has-thumb) button[aria-pressed=true]{background:var(--card);box-shadow:var(--shadow)}
+.seg.sm button{font-size:11.5px;padding:6px 11px}
+#viewSeg button[data-v=c][aria-pressed=true]{color:var(--intel)}
+#viewSeg button[data-v=i][aria-pressed=true]{color:var(--load)}
+
+/* chapter shell */
+.chapter{padding-block:36px 24px}
+.chapter.enter .rv{animation:rv .65s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i,0)*55ms + var(--d0,120ms))}
+.wipe{position:fixed;inset:0;z-index:95;display:grid;place-items:center;background:radial-gradient(ellipse at 70% 30%,rgba(30,86,227,.55),transparent 60%),linear-gradient(120deg,var(--navy),var(--navy-2) 60%,var(--load));color:var(--on-navy);visibility:hidden;pointer-events:none;clip-path:inset(0 0 0 100%)}
+.wipe.in{visibility:visible;animation:wIn .34s cubic-bezier(.76,0,.24,1) forwards}
+.wipe.in.back{animation-name:wInB}
+.wipe.out{visibility:visible;animation:wOut .42s cubic-bezier(.76,0,.24,1) forwards}
+.wipe.out.back{animation-name:wOutB}
+@keyframes wIn{from{clip-path:inset(0 0 0 100%)}to{clip-path:inset(0 0 0 0)}}
+@keyframes wInB{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes wOut{from{clip-path:inset(0 0 0 0)}to{clip-path:inset(0 100% 0 0)}}
+@keyframes wOutB{from{clip-path:inset(0 0 0 0)}to{clip-path:inset(0 0 0 100%)}}
+.wipe-in{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;padding:0 24px}
+.wipe .wn{font:500 13px var(--mono);letter-spacing:.2em;opacity:.7}
+.wipe .wt{font-size:clamp(30px,5vw,60px);font-weight:800;letter-spacing:-.02em;line-height:1.05}
+.wipe .wq{font-size:clamp(14px,1.6vw,18px);opacity:.8}
+.wipe .wbar{width:56px;height:3px;border-radius:3px;background:rgba(255,255,255,.85);margin-top:6px}
+.wipe.in .wipe-in>*{animation:wTxt .45s cubic-bezier(.2,.8,.2,1) both}
+.wipe.in .wipe-in>*:nth-child(2){animation-delay:.05s}.wipe.in .wipe-in>*:nth-child(3){animation-delay:.1s}.wipe.in .wipe-in>*:nth-child(4){animation-delay:.14s}
+@keyframes wTxt{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.swapL{animation:swapL .42s cubic-bezier(.2,.8,.2,1) both}.swapR{animation:swapR .42s cubic-bezier(.2,.8,.2,1) both}
+@keyframes swapL{from{opacity:0;transform:translateX(-28px)}to{opacity:1;transform:none}}
+@keyframes swapR{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:none}}
+@keyframes rv{from{opacity:0;transform:translateY(18px) scale(.985)}to{opacity:1;transform:none}}
+.swap{animation:swapIn .38s cubic-bezier(.2,.8,.2,1) both}
+@keyframes swapIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes pop{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}
+body:not(.notes) .more{display:none!important}
+body:not(.notes) .pillar p,body:not(.notes) .rb p,body:not(.notes) .layer>span,body:not(.notes) .chapter>p.small.muted{display:none}
+#notesBtn[aria-pressed=true]{color:var(--load);border-color:rgba(30,86,227,.5);background:rgba(30,86,227,.08)}
+.news{display:inline-flex;align-items:center;gap:10px;font-size:13px;color:var(--text-sec);padding:8px 14px;border-radius:999px;border:1px solid rgba(217,58,82,.35);background:rgba(217,58,82,.06);margin-bottom:14px;max-width:100%}
+.news b{color:var(--text)}
+.livedot{width:8px;height:8px;border-radius:50%;background:var(--bad);flex:none;box-shadow:0 0 0 0 rgba(217,58,82,.6);animation:ping 1.8s infinite}
+@keyframes ping{70%{box-shadow:0 0 0 9px rgba(217,58,82,0)}100%{box-shadow:0 0 0 0 rgba(217,58,82,0)}}
+.ttypes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+@media(max-width:820px){.ttypes{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.tt{padding:16px;border-radius:16px;border:1px solid var(--border);background:var(--card);display:flex;flex-direction:column;gap:4px;min-width:0;transition:.25s}
+.tt:hover{border-color:rgba(30,86,227,.5);transform:translateY(-3px)}
+.tt svg{width:100%;height:auto;margin-bottom:8px;overflow:visible}
+.tt .base{stroke:var(--border-hi);stroke-width:1}
+.tt .shape{fill:none;stroke:var(--load);stroke-width:2.5;stroke-linejoin:round;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1;animation:drawp 1.4s .3s cubic-bezier(.4,0,.2,1) forwards}
+.tt .tdot{fill:var(--load);stroke:var(--card);stroke-width:2}
+.tt b{font-size:16px}
+.tt span{font-size:12.5px;color:var(--text-sec)}
+@keyframes drawp{to{stroke-dashoffset:0}}
+.draw{stroke-dasharray:1;stroke-dashoffset:1;animation:drawp 1.3s cubic-bezier(.4,0,.2,1) forwards}
+.grow{transform-box:fill-box;transform-origin:50% 100%;animation:growy .7s cubic-bezier(.2,.8,.2,1) both}
+@keyframes growy{from{transform:scaleY(0)}to{transform:none}}
+.feat{animation:pop .35s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--j,0)*16ms)}
+.fleet.popin .m{animation:pop .32s cubic-bezier(.2,.8,.2,1) both}
+.stat b{font-variant-numeric:tabular-nums}
+.kicker{display:inline-flex;align-items:center;gap:10px;font:500 11.5px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--load);margin-bottom:14px}
+.kicker::before{content:"";width:18px;height:2px;background:currentColor;border-radius:2px}
+h1,h2{font-weight:800;letter-spacing:-.02em;line-height:1.12;text-wrap:balance}
+h1{font-size:clamp(32px,5vw,62px);max-width:17ch}
+h2{font-size:clamp(25px,3.2vw,40px);max-width:24ch}
+h3{font-size:17px;font-weight:700;letter-spacing:-.005em;text-wrap:balance}
+h4{font-size:14px;font-weight:700}
+.lede{font-size:clamp(15px,1.35vw,17.5px);color:var(--text-sec);max-width:66ch;margin-top:14px}
+.hl{color:var(--load)}
+.mono{font-family:var(--mono)}
+.head{margin-bottom:26px}
+.panel{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:22px;min-width:0}
+.panel.hi{border-color:rgba(30,86,227,.3)}
+.label{font:500 11px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim)}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media(max-width:900px){.g3,.g4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:620px){.g2,.g3,.g4{grid-template-columns:minmax(0,1fr)}}
+.stack{display:flex;flex-direction:column;gap:12px}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.muted{color:var(--text-sec)}
+.small{font-size:12.5px}
+.tag{display:inline-flex;align-items:center;font:500 10.5px var(--mono);letter-spacing:.07em;text-transform:uppercase;padding:3px 8px;border-radius:6px;border:1px solid var(--border-hi);color:var(--text-sec);white-space:nowrap}
+.tag.doc{color:var(--good);border-color:rgba(15,157,88,.4)}
+.tag.ver{color:var(--warn);border-color:rgba(183,121,31,.45)}
+.tag.no{color:var(--bad);border-color:rgba(217,58,82,.45)}
+.tag.load{color:var(--load);border-color:rgba(30,86,227,.5);background:rgba(30,86,227,.08)}
+.tag.exec{color:var(--exec);border-color:rgba(13,148,136,.5);background:rgba(13,148,136,.08)}
+.dotl{display:grid;gap:7px;font-size:13.5px;color:var(--text-sec)}
+.dotl li{list-style:none;display:flex;gap:9px}
+.dotl li::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--load);margin-top:8px;flex:none;opacity:.8}
+.dotl.g li::before{background:var(--good)}
+.dotl.b li::before{background:var(--bad)}
+.dotl.e li::before{background:var(--exec)}
+.dotl b{color:var(--text);font-weight:600}
+.btn{font-weight:700;font-size:14px;padding:11px 20px;border-radius:12px;background:var(--load);color:var(--ink-on-accent);transition:.2s;display:inline-flex;align-items:center;gap:8px}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(30,86,227,.3)}
+.btn.ghost{background:transparent;border:1px solid var(--border-hi);color:var(--text)}
+.btn.ghost:hover{box-shadow:none;border-color:var(--load)}
+.btn.sm{font-size:12.5px;padding:7px 13px;border-radius:9px}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{font-size:12.5px;font-weight:600;padding:8px 14px;border-radius:999px;border:1px solid var(--border-hi);color:var(--text-sec);transition:.2s}
+.chip:hover{color:var(--text)}
+.chip[aria-pressed=true]{background:rgba(30,86,227,.14);border-color:var(--load);color:var(--text)}
+.code{background:var(--code-bg);border:1px solid var(--border);border-radius:14px;padding:14px 16px;font:400 12.5px/1.75 var(--mono);overflow-x:auto;white-space:pre;color:var(--code-fg);min-width:0}
+.code .k{color:#7FB2FF}.code .c{color:var(--text-dim)}.code .s{color:#7CE3D2}.code .n{color:#FFC48A}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:14px;min-width:0}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{text-align:left;padding:10px 13px;border-bottom:1px solid var(--border);vertical-align:top}
+th{font:500 10.5px var(--mono);letter-spacing:.09em;text-transform:uppercase;color:var(--text-dim);background:var(--surface);white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;font-family:var(--mono)}
+.foot-nav{position:fixed;z-index:55;left:0;right:0;bottom:calc(14px + env(safe-area-inset-bottom,0px));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;justify-content:space-between;gap:12px;pointer-events:none}
+.foot-nav button{pointer-events:auto;display:flex;align-items:center;gap:10px;text-align:left;padding:9px 14px;border-radius:14px;border:1px solid var(--border-hi);background:rgba(255,255,255,.86);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 10px 30px rgba(16,32,64,.16);max-width:46%;min-width:0;transition:.2s}
+.foot-nav button:hover{border-color:var(--load);transform:translateY(-2px)}
+.foot-nav button.nx{margin-left:auto;text-align:right;background:linear-gradient(120deg,rgba(30,86,227,.22),rgba(255,255,255,.9))}
+.foot-nav button .arw{font:500 18px var(--mono);color:var(--load);flex:none}
+.foot-nav button span.t{display:flex;flex-direction:column;min-width:0}
+.foot-nav button span.t small{font:500 10px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim)}
+.foot-nav button span.t b{font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.foot-nav .pos{align-self:center;font:500 11px var(--mono);color:var(--text-dim);background:rgba(255,255,255,.8);padding:5px 10px;border-radius:999px;border:1px solid var(--border);pointer-events:none}
+@media(max-width:520px){.foot-nav .pos{display:none}.foot-nav button span.t small{display:none}}
+.callout{display:flex;gap:14px;align-items:flex-start;padding:16px 18px;border-radius:16px;background:linear-gradient(120deg,rgba(30,86,227,.1),rgba(13,148,136,.06));border:1px solid rgba(30,86,227,.28);font-size:13.5px;color:var(--text-sec)}
+.callout b{color:var(--text)}
+.callout .ic{font:500 11px var(--mono);color:var(--load);letter-spacing:.1em;text-transform:uppercase;flex:none;padding-top:2px}
+
+/* overview */
+.hero{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:36px;align-items:center}
+@media(max-width:960px){.hero{grid-template-columns:minmax(0,1fr)}}
+.lockup{display:flex;align-items:center;gap:16px;margin-bottom:22px;flex-wrap:wrap}
+.lockup img{height:32px;width:auto;filter:brightness(0);opacity:.88}
+.lockup .div{width:1px;height:28px;background:var(--border-hi)}
+.lockup .he-mark{font-size:21px}
+.lockup .he-mark svg{width:26px;height:26px}
+.cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:34px}
+@media(max-width:760px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.stat{border-top:1px solid var(--border-hi);padding-top:12px}
+.stat b{display:block;font-size:clamp(22px,2.4vw,32px);font-weight:800;letter-spacing:-.02em}
+.stat span{font-size:12.5px;color:var(--text-sec);display:block;margin-top:2px}
+.curve{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:16px}
+.curve svg{width:100%;height:auto;display:block;overflow:visible}
+.curve text{font-family:var(--mono);font-size:10.5px;fill:var(--text-dim);letter-spacing:.05em}
+.curve .lbl{fill:var(--text-sec)}
+.curve .vu{fill:none;stroke:var(--load);stroke-width:2.5;stroke-linecap:round;stroke-dasharray:900;stroke-dashoffset:900;animation:draw 2.4s .2s ease forwards}
+.curve .rt{fill:none;stroke:var(--exec);stroke-width:1.6;stroke-dasharray:4 4;opacity:.9}
+.curve .area{fill:url(#ga);opacity:0;animation:fade 1s 1.4s ease forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes fade{to{opacity:1}}
+.pulse{fill:var(--load)}
+.map{margin-top:40px}
+.acts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:12px}
+@media(max-width:900px){.acts{grid-template-columns:minmax(0,1fr)}}
+.act{display:flex;flex-direction:column;gap:8px;min-width:0}
+.act>.label{padding-bottom:8px;border-bottom:1px solid var(--border)}
+.stop{display:flex;gap:12px;text-align:left;padding:11px 14px;border-radius:14px;border:1px solid var(--border);background:var(--card);transition:.2s;min-width:0}
+.stop:hover{border-color:rgba(30,86,227,.5);transform:translateX(3px)}
+.stop em{font:500 12px var(--mono);color:var(--load);font-style:normal;padding-top:2px}
+.stop b{display:block;font-size:14px}
+.stop span{display:block;font-size:12.5px;color:var(--text-sec)}
+
+/* landscape */
+.vend{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media(max-width:900px){.vend{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:520px){.vend{grid-template-columns:minmax(0,1fr)}}
+.vcard{text-align:left;padding:16px;border-radius:16px;background:var(--card);border:1px solid var(--border);display:flex;flex-direction:column;gap:8px;transition:.2s;min-width:0}
+.vcard:hover{border-color:var(--border-hi)}
+.vcard[aria-pressed=true]{border-color:var(--load);background:var(--raise)}
+.vcard .top{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.vcard b{font-size:15px}
+.vcard .own{font:500 11px var(--mono);color:var(--text-dim)}
+.vcard p{font-size:12.8px;color:var(--text-sec)}
+.vdetail{margin-top:16px}
+.stance{font-weight:800}
+.st-dis{color:var(--good)}.st-co{color:var(--warn)}.st-att{color:var(--exec)}.st-watch{color:var(--bad)}
+
+/* fit */
+.uc{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:16px}
+@media(max-width:900px){.uc{grid-template-columns:minmax(0,1fr)}}
+.ucl{display:flex;flex-direction:column;gap:6px}
+.ucb{display:flex;justify-content:space-between;gap:10px;align-items:center;text-align:left;padding:11px 14px;border-radius:12px;border:1px solid var(--border);background:var(--surface);font-size:13.5px;font-weight:600;transition:.2s}
+.ucb:hover{border-color:var(--border-hi)}
+.ucb[aria-pressed=true]{border-color:var(--load);background:rgba(30,86,227,.08)}
+.verdict{font:500 10.5px var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:6px;white-space:nowrap}
+.v-strong{color:var(--good);background:rgba(15,157,88,.1)}
+.v-good{color:var(--exec);background:rgba(13,148,136,.12)}
+.v-part{color:var(--warn);background:rgba(183,121,31,.1)}
+.v-no{color:var(--bad);background:rgba(217,58,82,.1)}
+.pillars{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+@media(max-width:900px){.pillars{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:520px){.pillars{grid-template-columns:minmax(0,1fr)}}
+.pillar{padding:16px;border-radius:16px;border:1px solid var(--border);background:var(--card);display:flex;flex-direction:column;gap:6px;min-width:0}
+.pillar .n{font:500 11px var(--mono);color:var(--load)}
+.pillar p{font-size:13px;color:var(--text-sec)}
+.statement{font-size:clamp(18px,2vw,24px);font-weight:700;letter-spacing:-.01em;line-height:1.35;max-width:46ch;text-wrap:balance}
+
+/* run stepper */
+.stepper{display:grid;grid-template-columns:minmax(0,.7fr) minmax(0,1.3fr);gap:16px}
+@media(max-width:960px){.stepper{grid-template-columns:minmax(0,1fr)}}
+.steps{display:flex;flex-direction:column;gap:6px}
+.stp{display:flex;gap:12px;text-align:left;padding:12px 14px;border-radius:12px;border:1px solid var(--border);background:var(--surface);transition:.2s}
+.stp em{font:500 12px var(--mono);color:var(--text-dim);font-style:normal;padding-top:1px;flex:none}
+.stp b{font-size:13.5px;display:block}
+.stp span{font-size:12.5px;color:var(--text-sec);display:block}
+.stp[aria-current=true]{border-color:var(--load);background:rgba(30,86,227,.08)}
+.stp[aria-current=true] em{color:var(--load)}
+.stp.done em{color:var(--good)}
+.mock{background:var(--surface);border:1px solid var(--border-hi);border-radius:18px;overflow:hidden;min-width:0}
+.mock-bar{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--border);background:var(--card)}
+.mock-bar i{width:9px;height:9px;border-radius:50%;background:var(--raise);display:inline-block}
+.mock-bar span{font:500 11px var(--mono);color:var(--text-dim);margin-left:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mock-body{padding:18px;min-height:340px;display:flex;flex-direction:column;gap:14px}
+.mock-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 18px;border-top:1px solid var(--border);flex-wrap:wrap}
+.fld{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px 16px}
+@media(max-width:560px){.fld{grid-template-columns:minmax(0,1fr)}}
+.fld label{display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--text-sec);font-weight:600}
+.fld .inp{background:var(--bg);border:1px solid var(--border-hi);border-radius:9px;padding:8px 11px;font:500 13px var(--mono);color:var(--text)}
+.fld .inp.on{border-color:rgba(30,86,227,.6)}
+.file{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:10px 12px;border:1px solid var(--border);border-radius:10px;background:var(--bg);font:500 12.5px var(--mono)}
+.file.sel{border-color:rgba(30,86,227,.6)}
+.drop{border:1.5px dashed var(--border-hi);border-radius:12px;padding:16px;text-align:center;font-size:12.5px;color:var(--text-dim)}
+.distrow{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) 54px;gap:10px;align-items:center;font-size:13px}
+.distrow .bar{height:8px;border-radius:8px;background:var(--raise);overflow:hidden}
+.distrow .bar i{display:block;height:100%;background:var(--load)}
+.live{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+@media(max-width:560px){.live{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.live div{padding:10px 12px;border-radius:10px;background:var(--bg);border:1px solid var(--border)}
+.live b{display:block;font:500 20px var(--mono);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.live span{font-size:11.5px;color:var(--text-sec)}
+.mini svg{width:100%;height:auto;display:block}
+.mini text{font:500 10px var(--mono);fill:var(--text-dim)}
+.status{display:inline-flex;gap:7px;align-items:center;font:500 11.5px var(--mono);letter-spacing:.06em;text-transform:uppercase}
+.status i{width:8px;height:8px;border-radius:50%;background:var(--warn);display:inline-block}
+.status.run i{background:var(--load);animation:blink 1s infinite}
+.status.ok i{background:var(--good)}
+@keyframes blink{50%{opacity:.3}}
+
+/* lab */
+.lab{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:16px}
+@media(max-width:960px){.lab{grid-template-columns:minmax(0,1fr)}}
+.ctl{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+.ctl .r{display:flex;justify-content:space-between;font-size:13px;font-weight:600}
+.ctl .r output{font-family:var(--mono);color:var(--load)}
+.ctl small{font-size:11.5px;color:var(--text-dim)}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:4px;border-radius:4px;background:var(--raise)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--load);border:3px solid var(--bg);box-shadow:0 0 0 1px var(--load);cursor:pointer}
+input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--load);border:3px solid var(--bg);cursor:pointer}
+.tog{display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;padding:12px 14px;border-radius:12px;border:1px solid var(--border);background:var(--surface);transition:.2s}
+.tog[aria-pressed=true]{border-color:rgba(30,86,227,.55);background:rgba(30,86,227,.07)}
+.tog .sw{flex:none;width:34px;height:20px;border-radius:20px;background:var(--raise);position:relative;margin-top:2px;transition:.2s}
+.tog .sw::after{content:"";position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:var(--text-dim);transition:.2s}
+.tog[aria-pressed=true] .sw{background:var(--load)}
+.tog[aria-pressed=true] .sw::after{left:17px;background:var(--ink-on-accent)}
+.tog b{font-size:13.5px;display:block}
+.tog span{font-size:12.5px;color:var(--text-sec);display:block}
+.big{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media(max-width:560px){.big{grid-template-columns:minmax(0,1fr)}}
+.big div{padding:14px;border-radius:14px;background:var(--surface);border:1px solid var(--border)}
+.big b{display:block;font:500 clamp(24px,3vw,32px) var(--mono);letter-spacing:-.03em;font-variant-numeric:tabular-nums;line-height:1.1}
+.big span{font-size:12px;color:var(--text-sec)}
+.big .warnv b{color:var(--bad)}
+.big .okv b{color:var(--good)}
+.fleet{display:grid;gap:10px}
+.fleet .reg{display:grid;grid-template-columns:120px minmax(0,1fr);gap:12px;align-items:center}
+@media(max-width:520px){.fleet .reg{grid-template-columns:minmax(0,1fr)}}
+.fleet .reg>span{font-size:12.5px;font-weight:600}
+.fleet .reg>span small{display:block;font:500 10.5px var(--mono);color:var(--text-dim)}
+.ms{display:flex;gap:6px;flex-wrap:wrap}
+.m{min-width:64px;padding:7px 8px;border-radius:9px;background:var(--bg);border:1px solid var(--border-hi);text-align:center;font:500 12px var(--mono);font-variant-numeric:tabular-nums;transition:.3s}
+.m small{display:block;font-size:9.5px;color:var(--text-dim)}
+.m.hot{border-color:var(--bad);color:var(--bad)}
+.m.lit{border-color:rgba(30,86,227,.55)}
+.planfit{display:flex;gap:6px;flex-wrap:wrap}
+.pf{flex:1;min-width:110px;padding:10px 12px;border-radius:12px;border:1px solid var(--border);background:var(--surface);font-size:12px;color:var(--text-dim)}
+.pf b{display:block;font-size:13.5px;color:var(--text-sec)}
+.pf.fit{border-color:var(--good);color:var(--text-sec)}
+.pf.fit b{color:var(--good)}
+.pf.no{opacity:.55}
+.why{font-size:12.5px;color:var(--text-sec)}
+
+/* tabs */
+.tabs{position:relative;display:flex;gap:4px;border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none;margin-bottom:16px}
+.tab-ink{position:absolute;bottom:0;height:3px;border-radius:3px 3px 0 0;background:var(--load);transition:left .42s cubic-bezier(.2,.8,.2,1),width .42s cubic-bezier(.2,.8,.2,1)}
+.tabs::-webkit-scrollbar{display:none}
+.tabs button{flex:none;padding:10px 14px;font-size:13px;font-weight:700;color:var(--text-sec);border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap}
+.tabs button[aria-selected=true]{color:var(--navy)}
+.tabs:not(.has-ink) button[aria-selected=true]{border-bottom-color:var(--load)}
+.tools-grid{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:16px}
+@media(max-width:960px){.tools-grid{grid-template-columns:minmax(0,1fr)}}
+.kv{display:grid;grid-template-columns:130px minmax(0,1fr);gap:8px 14px;font-size:13px}
+@media(max-width:520px){.kv{grid-template-columns:minmax(0,1fr)}}
+.kv dt{font:500 10.5px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);padding-top:3px}
+.kv dd{color:var(--text-sec)}
+.copyrow{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:10px;flex-wrap:wrap}
+
+/* reports */
+.tiles{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
+@media(max-width:1000px){.tiles{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:520px){.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.tile{padding:12px;border-radius:12px;background:var(--bg);border:1px solid var(--border)}
+.tile span{font-size:11.5px;color:var(--text-sec);display:block}
+.tile b{font:500 21px var(--mono);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.tile small{font:500 11px var(--mono);color:var(--text-dim);margin-left:3px}
+.chart svg{width:100%;height:auto;display:block}
+.chart text{font:500 10.5px var(--mono);fill:var(--text-dim)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--text-sec)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:10px;height:10px;border-radius:3px;display:inline-block}
+.logs{background:var(--code-bg);border:1px solid var(--border);border-radius:12px;padding:12px 14px;font:400 12px/1.8 var(--mono);color:var(--code-fg);overflow-x:auto;white-space:pre}
+.ebar{height:10px;border-radius:5px;background:var(--bad);display:inline-block;vertical-align:middle}
+
+/* plans */
+.plans{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+@media(max-width:900px){.plans{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:480px){.plans{grid-template-columns:minmax(0,1fr)}}
+.plan{padding:18px;border-radius:18px;background:var(--card);border:1px solid var(--border);display:flex;flex-direction:column;gap:10px;min-width:0}
+.plan.ent{border-color:rgba(30,86,227,.45);background:linear-gradient(160deg,rgba(30,86,227,.08),var(--card) 60%)}
+.plan .price{font:500 26px var(--mono);letter-spacing:-.03em}
+.plan .price small{font-size:12px;color:var(--text-dim)}
+.plan dl{display:grid;grid-template-columns:auto auto;gap:6px 10px;font-size:12.5px}
+.plan dt{color:var(--text-dim)}
+.plan dd{text-align:right;font-family:var(--mono);color:var(--text);font-variant-numeric:tabular-nums}
+.regions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media(max-width:700px){.regions{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.regc{padding:12px 14px;border-radius:12px;background:var(--surface);border:1px solid var(--border)}
+.regc b{font-size:13.5px;display:block}
+.regc span{font:500 11px var(--mono);color:var(--text-dim)}
+.dep{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media(max-width:820px){.dep{grid-template-columns:minmax(0,1fr)}}
+
+/* migrate */
+.prof{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+@media(max-width:900px){.prof{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.profb{text-align:left;padding:12px;border-radius:12px;border:1px solid var(--border);background:var(--surface);display:flex;flex-direction:column;gap:4px;transition:.2s;min-width:0}
+.profb em{font:500 11px var(--mono);color:var(--load);font-style:normal}
+.profb b{font-size:13.5px}
+.profb span{font-size:12px;color:var(--text-sec)}
+.profb[aria-pressed=true]{border-color:var(--load);background:rgba(30,86,227,.08)}
+.effort{display:flex;gap:4px}
+.effort i{flex:1;height:8px;border-radius:4px;background:var(--raise)}
+.effort.e1 i:nth-child(-n+1),.effort.e2 i:nth-child(-n+2),.effort.e3 i:nth-child(-n+3),.effort.e4 i:nth-child(-n+4){background:var(--load)}
+.effort.e4 i:nth-child(-n+4){background:var(--load)}
+.mapper{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:16px}
+@media(max-width:960px){.mapper{grid-template-columns:minmax(0,1fr)}}
+textarea.code{width:100%;min-height:380px;resize:vertical;display:block}
+.flags{display:grid;gap:8px}
+.flag{display:flex;gap:10px;align-items:flex-start;font-size:13px;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:var(--surface)}
+.flag .tag{flex:none}
+.flag p{color:var(--text-sec)}
+.flag b{color:var(--text)}
+.runbook{counter-reset:rb;display:grid;gap:8px}
+.rb{display:grid;grid-template-columns:28px minmax(0,1fr);gap:12px;padding:12px 14px;border-radius:12px;border:1px solid var(--border);background:var(--card)}
+.rb::before{counter-increment:rb;content:counter(rb);font:500 12px var(--mono);color:var(--load);width:26px;height:26px;border-radius:50%;border:1px solid rgba(30,86,227,.5);display:grid;place-items:center}
+.rb b{font-size:14px}
+.rb p{font-size:12.8px;color:var(--text-sec)}
+
+/* faq */
+.fq-tools{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+.search{flex:1;min-width:220px;background:var(--surface);border:1px solid var(--border-hi);border-radius:12px;padding:11px 14px;font-size:14px}
+.faq{display:grid;gap:8px}
+.fq{border:1px solid var(--border);border-radius:14px;background:var(--card);overflow:hidden}
+.fq>button{width:100%;display:flex;justify-content:space-between;gap:14px;align-items:center;text-align:left;padding:14px 16px;font-size:14.5px;font-weight:700}
+.fq>button .meta{display:flex;gap:6px;flex:none;align-items:center}
+.fq>button .pm{font:500 16px var(--mono);color:var(--load);width:16px;text-align:center}
+.fq .ans{padding:0 16px 16px;font-size:13.8px;color:var(--text-sec);display:grid;gap:10px;max-width:90ch}
+.fq .ans b{color:var(--text)}
+.empty{padding:22px;text-align:center;color:var(--text-dim);font-size:13px;border:1px dashed var(--border-hi);border-radius:14px}
+
+/* qualify */
+.qz{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:16px}
+@media(max-width:960px){.qz{grid-template-columns:minmax(0,1fr)}}
+.q{display:flex;flex-direction:column;gap:8px;padding:14px 0;border-bottom:1px solid var(--border)}
+.q:first-child{padding-top:0}
+.q>b{font-size:13.5px}
+.q .chips .chip{font-size:12px;padding:6px 12px}
+.score{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.score b{font:500 44px var(--mono);letter-spacing:-.04em;line-height:1}
+.meter{height:10px;border-radius:6px;background:var(--raise);overflow:hidden}
+.meter i{display:block;height:100%;transition:width .4s,background .4s}
+.sticky{position:sticky;top:110px;align-self:start}
+@media(max-width:960px){.sticky{position:static}}
+
+/* kit */
+.track{display:grid;gap:10px}
+.trk{padding:16px;border-radius:14px;background:var(--card);border:1px solid var(--border);display:grid;gap:8px}
+.trk p{font-size:14px;color:var(--text);line-height:1.6}
+.trk .row{justify-content:space-between}
+.timeline{display:grid;gap:0;position:relative}
+.tl{display:grid;grid-template-columns:96px 18px minmax(0,1fr);gap:12px;align-items:start;padding-bottom:16px}
+.tl .d{font:500 12px var(--mono);color:var(--text-sec);text-align:right;padding-top:1px}
+.tl .dot{width:12px;height:12px;border-radius:50%;border:2px solid var(--load);margin-top:4px;position:relative}
+.tl .dot.done{background:var(--load)}
+.tl:not(:last-child) .dot::after{content:"";position:absolute;left:3px;top:12px;width:2px;height:44px;background:var(--border-hi)}
+.tl b{font-size:14px;display:block}
+.tl span{font-size:12.8px;color:var(--text-sec)}
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(20px);background:var(--raise);border:1px solid var(--border-hi);color:var(--text);padding:10px 16px;border-radius:12px;font-size:13px;opacity:0;pointer-events:none;transition:.25s;z-index:80}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+/* catalog */
+.layers{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:18px}
+@media(max-width:900px){.layers{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.layer{text-align:left;padding:12px 14px;border-radius:14px;border:1px solid var(--border);background:var(--card);display:flex;flex-direction:column;gap:3px;transition:.2s;min-width:0}
+.layer:hover{border-color:var(--border-hi)}
+.layer[aria-pressed=true]{border-color:var(--gc,var(--load));background:var(--raise)}
+.layer .lt{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.layer b{font-size:13.5px;display:flex;align-items:center;gap:8px}
+.layer b i{width:8px;height:8px;border-radius:50%;background:var(--gc);display:inline-block;flex:none}
+.layer em{font:500 12px var(--mono);font-style:normal;color:var(--text-dim)}
+.layer span{font-size:12px;color:var(--text-sec)}
+.allrow{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.cat{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,.75fr);gap:16px}
+@media(max-width:960px){.cat{grid-template-columns:minmax(0,1fr)}}
+.feats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;align-content:start}
+@media(max-width:620px){.feats{grid-template-columns:minmax(0,1fr)}}
+.feat{text-align:left;padding:14px;border-radius:14px;border:1px solid var(--border);background:var(--card);display:flex;flex-direction:column;gap:6px;transition:.2s;min-width:0;position:relative}
+.feat:hover{border-color:var(--border-hi);transform:translateY(-2px)}
+.feat[aria-pressed=true]{border-color:var(--gc);background:var(--raise)}
+.feat .ft{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.feat .set{font:500 11.5px var(--mono);color:var(--gc);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.feat b{font-size:14px;line-height:1.3}
+.feat p{font-size:12.6px;color:var(--text-sec)}
+.feat .tl2{display:flex;gap:4px;flex-wrap:wrap}
+.tc{font:500 9.5px var(--mono);letter-spacing:.06em;padding:2px 5px;border-radius:4px;background:var(--surface);color:var(--text-dim);border:1px solid var(--border)}
+.fdet{display:flex;flex-direction:column;gap:12px}
+.fdet .set{font:500 13px var(--mono);color:var(--gc);word-break:break-word}
+.fdet h3{font-size:22px;letter-spacing:-.01em}
+.fdet .ex{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;padding:10px 12px;font:400 12.5px/1.6 var(--mono);color:var(--code-fg);white-space:pre-wrap;word-break:break-word}
+
+/* global load */
+.geo{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,.65fr);gap:16px}
+@media(max-width:1060px){.geo{grid-template-columns:minmax(0,1fr)}}
+.mapbox{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:12px;overflow:hidden;min-width:0}
+.mapbox svg{width:100%;height:auto;display:block}
+.mapbox .ld{fill:rgba(16,32,64,.13)}
+.mapbox .arc{fill:none;stroke:var(--load);stroke-linecap:round;opacity:.85}
+.mapbox .flow{fill:none;stroke:#FFFFFF;stroke-linecap:round;stroke-dasharray:2 22;animation:flow 1.4s linear infinite;opacity:.9}
+@keyframes flow{to{stroke-dashoffset:-24}}
+.mapbox .pin{fill:var(--load);stroke:var(--bg);stroke-width:3}
+.mapbox .pin.off{fill:var(--raise);stroke:var(--text-dim);stroke-width:1.5}
+.mapbox .halo{fill:var(--load);opacity:.18}
+.mapbox .tgt{fill:var(--exec);stroke:var(--bg);stroke-width:3}
+.mapbox .tgth{fill:none;stroke:var(--exec);stroke-width:2;opacity:.6}
+.mapbox text{font-family:var(--mono);font-size:22px;fill:var(--text);paint-order:stroke;stroke:var(--surface);stroke-width:5px;stroke-linejoin:round}
+.mapbox text.sub{fill:var(--text-sec);font-size:18px}
+.mapbox text.off{fill:var(--text-dim)}
+.mapbox .lblbg{fill:var(--bg);opacity:.8}
+.rgrow{display:grid;grid-template-columns:auto minmax(0,1fr) 50px;gap:6px 10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)}
+.rgrow:last-child{border-bottom:0}
+.rgrow .nm{font-size:13px;font-weight:700;display:flex;flex-direction:column}
+.rgrow .nm small{font:500 10.5px var(--mono);color:var(--text-dim);font-weight:500}
+.rgrow .pct{font:500 14px var(--mono);text-align:right;color:var(--load);font-variant-numeric:tabular-nums}
+.rgrow .meta{grid-column:2/4;display:flex;justify-content:space-between;gap:8px;font:500 11px var(--mono);color:var(--text-dim);flex-wrap:wrap}
+.rgrow.off .pct,.rgrow.off .nm{color:var(--text-dim)}
+.ck{width:20px;height:20px;border-radius:6px;border:1.5px solid var(--border-hi);display:grid;place-items:center;flex:none}
+.ck[aria-pressed=true]{background:var(--load);border-color:var(--load)}
+.ck[aria-pressed=true]::after{content:"";width:8px;height:5px;border-left:2px solid var(--ink-on-accent);border-bottom:2px solid var(--ink-on-accent);transform:rotate(-45deg) translate(1px,-1px)}
+.flowline{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13px}
+.flowline .bx{padding:8px 12px;border-radius:10px;background:var(--bg);border:1px solid var(--border-hi);font:500 12.5px var(--mono)}
+.flowline .bx b{color:var(--load);font-weight:500}
+.flowline .ar{color:var(--text-dim)}
+.selwrap select{background:var(--surface);border:1px solid var(--border-hi);border-radius:10px;padding:8px 10px;font-size:13px}
+.featlink{border-bottom:1px dashed rgba(30,86,227,.6);cursor:pointer}
+.featlink:hover{color:var(--load)}
+
+/* audience */
+body:not(.aud-ex) [data-aud=ex],body.aud-ex [data-aud=new]{display:none!important}
+.audrow{display:flex;margin-bottom:18px}
+.audSeg button[aria-pressed=true]{color:var(--load)}
+/* light surfaces */
+.panel,.feat,.tt,.plan,.pillar,.mcard,.profb,.fq,.stp,.regc,.rb,.layer,.jstep,.stop,.vcard,.trk,.mstats div,.big div,.mock,.mapbox{box-shadow:var(--shadow)}
+h1,h2,h3{color:var(--navy)}
+.btn{box-shadow:0 6px 18px -8px rgba(30,86,227,.6)}
+.btn.ghost{background:var(--card);box-shadow:var(--shadow)}
+.code,.logs{box-shadow:inset 0 0 0 1px rgba(255,255,255,.04)}
+.distrow.addreg span:first-child{color:var(--load);font-weight:700;font-size:13px}
+/* capabilities */
+.capx{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:18px;align-items:start}
+@media(max-width:960px){.capx{grid-template-columns:minmax(0,1fr)}}
+.capcats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media(max-width:620px){.capcat{padding:11px;gap:9px}.capcat .ct span,.capcat em{display:none}.ct b{font-size:13px}.ci{width:34px;height:34px}.ci svg{width:18px;height:18px}.capd{padding:18px}}
+.capcat{position:relative;display:flex;align-items:center;gap:12px;text-align:left;padding:14px;border-radius:16px;background:var(--card);border:1px solid var(--border);box-shadow:var(--shadow);transition:transform .25s,border-color .25s,background .25s;min-width:0;overflow:hidden}
+.capcat:hover{transform:translateY(-2px);border-color:var(--border-hi)}
+.capcat[aria-selected=true]{border-color:var(--gc);background:linear-gradient(135deg,color-mix(in srgb,var(--gc) 9%,var(--card)),var(--card))}
+.capcat[aria-selected=true]::after{content:"";position:absolute;left:0;top:14px;bottom:14px;width:3px;border-radius:0 3px 3px 0;background:var(--gc)}
+.ci{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;flex:none;color:var(--gc);background:color-mix(in srgb,var(--gc) 12%,transparent);transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+.ci svg{width:21px;height:21px}
+.capcat[aria-selected=true] .ci{transform:scale(1.08) rotate(-4deg);color:#fff;background:var(--gc)}
+.ci.lg{width:52px;height:52px;border-radius:15px;color:#fff;background:var(--gc)}
+.ci.lg svg{width:26px;height:26px}
+.ct{display:flex;flex-direction:column;min-width:0}
+.ct b{font-size:14px;color:var(--navy)}
+.ct span{font-size:12px;color:var(--text-sec)}
+.capcat em{margin-left:auto;font:500 12px var(--mono);font-style:normal;color:var(--text-dim)}
+.capd{display:flex;flex-direction:column;gap:18px;min-height:380px;padding:26px}
+.caphead{display:flex;gap:14px;align-items:center}
+.caphead h3{font-size:22px}
+.capchips{display:flex;flex-wrap:wrap;gap:8px}
+.capchip{font-size:13.5px;font-weight:600;padding:9px 14px;border-radius:999px;border:1px solid var(--border-hi);background:var(--card);color:var(--text-sec);transition:all .25s;animation:pop .4s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--j)*45ms + 80ms)}
+.capchip:hover{color:var(--navy);border-color:var(--gc)}
+.capchip[aria-pressed=true]{background:var(--gc);border-color:var(--gc);color:#fff;box-shadow:0 8px 18px -10px var(--gc)}
+.capone{display:flex;flex-direction:column;padding:20px;border-radius:16px;background:var(--raise);border:1px solid var(--border)}
+.cap-why{font-size:clamp(17px,1.6vw,21px);font-weight:700;line-height:1.4;color:var(--navy);text-wrap:balance}
+.cap-meta{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:14px}
+.cap-ex{font:500 12.5px var(--mono);color:var(--gc);background:color-mix(in srgb,var(--gc) 9%,var(--card));border:1px solid color-mix(in srgb,var(--gc) 30%,transparent);padding:5px 10px;border-radius:8px;margin-right:4px}
+/* problem */
+.probctl{justify-content:center;margin-bottom:14px}
+.prob{position:relative;height:460px;border-radius:24px;background:radial-gradient(ellipse at 50% 50%,var(--card),var(--surface) 75%);border:1px solid var(--border);overflow:hidden;transition:background .8s}
+.prob[data-s=after]{background:radial-gradient(ellipse at 50% 50%,rgba(30,86,227,.08),var(--card) 60%)}
+.plines{position:absolute;inset:0;width:100%;height:100%}
+.plines .mess path{fill:none;stroke:var(--bad);stroke-width:1.5;stroke-dasharray:5 6;opacity:.45;vector-effect:non-scaling-stroke;transition:opacity .5s;animation:jitter 3s linear infinite}
+@keyframes jitter{to{stroke-dashoffset:-44}}
+.prob[data-s=after] .mess path{opacity:0}
+.plines .clean path{fill:none;stroke:var(--load);stroke-width:2;stroke-dasharray:1;stroke-dashoffset:1;opacity:0;transition:stroke-dashoffset .9s cubic-bezier(.4,0,.2,1),opacity .2s}
+.prob[data-s=after] .clean path{stroke-dashoffset:0;opacity:.55}
+.prob[data-s=after] .clean path:nth-child(2){transition-delay:.06s}.prob[data-s=after] .clean path:nth-child(3){transition-delay:.12s}.prob[data-s=after] .clean path:nth-child(4){transition-delay:.18s}.prob[data-s=after] .clean path:nth-child(5){transition-delay:.24s}.prob[data-s=after] .clean path:nth-child(6){transition-delay:.3s}
+.plines .cflow path{fill:none;stroke:var(--load);stroke-width:3;stroke-linecap:round;vector-effect:non-scaling-stroke;stroke-dasharray:2 26;opacity:0;transition:opacity .4s .9s;animation:flow 1.1s linear infinite}
+.prob[data-s=after] .cflow path{opacity:.9}
+.pc{position:absolute;left:var(--bx);top:var(--by);width:min(250px,30%);transform:translate(-50%,-50%) rotate(var(--br));display:flex;gap:10px;align-items:center;padding:12px 14px;border-radius:14px;background:#FFF6F7;border:1px solid rgba(217,58,82,.35);box-shadow:0 8px 22px -12px rgba(217,58,82,.45);font-size:13.5px;font-weight:600;color:var(--navy);transition:left .95s cubic-bezier(.65,0,.25,1),top .95s cubic-bezier(.65,0,.25,1),transform .95s cubic-bezier(.65,0,.25,1),background .6s,border-color .6s,box-shadow .6s;transition-delay:calc(var(--k)*70ms);z-index:2;animation:wobble 4s ease-in-out infinite;animation-delay:calc(var(--k)*-0.6s)}
+@keyframes wobble{50%{margin-top:-6px}}
+.prob[data-s=after] .pc{left:var(--ax);top:var(--ay);transform:translate(-50%,-50%);background:var(--card);border-color:rgba(30,86,227,.35);box-shadow:var(--shadow);animation:none}
+.pi{width:24px;height:24px;border-radius:50%;flex:none;display:grid;place-items:center;background:rgba(217,58,82,.12);position:relative;transition:background .5s}
+.pi::before{content:"!";font:800 13px var(--sans);color:var(--bad);transition:opacity .3s}
+.pi::after{content:"";position:absolute;width:10px;height:6px;border-left:2.5px solid #fff;border-bottom:2.5px solid #fff;transform:rotate(-45deg) translate(1px,-1px) scale(0);transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+.prob[data-s=after] .pi{background:var(--exec);transition-delay:calc(var(--k)*70ms + .7s)}
+.prob[data-s=after] .pi::before{opacity:0}
+.prob[data-s=after] .pi::after{transform:rotate(-45deg) translate(1px,-1px) scale(1);transition-delay:calc(var(--k)*70ms + .8s)}
+.pt{display:grid;min-width:0}
+.pt>span{grid-area:1/1;transition:opacity .45s,transform .45s}
+.pt .a{opacity:0;transform:translateY(8px)}
+.prob[data-s=after] .pt .b{opacity:0;transform:translateY(-8px);transition-delay:calc(var(--k)*70ms + .5s)}
+.prob[data-s=after] .pt .a{opacity:1;transform:none;transition-delay:calc(var(--k)*70ms + .6s)}
+.hub{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.6);opacity:0;display:flex;flex-direction:column;align-items:center;gap:4px;padding:22px 26px;border-radius:22px;background:linear-gradient(140deg,var(--navy),var(--navy-2) 60%,var(--load));color:var(--on-navy);box-shadow:0 20px 50px -18px rgba(30,86,227,.7);transition:all .7s cubic-bezier(.2,.8,.2,1) .45s;z-index:3}
+.hub svg{width:34px;height:34px;color:#fff}
+.hub b{font-size:20px;font-weight:800;color:#fff}
+.hub span{font-size:12px;opacity:.8}
+.hub::after{content:"";position:absolute;inset:-10px;border-radius:30px;border:2px solid rgba(30,86,227,.45);animation:hubp 2.4s ease-out infinite;opacity:0}
+@keyframes hubp{0%{opacity:.8;transform:scale(.92)}100%{opacity:0;transform:scale(1.18)}}
+.prob[data-s=after] .hub{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.pblock{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:999px;background:var(--card);border:1px solid rgba(217,58,82,.4);color:var(--bad);font-weight:700;font-size:13.5px;box-shadow:0 10px 30px -14px rgba(217,58,82,.6);transition:opacity .4s,transform .4s;z-index:3;white-space:nowrap}
+.prob[data-s=after] .pblock{opacity:0;transform:translate(-50%,-50%) scale(.8)}
+.livedot.red{background:var(--bad);animation:pingR 1.6s infinite}
+@keyframes pingR{0%{box-shadow:0 0 0 0 rgba(217,58,82,.55)}70%{box-shadow:0 0 0 9px rgba(217,58,82,0)}100%{box-shadow:0 0 0 0 rgba(217,58,82,0)}}
+.pstats b{transition:color .6s}
+.pstats[data-s=after] b{color:var(--load)}
+.pstats[data-s=before] b{color:var(--bad)}
+@media(max-width:760px){
+ .prob{height:auto;display:flex;flex-direction:column;gap:10px;padding:18px 14px}
+ .plines,.pblock{display:none}
+ .pc,.prob[data-s=after] .pc{position:relative;left:auto;top:auto;width:100%;transform:rotate(calc(var(--br)*.4))}
+ .prob[data-s=after] .pc{transform:none}
+ .hub{position:relative;left:auto;top:auto;transform:scale(.9);opacity:.25;order:-1;align-self:center}
+ .prob[data-s=after] .hub{transform:none;opacity:1}
+}
+/* hero fx */
+.herofx{position:relative;min-width:0}
+.herofx canvas{width:100%;aspect-ratio:1.55;display:block}
+.herofx::before{content:"";position:absolute;inset:10% 5% 0;background:radial-gradient(ellipse at 50% 60%,rgba(30,86,227,.10),transparent 65%);pointer-events:none}
+.hf-chip{position:absolute;display:flex;align-items:center;gap:8px;padding:8px 13px;border-radius:999px;background:rgba(255,255,255,.82);border:1px solid var(--border-hi);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);font-size:12.5px;animation:floaty 6s ease-in-out infinite}
+.hf-chip b{font-weight:800}
+.hf-chip span:not(.livedot){color:var(--text-sec)}
+.hf-chip.c1{left:2%;top:4%}
+.hf-chip.c2{right:2%;top:16%;animation-delay:-3s;border-color:rgba(13,148,136,.5)}
+.hf-chip.c2 b{color:var(--exec)}
+@keyframes floaty{50%{transform:translateY(-8px)}}
+.livedot{width:8px;height:8px;border-radius:50%;background:var(--load);flex:none;animation:ping2 1.8s infinite}
+@keyframes ping2{0%{box-shadow:0 0 0 0 rgba(30,86,227,.6)}70%{box-shadow:0 0 0 9px rgba(30,86,227,0)}100%{box-shadow:0 0 0 0 rgba(30,86,227,0)}}
+/* headline words */
+.w{display:inline-block;overflow:hidden;vertical-align:bottom;padding-bottom:.12em;margin-bottom:-.12em}
+.w>span{display:inline-block}
+.chapter.enter .w>span{animation:wordUp .85s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--w)*38ms + var(--d0,60ms))}
+@keyframes wordUp{from{transform:translateY(110%)}to{transform:none}}
+/* merge */
+.merge-wrap{max-width:900px;margin:0 auto}
+.merge{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:90px;padding:40px 26px 26px;transition:column-gap .9s cubic-bezier(.2,.8,.2,1)}
+.merge[data-s=one]{column-gap:0}
+.mcard{background:var(--card);border:1px solid var(--border-hi);border-radius:18px;padding:22px;display:flex;flex-direction:column;gap:6px;transition:border-radius .9s,border-color .9s;position:relative;z-index:1;min-width:0}
+.mcard small{font:500 11px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--load)}
+.mcard b{font-size:15px}
+.mcard ul{list-style:none;display:grid;gap:6px;margin-top:10px}
+.mcard li{font:500 12.5px var(--mono);color:var(--text-sec);padding:7px 11px;border-radius:9px;background:var(--surface);border:1px solid var(--border);transition:all .7s cubic-bezier(.2,.8,.2,1)}
+.merge[data-s=one] .mcard.a{border-radius:18px 0 0 18px;border-right-color:transparent}
+.merge[data-s=one] .mcard.b{border-radius:0 18px 18px 0;border-left-color:var(--border)}
+.merge[data-s=one] .mcard.a li{border-color:rgba(30,86,227,.55);color:var(--text);background:rgba(30,86,227,.08)}
+.merge[data-s=one] .mcard.b li{opacity:.28;text-decoration:line-through;transform:translateX(-10px)}
+.merge[data-s=one] .mcard.b li:nth-child(2){transition-delay:.08s}.merge[data-s=one] .mcard.b li:nth-child(3){transition-delay:.16s}.merge[data-s=one] .mcard.b li:nth-child(4){transition-delay:.24s}
+.mframe{position:absolute;inset:0;border:2px solid transparent;border-radius:26px;opacity:0;transform:scale(1.08);transition:all .9s cubic-bezier(.2,.8,.2,1);pointer-events:none;background:radial-gradient(ellipse at 50% 0,rgba(13,148,136,.14),transparent 60%)}
+.merge[data-s=one] .mframe{opacity:1;transform:none;border-color:rgba(13,148,136,.6);box-shadow:0 0 70px rgba(13,148,136,.2)}
+.mframe span{position:absolute;top:-15px;left:50%;transform:translateX(-50%);background:var(--bg);padding:3px 14px;font-weight:800;font-size:16px;display:flex;gap:8px;align-items:center;white-space:nowrap}
+.mframe svg{width:20px;height:20px;color:var(--load)}
+.mstats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:20px}
+.mstats div{text-align:center;padding:16px 10px;border-radius:14px;background:var(--surface);border:1px solid var(--border);perspective:400px}
+.mstats b{display:block;font:500 clamp(20px,2.4vw,30px) var(--mono);letter-spacing:-.03em;transition:color .6s}
+.merge-wrap[data-s=one] .mstats b{color:var(--load)}
+.mstats span{font-size:12px;color:var(--text-sec)}
+.flip{animation:flipIn .55s cubic-bezier(.2,.8,.2,1) both}
+@keyframes flipIn{from{opacity:0;transform:rotateX(80deg) translateY(-8px)}to{opacity:1;transform:none}}
+@media(max-width:700px){.mstats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:620px){.merge{grid-template-columns:minmax(0,1fr);row-gap:36px;column-gap:0;padding:36px 14px 14px;transition:row-gap .9s cubic-bezier(.2,.8,.2,1)}.merge[data-s=one]{row-gap:0}.merge[data-s=one] .mcard.a{border-radius:18px 18px 0 0;border-right-color:var(--border-hi);border-bottom-color:transparent}.merge[data-s=one] .mcard.b{border-radius:0 0 18px 18px;border-left-color:var(--border-hi);border-top-color:var(--border)}}
+/* test types big */
+.ttypes.big{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.ttypes.big .tt{padding:24px 24px 22px}
+.ttypes.big .tt svg{max-height:150px}
+.ttypes.big .tt b{font-size:22px}
+.ttypes.big .tt span{font-size:14px}
+@media(max-width:620px){.ttypes.big{grid-template-columns:minmax(0,1fr)}}
+.dep.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(max-width:820px){.dep.two{grid-template-columns:minmax(0,1fr)}}
+/* journey */
+.journey{position:relative;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;padding-top:36px}
+.jline{position:absolute;top:13px;left:12.5%;right:12.5%;height:2px;background:var(--border-hi)}
+.jline i{display:block;height:100%;background:linear-gradient(90deg,var(--load),var(--exec));transform-origin:left;transform:scaleX(0)}
+.chapter.enter .jline i{animation:lineGrow 1.8s cubic-bezier(.4,0,.2,1) forwards;animation-delay:calc(var(--d0,0ms) + .35s)}
+@keyframes lineGrow{to{transform:scaleX(1)}}
+.jstep{position:relative;padding:22px 18px;border-radius:18px;background:var(--card);border:1px solid var(--border);text-align:center;min-width:0}
+.jstep::before{content:"";position:absolute;top:-30px;left:50%;width:14px;height:14px;margin-left:-7px;border-radius:50%;background:var(--bg);border:2px solid var(--load);box-shadow:0 0 0 6px rgba(30,86,227,.12)}
+.jd{font:500 11px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--load)}
+.jstep b{display:block;font-size:17px;margin:6px 0 4px}
+.jstep p{font-size:13px;color:var(--text-sec)}
+@media(max-width:820px){.journey{grid-template-columns:minmax(0,1fr);padding-top:0}.jline,.jstep::before{display:none}}
+a.btn{text-decoration:none}
+/* cursor spotlight */
+.panel,.feat,.tt,.plan:not(.ent),.pillar,.mcard,.profb,.fq,.stp,.regc,.rb,.layer,.jstep,.stop{background-image:radial-gradient(420px circle at var(--mx,-999px) var(--my,-999px),rgba(30,86,227,.09),transparent 45%)}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none!important;transition:none!important}.curve .vu,.tt .shape,.draw{stroke-dashoffset:0}.curve .area{opacity:1}.jline i{transform:none}}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-fork" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="4.5" r="2.5"/><circle cx="4.5" cy="19.5" r="2.5"/><circle cx="12" cy="19.5" r="2.5"/><circle cx="19.5" cy="19.5" r="2.5"/><path d="M12 7v10M12 11c-5 0-7.5 2-7.5 6M12 11c5 0 7.5 2 7.5 6"/></symbol>
+</svg>
+<div class="bg-grid"></div><div class="blob a"></div><div class="blob b"></div>
+
+<div class="wrap">
+  <header class="chrome">
+    <div class="chrome-row">
+      <div class="brand"><img src="data:image/png;base64,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" alt="TestMu AI"><span class="div"></span><span class="he-mark"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-fork"/></svg>HyperExecute<small>Perf</small></span></div>
+      <nav class="rail" id="rail" aria-label="Chapters"></nav>
+      <div class="tools">
+        <button class="pill" id="notesBtn" type="button" aria-pressed="false" title="Show sources and detail">Details</button><button class="pill" id="fsBtn" type="button">Present</button>
+      </div>
+    </div>
+    <div class="progress"><i id="prog"></i></div>
+  </header>
+
+  <main>
+  <!-- ================= OVERVIEW ================= -->
+  <section class="chapter" id="ch-intro">
+    <div class="hero">
+      <div>
+        <div class="lockup"><img src="data:image/png;base64,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" alt="TestMu AI"><span class="div"></span><span class="he-mark"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-fork"/></svg>HyperExecute</span></div>
+        <div class="audrow"><div class="seg sm audSeg" role="group" aria-label="Audience"><button type="button" data-a="new" aria-pressed="true">New to HyperExecute</button><button type="button" data-a="ex" aria-pressed="false">Already a customer</button></div></div>
+        <div class="kicker">Performance testing on HyperExecute</div>
+        <h1 data-aud="new">Load test from <span class="hl">multiple regions</span> in a single job, with the plans you already have.</h1>
+        <h1 data-aud="ex">Run your load tests where your <span class="hl">functional tests</span> already run.</h1>
+        <p class="lede" data-aud="new">Your existing JMeter, Gatling and k6 plans. Managed load generators. Live reports. Nothing to install or maintain.</p>
+        <p class="lede" data-aud="ex">Add load testing to the HyperExecute account you already use. Same login, same CLI, no new infrastructure.</p>
+        <div class="cta">
+          <button class="btn" type="button" data-go="problem">See how it works</button>
+          <button class="btn ghost" type="button" data-go="global">Global load</button>
+          <button class="btn ghost" type="button" data-go="lab">Size a test</button>
+        </div>
+        <div class="stats">
+          <div class="stat"><b>3</b><span>Load tools: JMeter, Gatling, k6</span></div>
+          <div class="stat"><b>8,000</b><span>Concurrent VUs on Pro, custom on Enterprise</span></div>
+          <div class="stat"><b>1</b><span>Job, with load split across regions by percentage</span></div>
+          <div class="stat"><b>0</b><span>Load generators left running after a test</span></div>
+        </div>
+      </div>
+      <div class="herofx">
+        <canvas id="heroCv" role="img" aria-label="Animated map: virtual users travel from several HyperExecute load regions to your application"></canvas>
+        <div class="hf-chip c1"><span class="livedot"></span><b>Multi-region</b><span>in a single job</span></div>
+        <div class="hf-chip c2"><b>Your app</b><span>wherever it is hosted</span></div>
+      </div>
+    </div>
+
+    <div class="map">
+      <div class="label">Chapters</div>
+      <div class="acts" id="acts"></div>
+    </div>
+  </section>
+
+  <!-- ================= PROBLEM ================= -->
+  <section class="chapter" id="ch-problem" hidden>
+    <div class="head">
+      <div class="kicker">The problem</div>
+      <h2>Load testing shouldn't need its own infrastructure.</h2>
+    </div>
+    <div class="row probctl">
+      <div class="seg" id="probSeg" role="group" aria-label="Compare"><button type="button" data-p="before" aria-pressed="true">Today</button><button type="button" data-p="after" aria-pressed="false">With HyperExecute</button></div>
+      <button class="btn ghost sm" type="button" id="probReplay">&#8635; Replay</button>
+    </div>
+    <div class="prob" id="prob" data-s="before">
+      <svg class="plines" viewBox="0 0 1000 500" preserveAspectRatio="none" aria-hidden="true">
+        <g class="mess"><path d="M190 100 Q285 137 520 55"/><path d="M520 55 Q735 37 830 120"/><path d="M190 100 Q135 185 220 370"/><path d="M220 370 Q445 460 550 430"/><path d="M550 430 Q625 340 840 350"/><path d="M830 120 Q895 185 840 350"/><path d="M190 100 Q300 325 550 430"/><path d="M520 55 Q430 162 220 370"/><path d="M830 120 Q620 225 550 430"/><path d="M520 55 Q740 262 840 350"/></g>
+        <g class="clean"><path pathLength="1" d="M500 250 C347 250 347 90 160 90"/><path pathLength="1" d="M500 250 C347 250 347 250 160 250"/><path pathLength="1" d="M500 250 C347 250 347 410 160 410"/><path pathLength="1" d="M500 250 C653 250 653 90 840 90"/><path pathLength="1" d="M500 250 C653 250 653 250 840 250"/><path pathLength="1" d="M500 250 C653 250 653 410 840 410"/></g>
+        <g class="cflow"><path d="M500 250 C347 250 347 90 160 90"/><path d="M500 250 C347 250 347 250 160 250"/><path d="M500 250 C347 250 347 410 160 410"/><path d="M500 250 C653 250 653 90 840 90"/><path d="M500 250 C653 250 653 250 840 250"/><path d="M500 250 C653 250 653 410 840 410"/></g>
+      </svg>
+      <div class="pblock"><span class="livedot red"></span>Release waiting on load results</div>
+      <div class="hub"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-fork"/></svg><b>HyperExecute</b><span>Performance testing</span></div>
+<div class="pc" style="--k:0;--bx:19%;--by:20%;--br:-5deg;--ax:16%;--ay:18%"><span class="pi" aria-hidden="true"></span><span class="pt"><span class="b">Load servers to build, patch and pay for</span><span class="a">Generators created per run, then destroyed</span></span></div>
+<div class="pc" style="--k:1;--bx:52%;--by:11%;--br:3deg;--ax:16%;--ay:50%"><span class="pi" aria-hidden="true"></span><span class="pt"><span class="b">A second tool and contract just for load</span><span class="a">One platform for functional and load</span></span></div>
+<div class="pc" style="--k:2;--bx:83%;--by:24%;--br:-3deg;--ax:16%;--ay:82%"><span class="pi" aria-hidden="true"></span><span class="pt"><span class="b">Load from a single location</span><span class="a">Load from multiple regions in one job, split by percentage</span></span></div>
+<div class="pc" style="--k:3;--bx:22%;--by:74%;--br:4deg;--ax:84%;--ay:18%"><span class="pi" aria-hidden="true"></span><span class="pt"><span class="b">Scripts rewritten for every new tool</span><span class="a">Your .jmx, Gatling and k6 scripts run as they are</span></span></div>
+<div class="pc" style="--k:4;--bx:55%;--by:86%;--br:-4deg;--ax:84%;--ay:50%"><span class="pi" aria-hidden="true"></span><span class="pt"><span class="b">Results pieced together after the run</span><span class="a">Live reports with p90, p95 and p99</span></span></div>
+<div class="pc" style="--k:5;--bx:84%;--by:70%;--br:3deg;--ax:84%;--ay:82%"><span class="pi" aria-hidden="true"></span><span class="pt"><span class="b">Was it the app, or the load rig?</span><span class="a">Task Metrics shows generator health</span></span></div>
+    </div>
+    <div class="mstats pstats">
+      <div><b data-before="Always on" data-after="None">Always on</b><span>Load servers between tests</span></div>
+      <div><b data-before="Single" data-after="Multi">Single</b><span>Load regions per job</span></div>
+      <div><b data-before="Rewrite" data-after="None">Rewrite</b><span>Script changes to switch</span></div>
+      <div><b data-before="After" data-after="Live">After</b><span>When you see results</span></div>
+    </div>
+  </section>
+
+  <!-- ================= WHY ================= -->
+  <section class="chapter" id="ch-why" hidden>
+    <div class="head">
+      <div class="kicker">Why HyperExecute</div>
+      <h2>One platform for functional and load testing.</h2>
+      <p class="lede" data-aud="new">Run functional suites and load tests on one platform, with one contract and one set of credentials.</p>
+      <p class="lede" data-aud="ex">Your load tests join the platform that already runs your functional suites.</p>
+    </div>
+    <div class="merge-wrap">
+      <div class="row" style="justify-content:center;margin-bottom:18px">
+        <div class="seg" id="mergeSeg" role="group" aria-label="Compare"><button type="button" data-m="two" aria-pressed="true">Two separate tools</button><button type="button" data-m="one" aria-pressed="false">With HyperExecute</button></div>
+      </div>
+      <div class="merge" id="merge" data-s="two">
+        <div class="mframe"><span><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-fork"/></svg>HyperExecute</span></div>
+        <div class="mcard a"><small>Functional testing</small><b>Selenium, Playwright, Cypress, Appium</b><ul><li>Contract</li><li>Credentials</li><li>Pipeline step</li><li>Security review</li></ul></div>
+        <div class="mcard b"><small>Load testing</small><b>JMeter, Gatling, k6</b><ul><li>Contract</li><li>Credentials</li><li>Pipeline step</li><li>Security review</li></ul></div>
+      </div>
+      <div class="mstats">
+        <div><b data-two="2" data-one="1">2</b><span>Contracts to manage</span></div>
+        <div><b data-two="2" data-one="1">2</b><span>Sets of credentials</span></div>
+        <div><b data-two="2" data-one="1">2</b><span>Security reviews</span></div>
+        <div><b data-two="Always on" data-one="0">Always on</b><span>Load generators between tests</span></div>
+      </div>
+    </div>
+    <div class="pillars" style="margin-top:26px">
+      <div class="pillar"><span class="n">Bring your plans</span><h3>No rewrite</h3><p>.jmx plans with CSV data, Gatling Java DSL and k6 scripts run as they are.</p></div>
+      <div class="pillar"><span class="n">Every release</span><h3>Catch latency drift early</h3><p>Right-sized load runs on every release or nightly, next to the functional suite.</p></div>
+      <div class="pillar"><span class="n">Global by design</span><h3>Many regions, one job</h3><p>Split users by percentage across regions in a single run.</p></div>
+      <div class="pillar"><span class="n">No idle fleet</span><h3>Pay for runs, not servers</h3><p>Generators are created for each run and destroyed when it ends.</p></div>
+    </div>
+  </section>
+
+  <!-- ================= TESTS ================= -->
+  <section class="chapter" id="ch-tests" hidden>
+    <div class="head">
+      <div class="kicker">Every kind of test</div>
+      <h2>Load, stress, spike and soak in one subscription.</h2>
+    </div>
+    <div class="ttypes big">
+      <div class="tt"><svg viewBox="0 0 200 80" aria-hidden="true"><path class="base" d="M5 72 H195"/><path class="shape" pathLength="1" d="M5 70 L50 22 L160 22 L195 70"/><circle class="tdot" r="4.5"><animateMotion dur="3.2s" repeatCount="indefinite" path="M5 70 L50 22 L160 22 L195 70"/></circle></svg><b>Load</b><span>Hold the expected peak and find where latency goes over budget.</span></div>
+      <div class="tt"><svg viewBox="0 0 200 80" aria-hidden="true"><path class="base" d="M5 72 H195"/><path class="shape" pathLength="1" d="M5 70 L40 70 L40 56 L80 56 L80 42 L120 42 L120 26 L160 26 L160 10 L195 10"/><circle class="tdot" r="4.5"><animateMotion dur="3.2s" repeatCount="indefinite" path="M5 70 L40 70 L40 56 L80 56 L80 42 L120 42 L120 26 L160 26 L160 10 L195 10"/></circle></svg><b>Stress</b><span>Climb past the peak to find the breaking point and how it fails.</span></div>
+      <div class="tt"><svg viewBox="0 0 200 80" aria-hidden="true"><path class="base" d="M5 72 H195"/><path class="shape" pathLength="1" d="M5 56 L88 56 L98 8 L112 8 L122 56 L195 56"/><circle class="tdot" r="4.5"><animateMotion dur="3.2s" repeatCount="indefinite" path="M5 56 L88 56 L98 8 L112 8 L122 56 L195 56"/></circle></svg><b>Spike</b><span>A sudden burst to expose queueing and scaling lag.</span></div>
+      <div class="tt"><svg viewBox="0 0 200 80" aria-hidden="true"><path class="base" d="M5 72 H195"/><path class="shape" pathLength="1" d="M5 70 L25 38 L195 38"/><circle class="tdot" r="4.5"><animateMotion dur="3.2s" repeatCount="indefinite" path="M5 70 L25 38 L195 38"/></circle></svg><b>Soak</b><span>Hours of steady load to surface leaks and pool exhaustion.</span></div>
+    </div>
+    <div class="more" style="margin-top:18px">
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Type</th><th>JMeter</th><th>Gatling</th><th>k6</th></tr></thead>
+        <tbody>
+          <tr><td><b>Load</b></td><td>Total Users, Duration and Ramp-up fields</td><td>Capacity test preset</td><td>Stages in the script</td></tr>
+          <tr><td><b>Stress</b></td><td>Ramp past peak, or a custom thread group</td><td>Stress test preset</td><td>Stages in the script</td></tr>
+          <tr><td><b>Spike</b></td><td>Custom thread group in the plan</td><td>Injection profile in the simulation</td><td>Stages in the script</td></tr>
+          <tr><td><b>Soak</b></td><td>Up to 6 hours on Pro; split runs over 120 minutes across machines</td><td>Soak test preset</td><td>Long stage in the script</td></tr>
+        </tbody></table></div>
+    </div>
+  </section>
+
+  <!-- ================= WHAT YOU GET ================= -->
+  <section class="chapter" id="ch-catalog" hidden>
+    <div class="head">
+      <div class="kicker">What you get</div>
+      <h2>Control every variable without editing a script.</h2>
+      <p class="lede">Eight areas. Pick one, then a capability.</p>
+    </div>
+    <div class="capx">
+      <div class="capcats" id="capcats" role="tablist" aria-label="Capability areas"></div>
+      <div class="panel capd" id="capd"></div>
+    </div>
+  </section>
+
+  <!-- ================= GLOBAL LOAD ================= -->
+  <section class="chapter" id="ch-global" hidden>
+    <div class="head">
+      <div class="kicker">Global load</div>
+      <h2>Send load from where your users actually are.</h2>
+      <p class="lede">One job, load from multiple regions. Pick a mix and watch the users arrive.</p>
+    </div>
+    <div class="row" style="justify-content:space-between;margin-bottom:12px">
+      <div class="chips" id="gPresets"></div>
+      <div class="row selwrap"><label class="small muted" for="gTarget">Your app is hosted in</label><select id="gTarget"></select></div>
+    </div>
+    <div class="geo">
+      <div class="stack" style="min-width:0">
+        <div class="mapbox"><svg id="gMap" viewBox="0 0 1440 540" role="img" aria-label="World map of load regions sending traffic to your application"></svg></div>
+        <div class="panel" style="padding:16px 18px">
+          <div class="label" style="margin-bottom:10px">How the split is applied</div>
+          <div class="flowline" id="gFlow"></div>
+        </div>
+      </div>
+      <div class="panel" style="min-width:0">
+        <div class="ctl"><div class="r"><label for="gUsers">Total users</label><output id="ogUsers"></output></div><input type="range" id="gUsers" min="100" max="8000" step="100" value="1000"></div>
+        <div class="ctl"><div class="r"><label for="gCap">Max users per machine</label><output id="ogCap"></output></div><input type="range" id="gCap" min="100" max="2000" step="100" value="500"><small>Planning cap. Machine count is set once and applies to every selected region.</small></div>
+        <div class="row" style="justify-content:space-between;margin:4px 0 2px"><span class="label">Regions and share</span><button class="btn ghost sm" type="button" id="gEven">Balance evenly</button></div>
+        <div id="gRows"></div>
+      </div>
+    </div>
+
+    <div class="grid g4" style="margin-top:20px">
+      <div class="pillar"><span class="n">Real distance</span><h3>Latency as each market sees it</h3><p>Users in São Paulo and Singapore cross different networks to reach you. Generating from there shows the response times those users get.</p></div>
+      <div class="pillar"><span class="n">Edge and CDN</span><h3>Exercise every edge</h3><p>Traffic from several regions hits different CDN points of presence and load balancers, not just the one nearest a single generator.</p></div>
+      <div class="pillar"><span class="n">What-if mixes</span><h3>Rehearse a launch</h3><p>Shift the percentages between runs to model a US launch, a festive-season India peak or a global release, with the same plan.</p></div>
+      <div class="pillar"><span class="n">Spread the source</span><h3>No single egress bottleneck</h3><p>Splitting users over regions and machines keeps one generator or one network path from becoming the limit you end up measuring.</p></div>
+    </div>
+    <p class="small muted more" style="margin-top:14px">Multi-region tests are part of the Enterprise plan; Free, Basic and Pro run one region per test. Distances are straight-line great-circle figures for context, not latency measurements.</p>
+  </section>
+
+  <!-- ================= RUN ================= -->
+  <section class="chapter" id="ch-run" hidden>
+    <div class="head">
+      <div class="kicker">See a run</div>
+      <h2>From your plan to a full report in four steps.</h2>
+    </div>
+    <div class="stepper">
+      <div class="steps" id="steps"></div>
+      <div class="mock">
+        <div class="mock-bar"><i></i><i></i><i></i><span id="mockUrl">hyperexecute.lambdatest.com / projects / checkout-perf</span></div>
+        <div class="mock-body" id="mockBody"></div>
+        <div class="mock-foot"><span class="small muted" id="mockHint"></span><div class="row"><button class="btn ghost sm" type="button" id="runPrev">Back</button><button class="btn sm" type="button" id="runNext">Next</button></div></div>
+      </div>
+    </div>
+    <p class="small muted" style="margin-top:10px">Illustrative mock of the portal flow based on the published docs. Screens are simplified; field names match the product.</p>
+  </section>
+
+  <!-- ================= LAB ================= -->
+  <section class="chapter" id="ch-lab" hidden>
+    <div class="head">
+      <div class="kicker">Load lab</div>
+      <h2>Know the exact load, and the plan, before you run.</h2>
+    </div>
+    <div class="lab">
+      <div class="panel">
+        <div class="ctl"><div class="r"><label for="lUsers">Total users</label><output id="oUsers"></output></div><input type="range" id="lUsers" min="10" max="10000" step="10" value="500"><small>Users entered in the portal form</small></div>
+        <div class="ctl"><div class="r"><label for="lDur">Duration</label><output id="oDur"></output></div><input type="range" id="lDur" min="5" max="360" step="5" value="30"><small>Minutes, including ramp-up</small></div>
+        <div class="ctl"><div class="r"><label for="lMach">Machines per region</label><output id="oMach"></output></div><input type="range" id="lMach" min="1" max="10" step="1" value="3"><small>Load generators in each selected region</small></div>
+        <div class="ctl"><div class="r"><span>Regions</span><output id="oReg"></output></div><div class="chips" id="lRegs"></div></div>
+        <button class="tog" type="button" id="lOvr" aria-pressed="false"><span class="sw"></span><span><b>Total Load Distribution override</b><span>Split users by region percentage, then across machines</span></span></button>
+      </div>
+      <div class="stack">
+        <div class="big">
+          <div id="bActual"><b id="vActual">0</b><span>Concurrent users actually generated</span></div>
+          <div><b id="vVuh">0</b><span>VU-hours this run (estimate)</span></div>
+          <div><b id="vPer">0</b><span>Peak users on one machine</span></div>
+        </div>
+        <div class="panel" style="padding:18px">
+          <div class="row" style="justify-content:space-between;margin-bottom:12px"><span class="label">Generator fleet</span><span class="small muted" id="fleetNote"></span></div>
+          <div class="fleet" id="fleet"></div>
+        </div>
+        <div class="panel" style="padding:18px">
+          <div class="label" style="margin-bottom:10px">Smallest plan that fits</div>
+          <div class="planfit" id="planfit"></div>
+          <p class="why" id="planWhy" style="margin-top:10px"></p>
+        </div>
+        <div class="callout" id="labSay"></div>
+      </div>
+    </div>
+    <p class="small muted" style="margin-top:10px">VU-hours estimate = concurrent users × duration, ramp-up counted at full load, so it is an upper bound. Plan limits from the public JMeter Load Testing page, verified there on 8 Sep 2026. Machines across regions are counted as load generators for the plan check.</p>
+  </section>
+
+  <!-- ================= TOOLS ================= -->
+  <section class="chapter" id="ch-tools" hidden>
+    <div class="head">
+      <div class="kicker">Tools and CI</div>
+      <h2>Fits the pipeline you already have.</h2>
+    </div>
+    <div class="tabs" role="tablist" id="toolTabs"></div>
+    <div class="tools-grid">
+      <div class="panel" id="toolInfo"></div>
+      <div class="stack" style="min-width:0">
+        <div class="copyrow"><span class="label" id="codeLabel"></span><button class="btn ghost sm" type="button" id="copyCode">Copy</button></div>
+        <div class="code" id="toolCode"></div>
+        <p class="small muted" id="codeNote"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= REPORTS ================= -->
+  <section class="chapter" id="ch-reports" hidden>
+    <div class="head">
+      <div class="kicker">Reports</div>
+      <h2>See where it breaks, while it is breaking.</h2>
+    </div>
+    <div class="panel">
+      <div class="row" style="justify-content:space-between;margin-bottom:6px">
+        <div class="row"><span class="status ok"><i></i>Completed</span><span class="small muted mono">Job checkout-perf · 500 users · 30 min · East US 60% / Central India 40%</span></div>
+        <div class="seg sm" id="unitSeg" role="group" aria-label="Units"><button type="button" data-u="ms" aria-pressed="true">ms</button><button type="button" data-u="s" aria-pressed="false">s</button></div>
+      </div>
+      <div class="tabs" role="tablist" id="repTabs"></div>
+      <div id="repBody"></div>
+    </div>
+    <p class="small muted" style="margin-top:10px">Sample run with illustrative numbers. Report names and Summary tiles match the JMeter Jobs view. Gatling runs also attach the full Gatling HTML report as an artifact.</p>
+  </section>
+
+  <!-- ================= MIGRATE ================= -->
+  <section class="chapter" id="ch-migrate" hidden>
+    <div class="head">
+      <div class="kicker">BlazeMeter migration</div>
+      <h2>Move your JMeter tests from BlazeMeter without rewriting them.</h2>
+    </div>
+
+    <div class="label" style="margin-bottom:10px">1 · Where are you today?</div>
+    <div class="prof" id="prof"></div>
+    <div class="panel hi" id="profD" style="margin-top:12px"></div>
+
+    <div class="label" style="margin:30px 0 10px">2 · Map your Taurus YAML to HyperExecute</div>
+    <div class="mapper">
+      <div class="stack" style="min-width:0">
+        <div class="copyrow"><label class="label" for="taurus">BlazeMeter / Taurus config</label><div class="row"><button class="btn ghost sm" type="button" id="tSample">Load sample</button><button class="btn sm" type="button" id="tRun">Map it</button></div></div>
+        <textarea class="code" id="taurus" spellcheck="false"></textarea>
+        <div class="ctl" style="margin:0"><div class="r"><label for="tCap">Max users per machine (planning)</label><output id="oCap"></output></div><input type="range" id="tCap" min="100" max="2000" step="50" value="500"><small>2,000 is the documented JMeter ceiling under favourable conditions. Start lower and tune in the POC.</small></div>
+      </div>
+      <div class="stack" style="min-width:0">
+        <div class="label">HyperExecute portal settings</div>
+        <div class="tbl-wrap"><table><thead><tr><th>HyperExecute field</th><th>Value</th><th>From</th><th>Status</th></tr></thead><tbody id="tOut"></tbody></table></div>
+        <div class="label" style="margin-top:6px">What needs attention</div>
+        <div class="flags" id="tFlags"></div>
+      </div>
+    </div>
+
+    <div class="more">
+    <div class="label" style="margin:30px 0 10px">Concept map</div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>BlazeMeter / Taurus</th><th>HyperExecute today</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>Upload .jmx with CSV</td><td>Project upload of .jmx, CSV files or whole folders; Split CSV per generator</td><td><span class="tag doc">Supported</span></td></tr>
+        <tr><td><span class="mono">concurrency</span>, <span class="mono">ramp-up</span>, <span class="mono">hold-for</span></td><td>Total Users, Ramp-up, Duration fields (override what is in the script)</td><td><span class="tag doc">Supported</span></td></tr>
+        <tr><td><span class="mono">locations</span> with weights</td><td>Total Load Distribution, percentage per region (Enterprise for multi-region)</td><td><span class="tag ver">Map regions</span></td></tr>
+        <tr><td>Engines per location</td><td>Machine count per region</td><td><span class="tag doc">Supported</span></td></tr>
+        <tr><td>JMeter properties</td><td>Two documented overrides: <span class="mono">saveservice.subresults</span>, <span class="mono">httpclient.socket.https.cps</span></td><td><span class="tag ver">Adapt</span></td></tr>
+        <tr><td>JMeter Plugins Manager, BlazeMeter plugins</td><td>Validate each plugin in a trial run</td><td><span class="tag ver">Validate</span></td></tr>
+        <tr><td>Gatling via Taurus</td><td>Gatling Java DSL in portal or hyperexecute.yaml</td><td><span class="tag doc">Supported (Java)</span></td></tr>
+        <tr><td>k6 via Taurus</td><td>k6 through hyperexecute.yaml and CLI</td><td><span class="tag ver">Check version</span></td></tr>
+        <tr><td>Locust via Taurus</td><td>Not supported</td><td><span class="tag no">Not supported</span></td></tr>
+        <tr><td>CI plugins, <span class="mono">bzt</span> in pipeline</td><td>Gatling and k6 via the CLI with an exit code; JMeter from the portal or scheduled with Workflows</td><td><span class="tag ver">Adapt</span></td></tr>
+        <tr><td>Pass/fail criteria, baselines</td><td>Review Summary and Request Stats for each run; k6 thresholds set the exit code</td><td><span class="tag ver">Adapt</span></td></tr>
+        <tr><td>APM integrations</td><td>Correlate by run time and job label in your APM; Task Metrics covers generator health</td><td><span class="tag ver">Adapt</span></td></tr>
+        <tr><td>Private Locations</td><td>Static outbound IPs through support, so targets can allowlist the generators</td><td><span class="tag ver">Adapt</span></td></tr>
+        <tr><td>Run history</td><td>Export results and baselines before switching</td><td><span class="tag ver">Plan</span></td></tr>
+      </tbody></table></div>
+    </div>
+
+    <div class="label" style="margin:30px 0 10px">3 · Migration runbook</div>
+    <div class="runbook">
+      <div class="rb"><div><b>Inventory</b><p>List every test: tool, .jmx and CSV files, plugins, thread groups, regions, peak users, duration, how it is triggered, and any failure criteria or APM hooks.</p></div></div>
+      <div class="rb"><div><b>Export</b><p>Download the .jmx and data files from BlazeMeter (or the repo). For Taurus-only tests, export the generated .jmx. Export run history and baseline numbers before the contract ends.</p></div></div>
+      <div class="rb"><div><b>Dry run</b><p>Upload to a HyperExecute project and run each script at 5 to 10 percent of target load in one region. Any plugin or sampler failure shows up here.</p></div></div>
+      <div class="rb"><div><b>Parity run</b><p>Run at target load with the Total Load Distribution override on. Compare p90, throughput and error rate against the last BlazeMeter baseline for the same build.</p></div></div>
+      <div class="rb"><div><b>Wire the pipeline</b><p>Gatling and k6: add hyperexecute.yaml and the CLI step. JMeter: schedule nightly runs with Workflows.</p></div></div>
+      <div class="rb"><div><b>Cut over at renewal</b><p>Keep BlazeMeter for anything still blocked (Locust, Private Locations, peak-event scale) and move the rest before the renewal date.</p></div></div>
+    </div>
+  </section>
+
+  <!-- ================= FAQ ================= -->
+  <section class="chapter" id="ch-faq" hidden>
+    <div class="head">
+      <div class="kicker">FAQs</div>
+      <h2>Questions teams ask before their first run.</h2>
+    </div>
+    <div class="fq-tools">
+      <input class="search" id="fqSearch" type="search" placeholder="Search questions, for example: CI, plugins, regions" aria-label="Search FAQs">
+      <div class="chips" id="fqCats"></div>
+    </div>
+    <div class="faq" id="faq"></div>
+  </section>
+
+  <!-- ================= START ================= -->
+  <section class="chapter" id="ch-start" hidden>
+    <div class="head">
+      <div class="kicker">Get started</div>
+      <h2>Your first load test can run this week.</h2>
+      <div class="audrow" style="margin-top:16px"><div class="seg sm audSeg" role="group" aria-label="Audience"><button type="button" data-a="new" aria-pressed="true">New to HyperExecute</button><button type="button" data-a="ex" aria-pressed="false">Already a customer</button></div></div>
+    </div>
+    <div class="journey" id="journey">
+      <div class="jline"><i></i></div>
+      <div class="jstep" data-aud="new"><span class="jd">Today</span><b>Run one plan free</b><p>Sign up and upload a .jmx on the Free plan: 100 users, 40 minutes.</p></div>
+      <div class="jstep" data-aud="ex"><span class="jd">Today</span><b>Add performance testing</b><p>Your account team adds it to your plan. Run your first .jmx from the same login.</p></div>
+      <div class="jstep"><span class="jd">Week 1</span><b>Parity run</b><p>Run at target load and compare p90, throughput and errors with your current numbers.</p></div>
+      <div class="jstep" data-aud="new"><span class="jd">Weeks 2 to 3</span><b>Make it routine</b><p>Schedule nightly runs with Workflows. Add Gatling and k6 to CI with the CLI.</p></div>
+      <div class="jstep" data-aud="ex"><span class="jd">Weeks 2 to 3</span><b>Make it routine</b><p>Schedule nightly runs with Workflows. Add Gatling and k6 to the pipelines that already call HyperExecute.</p></div>
+      <div class="jstep"><span class="jd">Enterprise</span><b>Go global and governed</b><p>Multi-region tests, access controls, data retention rules and premium support.</p></div>
+    </div>
+    <div class="cta" style="justify-content:center;margin-top:36px">
+      <a class="btn" data-aud="new" href="https://www.testmuai.com/jmeter-load-testing/" target="_blank" rel="noopener">Start free</a>
+      <button class="btn" data-aud="ex" type="button" data-go="lab">Size your first test</button>
+      <a class="btn ghost" href="https://www.testmuai.com/use-cases/run-performance-tests-at-scale/" target="_blank" rel="noopener">Read the guide</a>
+    </div>
+    <div class="more" style="margin-top:28px">
+      <div class="label" style="margin-bottom:8px">Sources for figures in this presentation</div>
+      <ul class="dotl e small">
+        <li><a href="https://www.testmuai.com/jmeter-load-testing/" target="_blank" rel="noopener">JMeter Load Testing</a>: plans, run fields, load distribution, reports</li>
+        <li><a href="https://www.testmuai.com/use-cases/run-performance-tests-at-scale/" target="_blank" rel="noopener">Run Performance Tests at Scale</a>: regions, portal flows, Gatling and k6 configuration, limits</li>
+        <li><a href="https://www.testmuai.com/stress-testing/" target="_blank" rel="noopener">Stress Testing</a>: test types, live reports, Task Metrics, Workflows</li>
+      </ul>
+    </div>
+  </section>
+  </main>  </main>
+</div>
+<div class="wipe" id="wipe" aria-hidden="true"><div class="wipe-in"><span class="wn"></span><b class="wt"></b><span class="wq"></span><i class="wbar"></i></div></div>
+<nav class="foot-nav" id="footNav" aria-label="Previous and next chapter"></nav>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+'use strict';
+var $=function(s,r){return (r||document).querySelector(s)};
+var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+function el(h){var t=document.createElement('template');t.innerHTML=h.trim();return t.content.firstChild}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function fmt(n){return Math.round(n).toLocaleString('en-US')}
+var REDUCED=false;try{REDUCED=matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){}
+function toast(m){var t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(toast._t);toast._t=setTimeout(function(){t.classList.remove('on')},1800)}
+function copyText(txt){
+  try{navigator.clipboard.writeText(txt).then(function(){toast('Copied')},function(){fallback()})}catch(e){fallback()}
+  function fallback(){var ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');toast('Copied')}catch(e){toast('Select the text to copy')}ta.remove()}
+}
+
+/* ---------------- chapters ---------------- */
+var CH=[
+ {id:'intro',label:'Overview',q:'',act:-1},
+ {id:'problem',label:'The problem',q:'Load testing without the infrastructure',act:0},
+ {id:'why',label:'One platform',q:'Functional and load, one contract',act:0},
+ {id:'tests',label:'Test types',q:'Load, stress, spike and soak',act:0},
+ {id:'catalog',label:'Capabilities',q:'Every setting is a feature',act:0},
+ {id:'global',label:'Global load',q:'Many regions, one job',act:1},
+ {id:'run',label:'See a run',q:'From .jmx to report',act:1},
+ {id:'lab',label:'Size a test',q:'Users, machines, regions, plan',act:1},
+ {id:'tools',label:'Tools and CI',q:'JMeter, Gatling, k6, pipelines',act:1},
+ {id:'reports',label:'Reports',q:'What your team gets back',act:1},
+ {id:'migrate',label:'Moving from BlazeMeter',q:'Your migration path',act:2},
+ {id:'faq',label:'FAQs',q:'Common questions answered',act:2},
+ {id:'start',label:'Get started',q:'Your first test, today',act:2}
+];
+var ACTS=['The value','How it works','Getting there'];
+var cur=-1, cust=false;
+var rail=$('#rail');
+CH.forEach(function(c,i){var b=el('<button type="button" data-i="'+i+'"'+(c.int?' class="int"':'')+'>'+c.label+'</button>');b.addEventListener('click',function(){go(i)});rail.appendChild(b)});
+var acts=$('#acts');
+[0,1,2].forEach(function(a){
+  var col=el('<div class="act"><div class="label">'+ACTS[a]+'</div></div>');
+  CH.forEach(function(c,i){if(c.act===a){
+    var b=el('<button type="button" class="stop'+(c.int?' int':'')+'"><em>'+String(i).padStart(2,'0')+'</em><div><b>'+c.label+'</b><span>'+c.q+'</span>'+(c.int?'<span class="intflag">Internal</span>':'')+'</div></button>');
+    b.addEventListener('click',function(){go(i)});col.appendChild(b)}});
+  acts.appendChild(col);
+});
+function visible(){return CH.map(function(c,i){return i}).filter(function(i){return !(cust&&CH[i].int)})}
+var navTok=0,RVSEL='.head > .kicker, .head > .lede, .hero .kicker, .hero .lede, .hero .cta, .lockup, .herofx, .merge-wrap, .mstats > div, .jstep, .ttypes.big .tt, .stats > *, .acts > .act, .pillar, .statement, .vcard, .news, .ucb, .uc > .panel, .tt, .layer, .allrow, .feat, .mapbox, .geo > .panel, .stp, .mock, .lab > .panel, .big > div, .lab .stack > .panel, .callout, .plan, .regc, .dep > *, .profb, .rb, .trk, .fq, .tabs, .tools-grid > *, .bc > *, .qz > *, .tbl-wrap, .fq-tools, .mapper > *, .timeline > .tl, .capcat, .capd, .probctl, .prob, .pstats > div, #gPresets, .selwrap, .geo .stack > .panel';
+function tween(node,to,f){f=f||fmt;var from=node._v==null?0:node._v;node._v=to;cancelAnimationFrame(node._r);if(REDUCED){node.textContent=f(to);return}var t0=performance.now(),d=650;(function step(t){var k=Math.min(1,(t-t0)/d);k=1-Math.pow(1-k,3);node.textContent=f(from+(to-from)*k);if(k<1)node._r=requestAnimationFrame(step)})(t0)}
+function swap(n){if(!n||REDUCED)return;var c=_dir>0?'swapR':(_dir<0?'swapL':'swap');n.classList.remove('swap','swapL','swapR');void n.offsetWidth;n.classList.add(c);setTimeout(function(){_dir=0},0)}
+var _dir=0;
+function go(i,noHash){
+  if(i<0||i>=CH.length)return;
+  if(cust&&CH[i].int)i=0;
+  var prev=cur,v0=visible(),back=prev>=0&&v0.indexOf(i)<v0.indexOf(prev);
+  if(prev===i)return;
+  cur=i;
+  var tok=++navTok,w=$('#wipe');
+  if(prev>=0&&!REDUCED){
+    var p=v0.indexOf(i);
+    w.querySelector('.wn').textContent=String(p+1).padStart(2,'0')+' / '+String(v0.length).padStart(2,'0');
+    w.querySelector('.wt').textContent=CH[i].label;
+    w.querySelector('.wq').textContent=CH[i].q||'';
+    w.className='wipe in'+(back?' back':'');
+    setTimeout(function(){if(tok!==navTok)return;show(i,back,noHash,true);
+      setTimeout(function(){if(tok!==navTok)return;w.className='wipe out'+(back?' back':'');
+        setTimeout(function(){if(tok!==navTok)return;w.className='wipe'},440)},170)},350);
+  } else show(i,back,noHash,false);
+}
+function show(i,back,noHash,wiped){
+  CH.forEach(function(c,k){var s=$('#ch-'+c.id);s.hidden=(k!==i);s.classList.remove('leave')});
+  var sec=$('#ch-'+CH[i].id);
+  sec.style.setProperty('--d0',wiped?'330ms':'120ms');
+  if(!REDUCED){sec.classList.remove('enter','back');$$(RVSEL,sec).forEach(function(e,k){e.classList.add('rv');e.style.setProperty('--i',Math.min(k,18))});void sec.offsetWidth;sec.classList.add('enter');if(back)sec.classList.add('back')}
+  if(CH[i].id==='intro')$$('#ch-intro .stat b').forEach(function(b){if(!b.dataset.n)b.dataset.n=b.textContent.replace(/,/g,'');b._v=0;tween(b,+b.dataset.n)});
+  $$('h1,h2',sec).forEach(splitWords);
+  requestAnimationFrame(inks);
+  if(CH[i].id==='global')geo(false,true);
+  if(CH[i].id==='problem')playProb(wiped?2300:1900);
+  if(CH[i].id==='why'){setMerge('two');clearTimeout(window._mt);window._mt=setTimeout(function(){if(CH[cur].id==='why')setMerge('one')},REDUCED?0:1500)}
+  $$('#rail button').forEach(function(b,k){b.setAttribute('aria-current',k===i?'true':'false');if(k===i){try{b.scrollIntoView({block:'nearest',inline:'center'})}catch(e){}}});
+  var v=visible(),p=v.indexOf(i);
+  $('#prog').style.width=((p+1)/v.length*100)+'%';
+  footNav(i);
+  if(!noHash){try{history.replaceState(null,'','#'+CH[i].id)}catch(e){}}
+  window.scrollTo(0,0);
+  if(CH[i].id==='run')renderRun();
+  if(CH[i].id==='reports')renderRep();
+}
+function footNav(i){
+  var nav=$('#footNav');nav.innerHTML='';
+  var v=visible(),p=v.indexOf(i);
+  if(p>0){var pv=CH[v[p-1]];var b=el('<button type="button"><span class="arw">←</span><span class="t"><small>Previous</small><b>'+pv.label+'</b></span></button>');b.onclick=function(){go(v[p-1])};nav.appendChild(b)}
+  nav.appendChild(el('<span class="pos">'+(p+1)+' / '+v.length+'</span>'));
+  if(p<v.length-1){var nx=CH[v[p+1]];var b2=el('<button type="button" class="nx"><span class="t"><small>Next</small><b>'+nx.label+'</b></span><span class="arw">→</span></button>');b2.onclick=function(){go(v[p+1])};nav.appendChild(b2)}
+}
+$$('[data-go]').forEach(function(b){b.addEventListener('click',function(){go(CH.findIndex(function(c){return c.id===b.dataset.go}))})});
+document.addEventListener('keydown',function(e){
+  var t=e.target.tagName;if(t==='INPUT'||t==='TEXTAREA'||t==='SELECT')return;
+  var v=visible(),p=v.indexOf(cur);
+  if(e.key==='ArrowRight'&&p<v.length-1)go(v[p+1]);
+  if(e.key==='ArrowLeft'&&p>0)go(v[p-1]);
+});
+function setNotes(on){document.body.classList.toggle('notes',on);$('#notesBtn').setAttribute('aria-pressed',String(on));try{localStorage.setItem('perfkit-notes',on?'1':'0')}catch(e){}}
+$('#notesBtn').addEventListener('click',function(){var on=!document.body.classList.contains('notes');setNotes(on);toast(on?'Notes on: detail and presenter notes shown':'Notes off: clean view')});
+try{if(localStorage.getItem('perfkit-notes')==='1')setNotes(true)}catch(e){}
+$('#fsBtn').addEventListener('click',function(){
+  try{if(document.fullscreenElement){document.exitFullscreen()}else{var p=document.documentElement.requestFullscreen();if(p&&p.catch)p.catch(function(){toast('Full screen is not available here')})}}catch(e){toast('Full screen is not available here')}
+});
+
+/* ---------------- run stepper ---------------- */
+var RS=[
+ {t:'Create a project and upload',d:'.jmx plus CSV data, or a whole folder'},
+ {t:'Set the load',d:'Users, duration, ramp-up, machines, Java'},
+ {t:'Distribute across regions',d:'Percentage of users per region'},
+ {t:'Run and watch',d:'Live counters and timeline'},
+ {t:'Read the reports',d:'Summary, Timeline, Request Stats, Errors, Logs'}
+];
+var rs=0,liveTimer=null;
+function renderRun(){
+  var s=$('#steps');s.innerHTML='';
+  RS.forEach(function(x,i){var b=el('<button type="button" class="stp'+(i<rs?' done':'')+'" aria-current="'+(i===rs)+'"><em>'+(i<rs?'✓':String(i+1).padStart(2,'0'))+'</em><div><b>'+x.t+'</b><span>'+x.d+'</span></div></button>');b.onclick=function(){_dir=i>rs?1:-1;rs=i;renderRun()};s.appendChild(b)});
+  clearInterval(liveTimer);
+  var body=$('#mockBody'),hint=$('#mockHint');swap(body);
+  $('#runPrev').disabled=rs===0;$('#runPrev').style.opacity=rs===0?.4:1;
+  $('#runNext').textContent=rs===RS.length-1?'Open reports chapter':'Next';
+  if(rs===0){
+    $('#mockUrl').textContent='hyperexecute / projects / new';
+    body.innerHTML='<div class="fld"><label>Project name<span class="inp on">checkout-perf</span></label><label>Framework<span class="inp">JMeter</span></label></div>'+
+     '<div class="drop">Drop .jmx, CSV files or a folder here</div>'+
+     '<div class="stack" style="gap:6px"><div class="file sel"><span>checkout_flow.jmx</span><span class="tag load">Test plan</span></div><div class="file"><span>users.csv</span><span class="tag">Data · 12,400 rows</span></div><div class="file"><span>products.csv</span><span class="tag">Data · 860 rows</span></div></div>';
+    hint.textContent='Existing plans upload unchanged, including custom thread groups.';
+  }else if(rs===1){
+    $('#mockUrl').textContent='hyperexecute / checkout-perf / run / load criteria';
+    body.innerHTML='<div class="label">Test Load Criteria</div><div class="fld">'+
+     '<label><span class="featlink" data-feat="users">Total Users</span><span class="inp on">500</span></label><label><span class="featlink" data-feat="dur">Duration (min)</span><span class="inp on">30</span></label>'+
+     '<label><span class="featlink" data-feat="ramp">Ramp-up Time (min)</span><span class="inp on">5</span></label><label><span class="featlink" data-feat="mach">Machine count</span><span class="inp">3</span></label>'+
+     '<label><span class="featlink" data-feat="java">Java Version</span><span class="inp">11 (default) · 25 available</span></label><label><span class="featlink" data-feat="labels">Job Labels</span><span class="inp">release-4.12, checkout</span></label></div>'+
+     '<button class="tog" type="button" aria-pressed="true" tabindex="-1"><span class="sw"></span><span><b class="featlink" data-feat="split">Split CSV</b><span>Each generator gets its own slice of users.csv so virtual users never collide</span></span></button>'+
+     '<div class="small muted">JMeter user properties you can override: <span class="mono">jmeter.save.saveservice.subresults</span> (smaller results) and <span class="mono">httpclient.socket.https.cps</span> (bandwidth limit, 0 = unlimited).</div>';
+    hint.textContent='Every field is a capability. Tap a label to see what it does.';
+  }else if(rs===2){
+    $('#mockUrl').textContent='hyperexecute / checkout-perf / run / load distribution';
+    var d=[['East US','Richmond, VA',60],['Central India','Pune',40],['West US 2','Moses Lake, WA',0],['Southeast Asia','Singapore',0],['Brazil South','São Paulo State',0],['Mexico Central','Querétaro State',0]];
+    body.innerHTML='<div class="label"><span class="featlink" data-feat="pct">Test Load Distribution</span></div>'+d.filter(function(r){return r[2]>0}).map(function(r){return '<div class="distrow"><span><b>'+r[0]+'</b> <span class="small muted">'+r[1]+'</span></span><span class="bar"><i style="width:'+r[2]+'%"></i></span><span class="mono" style="text-align:right">'+r[2]+'%</span></div>'}).join('')+'<div class="distrow addreg"><span>+ Add region</span><span></span><span></span></div>'+
+     '<button class="tog" type="button" aria-pressed="true" tabindex="-1"><span class="sw"></span><span><b class="featlink" data-feat="ovr">Total Load Distribution override on</b><span>500 users split 300 / 200 by region, then about 100 / 67 per machine. Without it, every machine in every region would run all 500.</span></span></button>';
+    hint.textContent='Tap a label for the capability. Multi-region is an Enterprise feature.';
+  }else if(rs===3){
+    $('#mockUrl').textContent='hyperexecute / jobs / checkout-perf #41';
+    body.innerHTML='<div class="row" style="justify-content:space-between"><span class="status run" id="lvStatus"><i></i>Running</span><span class="mono small muted" id="lvClock">00:00 / 30:00</span></div>'+
+     '<div class="live"><div><b id="lvU">0</b><span>Active users</span></div><div><b id="lvT">0</b><span>Throughput req/s</span></div><div><b id="lvR">0</b><span>p90 response ms</span></div><div><b id="lvE">0.0%</b><span>Error rate</span></div></div>'+
+     '<div class="mini"><svg viewBox="0 0 520 150" id="lvSvg"><line x1="30" y1="130" x2="510" y2="130" stroke="rgba(16,32,64,.18)"/><text x="0" y="16">users</text><path id="lvPU" fill="none" stroke="#1E56E3" stroke-width="2"/><path id="lvPR" fill="none" stroke="#0D9488" stroke-width="1.5" stroke-dasharray="4 3"/></svg></div>'+
+     '<div class="small muted">Generators: 6 healthy · East US 3, Central India 3</div>';
+    hint.textContent='Reports update live while the run is in progress.';
+    startLive();
+  }else{
+    $('#mockUrl').textContent='hyperexecute / jobs / checkout-perf #41 / summary';
+    body.innerHTML='<div class="row"><span class="status ok"><i></i>Completed</span><span class="small muted">30 min · 500 users · 2 regions</span></div><div class="tiles" style="grid-template-columns:repeat(3,minmax(0,1fr))">'+
+     tile('Virtual users','500','')+tile('Avg response','412','ms')+tile('Avg throughput','238','req/s')+tile('Error','1.8','%')+tile('90th percentile','780','ms')+tile('Avg bandwidth','3.1','MB/s')+'</div><div class="small muted">Five reports are attached to the job: Summary, Timeline, Request Stats, Errors, Logs.</div>';
+    hint.textContent='Open the Reports chapter to explore each tab.';
+  }
+}
+function tile(l,v,u){return '<div class="tile"><span>'+l+'</span><b>'+v+'</b><small>'+u+'</small></div>'}
+function startLive(){
+  var t=0,T=60,pu=[],pr=[];
+  function f(){
+    var m=t/T*30,u=m<5?Math.round(500*m/5):(m>28?Math.round(500*(30-m)/2):500);
+    var r=Math.round(240+u*.9+(m>18&&m<24?220*Math.sin((m-18)/6*Math.PI):0)+Math.sin(t*1.7)*18);
+    var x=30+t/T*480;pu.push(x+','+(130-u/500*110));pr.push(x+','+(130-Math.min(r,1200)/1200*110));
+    var a=$('#lvPU');if(!a){clearInterval(liveTimer);return}
+    a.setAttribute('d','M'+pu.join(' L'));$('#lvPR').setAttribute('d','M'+pr.join(' L'));
+    $('#lvU').textContent=fmt(u);$('#lvT').textContent=fmt(u*.476+Math.sin(t)*4);$('#lvR').textContent=fmt(r);
+    $('#lvE').textContent=(m>18&&m<24?2.4+Math.sin(t)*.6:.3+Math.abs(Math.sin(t))*.3).toFixed(1)+'%';
+    var mm=Math.floor(m),ss=Math.round((m-mm)*60)%60;$('#lvClock').textContent=String(mm).padStart(2,'0')+':'+String(ss).padStart(2,'0')+' / 30:00';
+    t++;if(t>T){clearInterval(liveTimer);var s=$('#lvStatus');s.className='status ok';s.innerHTML='<i></i>Completed'}
+  }
+  if(REDUCED){t=0;pu=[];pr=[];while(t<=T)f();return}
+  f();liveTimer=setInterval(f,120);
+}
+$('#runPrev').onclick=function(){if(rs>0){_dir=-1;rs--;renderRun()}};
+$('#runNext').onclick=function(){if(rs<RS.length-1){_dir=1;rs++;renderRun()}else go(CH.findIndex(function(c){return c.id==='reports'}))};
+
+/* ---------------- load lab ---------------- */
+var REG=[{id:'eus',n:'East US',c:'Richmond, VA'},{id:'wus',n:'West US 2',c:'Moses Lake, WA'},{id:'cin',n:'Central India',c:'Pune'},{id:'sea',n:'Southeast Asia',c:'Singapore'},{id:'brs',n:'Brazil South',c:'São Paulo State'},{id:'mxc',n:'Mexico Central',c:'Querétaro State'}];
+var PLANS=[
+ {n:'Free',p:'$0',pm:'',vu:100,dur:40,gen:1,vuh:'100',vuhN:100,multi:false,note:'Introductory VU-hours'},
+ {n:'Basic',p:'$79',pm:'$99 monthly',vu:2000,dur:120,gen:2,vuh:'2,000',vuhN:2000,multi:false,note:'Introductory VU-hours'},
+ {n:'Pro',p:'$349',pm:'$449 monthly',vu:8000,dur:360,gen:20,vuh:'8,000',vuhN:8000,multi:false,note:''},
+ {n:'Enterprise',p:'Custom',pm:'',vu:Infinity,dur:Infinity,gen:Infinity,vuh:'Custom',vuhN:Infinity,multi:true,note:'Multi-region, access controls, premium support'}
+];
+var labRegs={eus:true,cin:true},ovr=false;
+var rg=$('#lRegs');
+REG.forEach(function(r){var b=el('<button type="button" class="chip" data-r="'+r.id+'" aria-pressed="'+(!!labRegs[r.id])+'">'+r.n+'</button>');b.onclick=function(){if(labRegs[r.id]&&Object.keys(labRegs).filter(function(k){return labRegs[k]}).length===1)return toast('Keep at least one region');labRegs[r.id]=!labRegs[r.id];b.setAttribute('aria-pressed',String(!!labRegs[r.id]));lab()};rg.appendChild(b)});
+$('#lOvr').onclick=function(){ovr=!ovr;this.setAttribute('aria-pressed',String(ovr));lab()};
+['lUsers','lDur','lMach'].forEach(function(id){$('#'+id).addEventListener('input',lab)});
+function split(n,k){var a=[],b=Math.floor(n/k),r=n-b*k;for(var i=0;i<k;i++)a.push(b+(i<r?1:0));return a}
+function lab(){
+  var U=+$('#lUsers').value,D=+$('#lDur').value,M=+$('#lMach').value;
+  var regs=REG.filter(function(r){return labRegs[r.id]}),R=regs.length;
+  $('#oUsers').textContent=fmt(U);$('#oDur').textContent=D>=60?(Math.floor(D/60)+' h '+(D%60?D%60+' min':'')).trim():D+' min';$('#oMach').textContent=M;$('#oReg').textContent=R+' selected';
+  var per=split(100,R),actual=0,peak=0,fl=$('#fleet');fl.innerHTML='';
+  regs.forEach(function(r,i){
+    var ru=ovr?Math.round(U*per[i]/100):U*M;
+    var ms=ovr?split(Math.round(U*per[i]/100),M):Array(M).fill(U);
+    if(ovr&&i===R-1){var used=regs.slice(0,-1).reduce(function(s,_,j){return s+Math.round(U*per[j]/100)},0);ms=split(U-used,M);ru=U-used}
+    actual+=ovr?ru:U*M;
+    ms.forEach(function(x){peak=Math.max(peak,x)});
+    var row=el('<div class="reg"><span>'+r.n+'<small>'+(ovr?per[i]+'% · ':'')+fmt(ovr?ru:U*M)+' users</small></span><div class="ms"></div></div>');
+    ms.forEach(function(x,k){row.lastChild.appendChild(el('<div class="m '+(x>2000?'hot':'lit')+'"><small>gen '+(k+1)+'</small>'+fmt(x)+'</div>'))});
+    fl.appendChild(row);
+  });
+  var vuh=actual*D/60;
+  tween($('#vActual'),actual);tween($('#vVuh'),vuh);tween($('#vPer'),peak);
+  var key=M+'|'+R+'|'+ovr;if(key!==lab._k){lab._k=key;fl.classList.remove('popin');void fl.offsetWidth;fl.classList.add('popin')}
+  $('#bActual').className=actual>U?'warnv':'okv';
+  $('#fleetNote').textContent=(M*R)+' generators · '+(peak>2000?'over the 2,000 per-machine planning ceiling':'within the per-machine ceiling');
+  var need={vu:actual,dur:D,gen:M*R,multi:R>1},fit=null,pf=$('#planfit');pf.innerHTML='';
+  PLANS.forEach(function(p){
+    var ok=need.vu<=p.vu&&need.dur<=p.dur&&need.gen<=p.gen&&(!need.multi||p.multi);
+    if(ok&&!fit)fit=p;
+    pf.appendChild(el('<div class="pf '+(fit===p?'fit':(ok?'':'no'))+'"><b>'+p.n+'</b>'+(p.vu===Infinity?'Custom':fmt(p.vu)+' VUs · '+(p.dur>=60?p.dur/60+' h':p.dur+' min'))+'</div>'));
+  });
+  var why=[];
+  if(need.multi)why.push(R+' regions needs Enterprise (other plans run one region)');
+  if(fit&&fit.vuhN!==Infinity)why.push('this run uses about '+Math.round(vuh/fit.vuhN*100)+'% of '+fit.n+'\'s '+fit.vuh+' monthly VU-hours');
+  if(peak>2000)why.push('add machines: one generator is above the 2,000-user JMeter planning ceiling');
+  $('#planWhy').textContent=why.length?('Why: '+why.join('; ')+'.'):'Fits on '+fit.n+'.';
+  var say=$('#labSay');
+  if(!ovr&&actual>U){say.innerHTML='<span class="ic">What this means</span><div><b>You typed '+fmt(U)+' users; this run would generate '+fmt(actual)+'.</b> That is '+(M*R)+'x the load and '+(M*R)+'x the VU-hours. Turn on Total Load Distribution and the same form gives you exactly '+fmt(U)+' users split across '+R+' region'+(R>1?'s':'')+'.</div>'}
+  else{say.innerHTML='<span class="ic">What this means</span><div><b>'+fmt(U)+' users, exactly as planned</b>, spread over '+(M*R)+' generator'+(M*R>1?'s':'')+' with at most '+fmt(peak)+' users on any one machine. About '+fmt(vuh)+' VU-hours for a '+D+'-minute run.</div>'}
+}
+lab();
+
+/* ---------------- tools ---------------- */
+function y(s){return esc(s).replace(/^(\s*)(#.*)$/gm,'$1<span class="c">$2</span>').replace(/^(\s*-?\s*)([A-Za-z_][\w.-]*):/gm,'$1<span class="k">$2</span>:').replace(/(&quot;[^&]*&quot;|"[^"]*")/g,'<span class="s">$1</span>').replace(/: (\d+(\.\d+)?|true|false)\s*$/gm,': <span class="n">$1</span>')}
+var TOOLS=[
+ {id:'jmeter',n:'JMeter',st:['Portal','doc'],
+  kv:[['Runs','Existing .jmx plans unchanged, standard and custom thread groups'],['Upload','.jmx, CSV data files or whole folders through a project'],['Load control','Total Users, Duration, Ramp-up, Machine count, Total Load Distribution, Split CSV, Java 11 or 25, Job Labels'],['Automate','Schedule nightly or chained runs with Workflows'],['Reports','Summary, Timeline, Request Stats, Errors, Logs'],['Per generator','Plan for up to about 2,000 users per machine']],
+  lab:'Portal run form',
+  code:'# Test Load Criteria\nTotal Users:          500\nDuration (min):       30\nRamp-up Time (min):   5\nMachine count:        3\nJava Version:         11        # 25 also available\nSplit CSV:            on        # each generator gets its own rows\nJob Labels:           release-4.12, checkout\n\n# Test Load Distribution (Enterprise: multi-region)\nEast US:              60%\nCentral India:        40%\nTotal Load Distribution override: on\n\n# JMeter user properties you can override\njmeter.save.saveservice.subresults: false   # smaller results file\nhttpclient.socket.https.cps: 0              # bandwidth cap, 0 = unlimited',
+  note:'Field names as they appear in the portal. With the override on, 500 users means 500 users in total.'},
+ {id:'gatling',n:'Gatling',st:['Portal, YAML, CLI','doc'],
+  kv:[['Runs','Gatling Java DSL simulations (.java)'],['Portal test types','Capacity (initial to final users), Stress (total injected users), Soak (constant arrival rate)'],['Per region','% of traffic, max users per engine (default 2,000), global timeout (default 90 min)'],['CI','hyperexecute.yaml plus the CLI, which returns an exit code'],['Reports','Job Summary, Scenarios, Logs, and the full Gatling HTML report as an artifact'],['Tip','Read load values from system properties so portal fields apply']],
+  lab:'hyperexecute.yaml for a Gatling simulation (sample)',
+  code:'version: 0.1\nrunson: linux\nautosplit: true\nconcurrency: 1\nscenarioCommandStatusOnly: true\n\nruntime:\n  language: java\n  version: "17"\n\npre:\n  - mvn dependency:resolve\n\nvars:\n  users: 200\n  duration: 300\n\ntestDiscovery:\n  type: raw\n  mode: local\n  command: echo "com.acme.CheckoutSimulation"\n\ntestRunnerCommand: mvn gatling:test -Dgatling.simulationClass=$test -Dusers=${users} -Dduration=${duration}\n\nuploadArtefacts:\n  - name: GatlingReport\n    path:\n      - target/gatling/**\n\nretryOnFailure: true\nmaxRetries: 1',
+  note:'Simplified sample. Raise users from a pipeline variable without a code change.'},
+ {id:'k6',n:'k6',st:['YAML, CLI','doc'],
+  kv:[['Runs','k6 JavaScript tests through hyperexecute.yaml'],['Distribution','autosplit spreads scripts across machines'],['Pass/fail','k6 thresholds in the script set the exit code'],['Browser mode','Optional, with k6 browser settings'],['Trigger','CLI from any pipeline']],
+  lab:'hyperexecute.yaml for k6 (sample)',
+  code:'version: 0.1\nrunson: linux\nautosplit: true\nconcurrency: 2\n\nruntime:\n  addons:\n    - name: k6\n      version: "0.52.0"\n\ntestDiscovery:\n  type: raw\n  mode: local\n  command: ls tests/*.js\n\ntestRunnerCommand: k6 run $test',
+  note:'Simplified sample based on the k6 setup guide.'},
+ {id:'cli',n:'CI pipeline',st:['CLI','doc'],
+  kv:[['How','Download the HyperExecute CLI, export LT_USERNAME and LT_ACCESS_KEY, run one command'],['Exit code','The CLI returns an exit code your pipeline can act on'],['Where','Jenkins, GitHub Actions, GitLab, Azure DevOps and any CI that can run a binary'],['Scheduling','Workflows run nightly or chained jobs'],['Hygiene','A .hyperexecuteignore keeps secrets and local files out of uploads'],['One CLI','The same binary runs functional and load jobs']],
+  lab:'GitHub Actions step (sample)',
+  code:'- name: Load test on HyperExecute\n  env:\n    LT_USERNAME: ${{ secrets.LT_USERNAME }}\n    LT_ACCESS_KEY: ${{ secrets.LT_ACCESS_KEY }}\n  run: |\n    curl -sO https://downloads.lambdatest.com/hyperexecute/linux/hyperexecute\n    chmod u+x hyperexecute\n    ./hyperexecute --user $LT_USERNAME --key $LT_ACCESS_KEY \\\n      --config hyperexecute.yaml --vars "users=400"',
+  note:'For Gatling and k6. JMeter runs start from the portal or on a Workflows schedule.'}
+];
+var tSel=0;
+var tt=$('#toolTabs');
+TOOLS.forEach(function(t,i){var b=el('<button type="button" role="tab" aria-selected="'+(i===0)+'">'+t.n+'</button>');b.onclick=function(){_dir=i>tSel?1:-1;tSel=i;$$('#toolTabs button').forEach(function(x,k){x.setAttribute('aria-selected',String(k===i))});renderTool()};tt.appendChild(b)});
+function renderTool(){
+  var t=TOOLS[tSel];
+  $('#toolInfo').innerHTML='<div class="row" style="justify-content:space-between;margin-bottom:14px"><h3>'+t.n+'</h3><span class="tag '+t.st[1]+'">'+t.st[0]+'</span></div><dl class="kv">'+t.kv.map(function(k){return '<dt>'+k[0]+'</dt><dd>'+k[1]+'</dd>'}).join('')+'</dl>';
+  swap($('#toolInfo'));swap($('#toolCode'));$('#codeLabel').textContent=t.lab;$('#toolCode').innerHTML=y(t.code);$('#codeNote').textContent=t.note;
+}
+$('#copyCode').onclick=function(){copyText(TOOLS[tSel].code)};
+renderTool();
+
+/* ---------------- reports ---------------- */
+var unit='ms',rTab=0;
+var REQ=[['POST /api/login',41280,186,310,402,690,0.2],['GET /api/products',98760,142,240,288,512,0.1],['GET /api/products/:id',76420,168,276,331,580,0.3],['POST /api/cart',38110,388,702,861,1420,1.9],['POST /api/checkout',18630,912,1640,2110,3480,6.8],['GET /api/orders',22090,221,384,452,820,0.4]];
+var ERRS=[['503 Service Unavailable',1046,'POST /api/checkout'],['504 Gateway Timeout',212,'POST /api/checkout'],['500 Internal Server Error',731,'POST /api/cart'],['429 Too Many Requests',94,'POST /api/login']];
+var RT=['Summary','Timeline','Request Stats','Errors','Logs'];
+var rtb=$('#repTabs');
+RT.forEach(function(n,i){var b=el('<button type="button" role="tab" aria-selected="'+(i===0)+'">'+n+'</button>');b.onclick=function(){_dir=i>rTab?1:-1;rTab=i;$$('#repTabs button').forEach(function(x,k){x.setAttribute('aria-selected',String(k===i))});renderRep()};rtb.appendChild(b)});
+$$('#unitSeg button').forEach(function(b){b.onclick=function(){unit=b.dataset.u;$$('#unitSeg button').forEach(function(x){x.setAttribute('aria-pressed',String(x===b))});renderRep()}});
+function t(ms){return unit==='ms'?fmt(ms):(ms/1000).toFixed(2)}
+function timeline(){
+  var W=860,H=280,L=48,Rr=48,T=16,B=36,pw=W-L-Rr,ph=H-T-B,n=60,u=[],r=[],e=[];
+  for(var i=0;i<=n;i++){var m=i/n*30;var uu=m<5?500*m/5:500;var spike=(m>18&&m<24)?600*Math.sin((m-18)/6*Math.PI):0;var rr=230+uu*.95+spike+12*Math.sin(i*1.3);u.push(uu);r.push(rr);e.push(m>18&&m<24?2+4*Math.sin((m-18)/6*Math.PI):.3)}
+  function X(i){return L+i/n*pw}function YU(v){return T+ph-v/500*ph}function YR(v){return T+ph-v/1600*ph}
+  var g='';[0,400,800,1200,1600].forEach(function(v){g+='<line x1="'+L+'" x2="'+(W-Rr)+'" y1="'+YR(v)+'" y2="'+YR(v)+'" stroke="rgba(16,32,64,.07)"/><text x="'+(W-Rr+8)+'" y="'+(YR(v)+4)+'">'+t(v)+'</text>'});
+  [0,250,500].forEach(function(v){g+='<text x="'+(L-8)+'" y="'+(YU(v)+4)+'" text-anchor="end">'+v+'</text>'});
+  [0,5,10,15,20,25,30].forEach(function(m){g+='<text x="'+X(m/30*n)+'" y="'+(H-12)+'" text-anchor="middle">'+m+'m</text>'});
+  var bars=e.map(function(v,i){var h=v/10*ph*.5;return '<rect class="grow" style="animation-delay:'+(i*12)+'ms" x="'+(X(i)-3)+'" y="'+(T+ph-h)+'" width="6" height="'+h+'" fill="#D93A52" opacity=".55"/>'}).join('');
+  var pu='M'+u.map(function(v,i){return X(i)+','+YU(v)}).join(' L');
+  var pr='M'+r.map(function(v,i){return X(i)+','+YR(v)}).join(' L');
+  return '<div class="legend" style="margin-bottom:8px"><span><i style="background:#1E56E3"></i>Active users (left axis)</span><span><i style="background:#0D9488"></i>Avg response time, '+unit+' (right axis)</span><span><i style="background:#D93A52"></i>Error %</span></div><div class="chart" style="overflow-x:auto"><svg viewBox="0 0 '+W+' '+H+'" style="min-width:560px">'+g+bars+'<path class="draw" pathLength="1" d="'+pu+'" fill="none" stroke="#1E56E3" stroke-width="2.4"/><path class="draw" style="animation-delay:.25s" pathLength="1" d="'+pr+'" fill="none" stroke="#0D9488" stroke-width="2"/><line x1="'+L+'" x2="'+(W-Rr)+'" y1="'+(T+ph)+'" y2="'+(T+ph)+'" stroke="rgba(16,32,64,.2)"/><text x="'+X(21/30*n)+'" y="'+(T+12)+'" text-anchor="middle" style="fill:#D93A52">checkout saturates at minute 18 to 24</text></svg></div><p class="small muted" style="margin-top:8px">Read it the way a performance engineer does: users held at 500, response time climbs from minute 18 while errors rise. The application failed before the generators did (Task Metrics shows generator CPU under 40%).</p>';
+}
+function renderRep(){
+  var b=$('#repBody');swap(b);
+  if(rTab===0){b.innerHTML='<div class="tiles">'+tile('Virtual users','500','')+tile('Avg response',t(412),unit)+tile('Avg throughput','238','req/s')+tile('Error','1.8','%')+tile('90th percentile',t(780),unit)+tile('Avg bandwidth','3.1','MB/s')+'</div><div style="margin-top:16px">'+timeline()+'</div>'}
+  else if(rTab===1){b.innerHTML=timeline()}
+  else if(rTab===2){b.innerHTML='<div class="tbl-wrap"><table><thead><tr><th>Request</th><th class="num">Samples</th><th class="num">Avg '+unit+'</th><th class="num">p90</th><th class="num">p95</th><th class="num">p99</th><th class="num">Error %</th></tr></thead><tbody>'+REQ.map(function(r){return '<tr><td class="mono">'+r[0]+'</td><td class="num">'+fmt(r[1])+'</td><td class="num">'+t(r[2])+'</td><td class="num">'+t(r[3])+'</td><td class="num">'+t(r[4])+'</td><td class="num">'+t(r[5])+'</td><td class="num" style="color:'+(r[6]>1?'var(--bad)':'var(--text-sec)')+'">'+r[6].toFixed(1)+'</td></tr>'}).join('')+'</tbody></table></div><p class="small muted" style="margin-top:8px">Per-request statistics with 90th, 95th and 99th percentiles. The checkout call is the outlier.</p>'}
+  else if(rTab===3){var mx=ERRS[0][1];b.innerHTML='<div class="tbl-wrap"><table><thead><tr><th>Code</th><th class="num">Count</th><th>Distribution</th><th>Top request</th></tr></thead><tbody>'+ERRS.map(function(r){return '<tr><td><b>'+r[0]+'</b></td><td class="num">'+fmt(r[1])+'</td><td><span class="ebar" style="width:'+Math.max(6,r[1]/mx*160)+'px"></span></td><td class="mono small">'+r[2]+'</td></tr>'}).join('')+'</tbody></table></div><p class="small muted" style="margin-top:8px">Errors grouped by response code with counts and a sample distribution.</p>'}
+  else{b.innerHTML='<div class="logs">[gen eus-1] 2026-10-19 10:00:02 INFO  Starting JMeter 5.6.3, plan checkout_flow.jmx, 100 threads\n[gen eus-1] 2026-10-19 10:00:02 INFO  Split CSV: users.csv rows 1-2067\n[gen cin-2] 2026-10-19 10:00:03 INFO  Ramp-up 300 s, hold 1500 s\n[gen eus-3] 2026-10-19 10:18:41 WARN  POST /api/checkout 503 in 2,914 ms\n[gen cin-1] 2026-10-19 10:19:07 WARN  POST /api/cart 500 in 1,402 ms\n[gen eus-2] 2026-10-19 10:24:12 INFO  Error rate back under 1%\n[job]       2026-10-19 10:30:05 INFO  Run complete, 295,290 samples, 6 generators released</div><p class="small muted" style="margin-top:8px">Logs per generator, so a hot region or machine is easy to spot.</p>'}
+}
+renderRep();
+
+/* ---------------- migrate: profiles ---------------- */
+var PROF=[
+ {k:'A',n:'Upload and run',d:'.jmx through the UI, manual runs',e:1,eff:'Days',runs:'Plain .jmx files uploaded through the BlazeMeter UI, runs started by hand, HTTP APIs.',say:'Export your plans, upload them, run. One contract with your functional testing, the same scripts and the reports you already read.',steps:['Export .jmx and CSV files','Trial run in one region at 10% load','Parity run at target load, compare p90 and errors','Switch at renewal']},
+ {k:'B',n:'Advanced JMeter',d:'Plugins, many thread groups, CSV data',e:2,eff:'One to two weeks',runs:'.jmx with Plugins Manager components, custom thread groups and several CSV files.',say:'Your plans run as written. We validate each one in a short trial, plugin by plugin, before you commit.',steps:['List plugins and custom samplers','Trial run each .jmx on the Free plan','Adjust anything that does not load','Parity run, then move test by test']},
+ {k:'C',n:'Pipeline-driven',d:'Taurus or a CI plugin',e:3,eff:'Planned with our team',runs:'Taurus YAML or a CI plugin in the pipeline, with pass/fail criteria on the build.',say:'Gatling and k6 move straight into your pipeline through the CLI. JMeter runs move to the portal and Workflows schedules, with results reviewed on the reports.',steps:['Map your Taurus YAML with the tool below','Gatling and k6: add the CLI step','JMeter: schedule nightly with Workflows','Agree review thresholds on p90 and error %']},
+ {k:'D',n:'Enterprise performance team',d:'Private locations, APM, very high scale',e:4,eff:'Phased',runs:'Private Locations behind the firewall, APM integrations and peak-event tests at very high scale.',say:'Start with release regression: API load on every build, next to your functional suite. Keep specialist peak-event work where it runs today and move more at each renewal.',steps:['Pick the API regression tests','Run them nightly on HyperExecute','Share results with the release team','Extend coverage each quarter']},
+ {k:'E',n:'Functional tests',d:'BlazeMeter GUI or API functional tests',e:1,eff:'Days',runs:'BlazeMeter GUI functional or API functional tests.',say:'Functional execution is what HyperExecute was built for: parallel runs across many machines, with load testing in the same contract.',steps:['Run the functional suite on HyperExecute','Compare run time with today','Add load runs to the same account','Consolidate at renewal']}
+];
+var pSel=0,pb=$('#prof');
+PROF.forEach(function(p,i){var b=el('<button type="button" class="profb" aria-pressed="'+(i===0)+'"><em>'+p.eff+'</em><b>'+p.n+'</b><span>'+p.d+'</span><div class="effort e'+p.e+'"><i></i><i></i><i></i><i></i></div></button>');b.onclick=function(){_dir=i>pSel?1:-1;pSel=i;$$('#prof .profb').forEach(function(x,k){x.setAttribute('aria-pressed',String(k===i))});renderProf()};pb.appendChild(b)});
+function renderProf(){var p=PROF[pSel];swap($('#profD'));$('#profD').innerHTML='<div class="grid g3"><div><div class="label" style="margin-bottom:6px">What you run on BlazeMeter</div><p class="muted" style="font-size:13.5px">'+p.runs+'</p><div class="label" style="margin:14px 0 6px">Effort to move</div><p style="font-weight:700">'+p.eff+'</p></div><div><div class="label" style="margin-bottom:6px">Your path</div><p style="font-size:15px;font-weight:600;line-height:1.5">'+p.say+'</p></div><div><div class="label" style="margin-bottom:6px">Steps</div><ul class="dotl">'+p.steps.map(function(s){return '<li>'+s+'</li>'}).join('')+'</ul></div></div>'}
+renderProf();
+
+/* ---------------- migrate: taurus mapper ---------------- */
+var SAMPLE='execution:\n- executor: jmeter\n  scenario: checkout\n  concurrency: 600\n  ramp-up: 5m\n  hold-for: 25m\n  locations:\n    us-east-1: 2\n    ap-south-1: 1\n    eu-west-1: 1\n  locations-weighted: true\n\nscenarios:\n  checkout:\n    script: checkout_flow.jmx\n    data-sources:\n    - path: users.csv\n\nreporting:\n- module: passfail\n  criteria:\n  - avg-rt>800ms for 30s, stop as failed\n  - fail>2% for 60s, stop as failed\n\nmodules:\n  jmeter:\n    plugins:\n    - jpgc-casutg\n';
+$('#taurus').value=SAMPLE;
+$('#tSample').onclick=function(){$('#taurus').value=SAMPLE;mapT()};
+$('#tRun').onclick=mapT;
+$('#tCap').addEventListener('input',mapT);
+function secs(v){if(v==null)return null;var m=String(v).trim().match(/^(\d+(?:\.\d+)?)\s*(ms|s|m|h|d)?$/i);if(!m){var tot=0,ok=false;String(v).replace(/(\d+)\s*(h|m|s)/gi,function(_,n,u){ok=true;tot+=+n*({h:3600,m:60,s:1})[u.toLowerCase()]});return ok?tot:null}var n=+m[1],u=(m[2]||'s').toLowerCase();return n*({ms:.001,s:1,m:60,h:3600,d:86400})[u]}
+function mapRegion(k){var s=k.toLowerCase();
+  if(/^[0-9a-f]{24}$/.test(s)||/harbor|private/.test(s))return {p:true};
+  if(/mexico/.test(s))return {r:'Mexico Central'};
+  if(/sa-east|southamerica|brazil/.test(s))return {r:'Brazil South'};
+  if(/ap-southeast|asia-southeast|southeastasia|singapore/.test(s))return {r:'Southeast Asia'};
+  if(/ap-south|asia-south|india|mumbai/.test(s))return {r:'Central India'};
+  if(/us-west|westus|us-central|northamerica-west/.test(s))return {r:'West US 2'};
+  if(/us-east|eastus|northamerica-northeast|ca-central/.test(s))return {r:'East US'};
+  if(/eu|europe|uk|london|frankfurt|ireland|paris/.test(s))return {gap:'Europe'};
+  if(/ap-northeast|asia-northeast|japan|tokyo|seoul/.test(s))return {gap:'North Asia'};
+  if(/australia|ap-southeast-2|sydney/.test(s))return {gap:'Australia'};
+  if(/me-|middle|africa/.test(s))return {gap:'Middle East / Africa'};
+  return {gap:'unknown region'};
+}
+function mapT(){
+  var src=$('#taurus').value,cap=+$('#tCap').value;$('#oCap').textContent=fmt(cap);
+  var lines=src.split(/\r?\n/);
+  function get(key){var re=new RegExp('^\\s*-?\\s*'+key+'\\s*:\\s*(.+?)\\s*$','m');var m=src.match(re);return m?m[1].replace(/^["']|["']$/g,''):null}
+  var ex=(get('executor')||'jmeter').toLowerCase(),conc=get('concurrency'),ru=get('ramp-up'),hold=get('hold-for'),iters=get('iterations'),script=get('script'),thr=get('throughput');
+  var locs=[],inL=false,ind=0;
+  lines.forEach(function(l){
+    if(/^\s*locations\s*:\s*$/.test(l)){inL=true;ind=l.match(/^\s*/)[0].length;return}
+    if(inL){var li=l.match(/^\s*/)[0].length;if(!l.trim()){return}if(li<=ind){inL=false;return}var m=l.match(/^\s*([\w.:-]+)\s*:\s*(\d+(?:\.\d+)?)\s*$/);if(m)locs.push([m[1],+m[2]])}
+  });
+  var rows=[],flags=[],block=false;
+  function row(f,v,from,st){rows.push('<tr><td><b>'+f+'</b></td><td class="mono">'+v+'</td><td class="mono small muted">'+from+'</td><td><span class="tag '+st[1]+'">'+st[0]+'</span></td></tr>')}
+  var exMap={jmeter:'JMeter project upload',gatling:'Gatling project (Java DSL)',k6:'k6 via hyperexecute.yaml',locust:'Not supported',selenium:'Functional suite on HyperExecute',apiritif:'Rewrite as JMeter'};
+  var exS=ex==='locust'||ex==='apiritif'?['Not supported','no']:(ex==='k6'?['Check version','ver']:['Ready','doc']);
+  if(ex==='locust'){block=true;flags.push(['no','Locust is not supported','Keep Locust tests where they run today and move JMeter, Gatling and k6 tests.'])}
+  if(ex==='selenium')flags.push(['doc','Functional test, not load','Run it as a functional suite on HyperExecute, which is built for parallel functional execution.']);
+  row('Framework',exMap[ex]||ex,'executor: '+ex,exS);
+  if(script)row('Upload',esc(script),'script',/\.jmx$/i.test(script)||ex!=='jmeter'?['Ready','doc']:['Review','ver']);
+  else flags.push(['ver','No script file found','Taurus generates a .jmx for inline requests. Export it from a BlazeMeter run and upload that.']);
+  var U=conc?Math.round(+conc):null;
+  if(U)row('Total Users',fmt(U),'concurrency: '+conc,['Ready','doc']);else flags.push(['ver','No concurrency set','Set target peak users in Total Users; the script may be driving load today.']);
+  var rs_=secs(ru),hs=secs(hold);
+  if(rs_!=null)row('Ramp-up Time (min)',Math.ceil(rs_/60),'ramp-up: '+ru,['Ready','doc']);
+  if(rs_!=null||hs!=null){var dm=Math.ceil(((rs_||0)+(hs||0))/60);row('Duration (min)',dm,'ramp-up + hold-for',dm>360?['Enterprise','ver']:['Ready','doc']);if(dm>120)flags.push(['ver','Run longer than 120 minutes','Spread long soak runs across machines. Pro allows runs up to 6 hours.'])}
+  if(iters&&!hold)flags.push(['ver','Iteration-based run','Set a duration instead of an iteration count.']);
+  if(thr)flags.push(['ver','Throughput shaping','Taurus throughput: '+esc(thr)+'. Keep a Constant Throughput Timer in the .jmx.']);
+  var dist=[],tot=locs.reduce(function(s,l){return s+l[1]},0)||1,gaps=[];
+  locs.forEach(function(l){var m=mapRegion(l[0]);if(m.p){block=true;flags.push(['no','Private Location: '+esc(l[0]),'Agents inside your network are not used. Generators run in HyperExecute regions with static outbound IPs you can allowlist.'])}else if(m.gap){gaps.push(l[0]+' ('+m.gap+')')}else{var ex2=dist.find(function(d){return d[0]===m.r});if(ex2)ex2[1]+=l[1];else dist.push([m.r,l[1]])}});
+  var dtot=dist.reduce(function(s,d){return s+d[1]},0);
+  if(gaps.length)flags.push(['ver','No matching HyperExecute region','For '+esc(gaps.join(', '))+'. Its share is spread across the mapped regions.']);
+  if(dist.length){
+    var pct=dist.map(function(d){return [d[0],Math.round(d[1]/dtot*100)]});var diff=100-pct.reduce(function(s,p){return s+p[1]},0);pct[0][1]+=diff;
+    row('Total Load Distribution',pct.map(function(p){return p[0]+' '+p[1]+'%'}).join('<br>'),'locations',dist.length>1?['Enterprise','load']:['Ready','doc']);
+    if(U){var maxR=Math.max.apply(null,pct.map(function(p){return U*p[1]/100}));var mc=Math.max(1,Math.ceil(maxR/cap));row('Machine count',mc+' per region','users ÷ '+fmt(cap)+' per machine',['Sized','doc'])}
+    row('Override','On','splits users, no replication',['Set','load']);
+  }else if(!locs.length){row('Region','East US (default)','no locations',['Ready','doc']);if(U){row('Machine count',Math.max(1,Math.ceil(U/cap)),'users ÷ '+fmt(cap)+' per machine',['Sized','doc']);row('Override','On','splits users, no replication',['Set','load'])}}
+  if(/data-sources|\.csv/i.test(src))row('Split CSV','On','data-sources',['Ready','doc']);
+  if(/passfail|criteria\s*:/i.test(src))flags.push(['ver','Pass/fail criteria','For JMeter, review p90 and error % in Summary and Request Stats after each run. For k6, thresholds in the script set the exit code.']);
+  if(/datadog|newrelic|new-relic|dynatrace|appdynamics|cloudwatch|monitoring/i.test(src))flags.push(['ver','APM integration','Correlate with server metrics in your APM by run time and job label. Task Metrics shows generator health.']);
+  if(/plugins\s*:|jpgc|bzm-|blazemeter\.jmeter/i.test(src))flags.push(['ver','JMeter plugins','Include every plugin in the trial run to confirm it loads.']);
+  if(/^\s*properties\s*:/m.test(src))flags.push(['ver','JMeter properties set in Taurus','Two properties are overridable in the portal. Keep the rest in the .jmx.']);
+  if(/provisioning\s*:\s*cloud|module\s*:\s*blazemeter/i.test(src))flags.push(['ver','Run from CI via Taurus','Gatling and k6 run from your pipeline with the CLI. JMeter runs start from the portal or a Workflows schedule.']);
+  if(!flags.length)flags.push(['doc','Nothing to change','Trial run in one region, then a parity run.']);
+  $('#tOut').innerHTML=rows.join('')||'<tr><td colspan="4" class="muted">Paste a Taurus or BlazeMeter config to map it.</td></tr>';
+  var verdict=block?['ver','Phased move','Move the tests that map, and keep the rest where they run today.']:['doc','Ready to move','Maps to HyperExecute. Review the notes below, then plan a trial run and a parity run.'];
+  $('#tFlags').innerHTML=[verdict].concat(flags).map(function(f){var lab={doc:'Ready',ver:'Note',no:'Not supported',load:'Note'}[f[0]];return '<div class="flag"><span class="tag '+f[0]+'">'+lab+'</span><p><b>'+f[1]+'.</b> '+f[2]+'</p></div>'}).join('');
+}
+mapT();
+
+/* ---------------- faq ---------------- */
+var FAQ=[
+ {c:'Product',q:'Which performance testing tools are supported?',a:'JMeter through the portal, Gatling Java DSL through the portal or hyperexecute.yaml and the CLI, and k6 through hyperexecute.yaml and the CLI.'},
+ {c:'Product',q:'Do we have to rewrite our JMeter plans?',a:'No. Existing .jmx plans run unchanged, with standard or custom thread groups. Upload CSV data files or whole folders, and turn on Split CSV to give each generator its own rows.'},
+ {c:'Product',q:'Do JMeter plugins work?',a:'Plans that use Plugins Manager components should be validated in a trial run before rollout. Upload the plan and run it at low load in one region; any plugin that fails to load shows up in the logs.'},
+ {c:'Product',q:'How many virtual users can we run?',a:'Up to 100 on Free, 2,000 on Basic, 8,000 on Pro, and a custom limit on Enterprise. Plan for up to about 2,000 users per JMeter generator; heavy payloads, browser samplers and missing timeouts lower that.'},
+ {c:'Product',q:'Why would a test generate more users than we entered?',a:'Without the Total Load Distribution override, the thread count runs on every machine in every region: 250 users on 3 machines across 2 regions gives 1,500 users. With the override on, users are split across regions and machines, so 500 means 500.'},
+ {c:'Product',q:'Can one test generate load from more than one region?',a:'Yes. A single job can draw users from several regions across the Americas and Asia at once, with a percentage set for each region. Free, Basic and Pro use one region per test; Enterprise splits users by percentage across regions.'},
+ {c:'Product',q:'Which test types can we run?',a:'Load, stress, spike and soak, all in one Performance Testing subscription. Gatling has portal presets for Capacity, Stress and Soak. For JMeter and k6 the shape comes from the plan plus the users, duration and ramp-up settings.'},
+ {c:'Product',q:'How long can a test run?',a:'40 minutes on Free, 2 hours on Basic, 6 hours on Pro, custom on Enterprise. For soak tests over 120 minutes, spread the load across more machines.'},
+ {c:'Product',q:'What reports do we get?',a:'Summary, Timeline, Request Stats, Errors and Logs for JMeter, updated live during the run. Metrics include response time with 90th, 95th and 99th percentiles, throughput, bandwidth and error rate, in milliseconds or seconds. Gatling runs also attach the full Gatling HTML report.'},
+ {c:'Product',q:'Can we tell whether the application or the load generators failed first?',a:'Yes. Task Metrics shows generator CPU and memory during the run, so you can see whether the generators ran out of headroom before your application did.'},
+ {c:'Product',q:'Does load testing cover browser rendering?',a:'Load tests are protocol-level and measure how your servers respond under concurrent requests. For page behaviour, run your Selenium or Playwright suites on the same platform.'},
+ {c:'CI',q:'Can we run load tests from our CI pipeline?',a:'Gatling and k6 run from any pipeline: add a hyperexecute.yaml and call the CLI, which returns an exit code. JMeter runs start from the portal and can be scheduled nightly with Workflows.'},
+ {c:'CI',q:'Can a load test fail the build?',a:'For k6, thresholds in the script set the CLI exit code. For JMeter, teams review p90, throughput and error rate in the Summary and Request Stats after each run.'},
+ {c:'CI',q:'Can we raise the user count without changing code?',a:'Yes. For JMeter, the run form overrides the plan. For Gatling, read load values from system properties and pass them as pipeline variables.'},
+ {c:'Security',q:'How do we test applications that are not public?',a:'Static outbound IP addresses are available through support, so you can allowlist the load generators on your staging environment.'},
+ {c:'Security',q:'What happens to the load generators and our data?',a:'Generators are provisioned for each run and destroyed when it ends. HyperExecute runs each task on a fresh, isolated VM, encrypts logs, keeps secrets in a built-in vault, and retains data for 60 days by default with custom retention on Enterprise.'},
+ {c:'Commercial',q:'Is there a free way to try it?',a:'Yes. The Free plan runs up to 100 concurrent users for 40 minutes, enough to confirm your plans run before you choose a larger plan. Enterprise adds multi-region tests, advanced access controls, data retention rules and premium support.'},
+ {c:'Account',q:'We already use HyperExecute. What changes?',a:'Nothing in your functional setup. Load runs use the same login, credentials and CLI, their reports appear against each job, and functional suites keep scaling while a load job runs. Your account team can add performance testing to your plan.'},
+ {c:'Account',q:'Do we need HyperExecute for functional testing too?',a:'No. You can start with load testing alone on the Free, Basic or Pro plan, and add functional testing to the same account later.'},
+ {c:'Account',q:'Do functional and load testing need separate accounts?',a:'No. One account and one set of credentials cover both, and functional suites keep scaling while a load job runs.'},
+ {c:'Migration',q:'Can we move from BlazeMeter?',a:'Yes. Export your .jmx plans and data and upload them, then set users, duration, ramp-up and regions in the run form. For Taurus-only tests, export the .jmx that Taurus generates.'},
+ {c:'Migration',q:'Can we keep our test history?',a:'Run history starts fresh on HyperExecute. Export results and baselines from your current tool before switching so you can compare the first parity runs.'}
+];
+var fqCat='All',fqC=$('#fqCats');
+['All','Account','Product','CI','Security','Commercial','Migration'].forEach(function(c){var b=el('<button type="button" class="chip" aria-pressed="'+(c==='All')+'">'+c+'</button>');b.onclick=function(){fqCat=c;$$('#fqCats .chip').forEach(function(x){x.setAttribute('aria-pressed',String(x===b))});renderFaq()};fqC.appendChild(b)});
+$('#fqSearch').addEventListener('input',renderFaq);
+function renderFaq(){
+  var q=($('#fqSearch').value||'').toLowerCase().trim(),box=$('#faq');box.innerHTML='';var n=0;
+  FAQ.forEach(function(f,i){
+    if(fqCat!=='All'&&f.c!==fqCat)return;
+    var hay=(f.q+' '+f.a).toLowerCase();if(q&&hay.indexOf(q)<0)return;n++;
+    var d=el('<div class="fq"><button type="button" aria-expanded="false"><span>'+f.q+'</span><span class="meta"><span class="tag">'+f.c+'</span><span class="pm">+</span></span></button><div class="ans" hidden><p>'+f.a+'</p></div></div>');
+    var btn=d.firstChild,ans=d.lastChild;btn.onclick=function(){var o=ans.hidden;ans.hidden=!o;btn.setAttribute('aria-expanded',String(o));btn.querySelector('.pm').textContent=o?'−':'+'};
+    if(q&&n<=3){ans.hidden=false;btn.setAttribute('aria-expanded','true');btn.querySelector('.pm').textContent='−'}
+    box.appendChild(d);
+  });
+  if(!n)box.appendChild(el('<div class="empty">No questions match. Try "regions", "CI" or "BlazeMeter".</div>'));
+}
+renderFaq();
+
+/* ---------------- catalog ---------------- */
+var GRP=[
+ {id:'bring',n:'Bring your tests',d:'Use what you have',c:'var(--exec)'},
+ {id:'shape',n:'Shape the load',d:'Any traffic pattern',c:'var(--load)'},
+ {id:'scale',n:'Scale out',d:'Spread across machines',c:'var(--plan)'},
+ {id:'global',n:'Go global',d:'Many regions, one job',c:'var(--intel)'},
+ {id:'tune',n:'Tune the engine',d:'Match your runtime',c:'var(--warn)'},
+ {id:'auto',n:'Automate',d:'Runs on schedule or in CI',c:'var(--pink)'},
+ {id:'read',n:'Read the results',d:'See what broke and why',c:'var(--good)'},
+ {id:'safe',n:'Run safely',d:'Nothing left running',c:'var(--slate)'}
+];
+var GICON={"bring": "<path d=\"M12 15V4M7.5 8.5 12 4l4.5 4.5\"/><path d=\"M4 14v5h16v-5\"/>", "shape": "<path d=\"M3 18 8 7l4 8 3-5 6 8\"/>", "scale": "<rect x=\"4\" y=\"4\" width=\"16\" height=\"5\" rx=\"1.5\"/><rect x=\"4\" y=\"10.5\" width=\"16\" height=\"5\" rx=\"1.5\"/><rect x=\"4\" y=\"17\" width=\"16\" height=\"3.5\" rx=\"1.5\"/>", "global": "<circle cx=\"12\" cy=\"12\" r=\"8.5\"/><path d=\"M3.5 12h17M12 3.5c2.6 2.6 2.6 14.4 0 17M12 3.5c-2.6 2.6-2.6 14.4 0 17\"/>", "tune": "<path d=\"M5 4v16M12 4v16M19 4v16\"/><circle cx=\"5\" cy=\"9\" r=\"2.2\"/><circle cx=\"12\" cy=\"15\" r=\"2.2\"/><circle cx=\"19\" cy=\"8\" r=\"2.2\"/>", "auto": "<path d=\"M20 12a8 8 0 1 1-2.3-5.7\"/><path d=\"M20 4v4.5h-4.5\"/>", "read": "<path d=\"M4 20V10M10 20V4M16 20v-7M22 20H2\"/>", "safe": "<path d=\"M12 3 5 6v6c0 4.2 3 7.5 7 9 4-1.5 7-4.8 7-9V6z\"/><path d=\"m9 12 2.2 2.2L15 10.4\"/>"};
+var FT=[
+ ['jmx','bring','J','.jmx upload','Project upload','Run existing JMeter plans','Standard and custom thread groups, unchanged.','Upload the .jmx files the team already maintains. HyperExecute runs them as written, including custom thread groups.','No rewrite: moving to us costs an upload, not a project.','checkout_flow.jmx, login_burst.jmx'],
+ ['gat','bring','G','*.java simulation','Portal or hyperexecute.yaml','Gatling Java DSL simulations','Run from the portal or from CI.','Upload Gatling Java DSL simulations and run them from the portal with test-type presets, or from hyperexecute.yaml through the CLI.','Code-first teams keep simulations in the repo and still get managed generators.','com.acme.CheckoutSimulation'],
+ ['k6','bring','K','k6 run $test','hyperexecute.yaml','k6 scripts','JavaScript load tests through the CLI.','Run k6 scripts through hyperexecute.yaml, distributed across machines with autosplit.','Developer-owned k6 tests run on the same platform as the functional suite.','tests/browse.js, tests/checkout.js'],
+ ['data','bring','J','CSV and folder upload','Project upload','Test data files and folders','Ship CSVs alongside the plan.','Upload CSV data files, or a whole folder with the plan and its data together.','Parameterised tests (logins, SKUs, search terms) keep working without path edits.','users.csv (12,400 rows), products.csv'],
+ ['users','shape','JG','Total Users','Run form','Total users','Set concurrency per run, no script edit.','The number of concurrent virtual users for this run. It overrides the thread count in the plan.','The same plan becomes a 50-user smoke test or a 5,000-user peak test by changing one field.','Total Users: 500'],
+ ['dur','shape','JG','Duration (min)','Run form','Duration','How long the load runs.','Length of the run in minutes, up to the plan limit (6 hours on Pro).','Short runs on every release, long ones for soak, from the same plan.','Duration: 30'],
+ ['ramp','shape','J','Ramp-up Time (min)','Run form','Ramp-up','Rise to full load gradually.','Time taken to reach the full user count.','A gradual climb shows where response time starts to bend, instead of a wall of traffic in the first second.','Ramp-up Time: 5'],
+ ['cap','shape','G','Capacity Test','Portal test type','Capacity test preset','Find how far the system scales.','Gatling test type with Duration, Initial Users and Final Users as an arrival rate per second.','Answers "how many users can we take" with a steadily rising arrival rate.','Initial 10/s to Final 200/s over 20 min'],
+ ['stress','shape','G','Stress Test','Portal test type','Stress test preset','Push past the expected peak.','Gatling test type with Duration and Total Injected Users.','Finds the breaking point and how the system fails when it gets there.','6,000 injected users over 15 min'],
+ ['soak','shape','G','Soak Test','Portal test type','Soak test preset','Hold steady load for hours.','Gatling test type with Duration and a constant user arrival rate.','Surfaces memory leaks and connection-pool exhaustion that short tests miss.','40 users/s for 4 h'],
+ ['tg','shape','J','Custom thread groups','In the .jmx','Custom load shapes','Stepped and burst shapes from the plan.','Custom thread groups in the .jmx are supported, so stepped or burst shapes defined there run as designed.','Teams keep the load models they have already tuned.','100 to 400 users in four steps'],
+ ['mach','scale','J','Machine count','Run form','Machines per region','Scale beyond one generator.','Number of load generators in each selected region.','Spreads users so no single generator becomes the bottleneck. Plan for about 2,000 users per JMeter generator at most.','Machine count: 3'],
+ ['engine','scale','G','Max Users per Engine','Load distribution','Users per engine cap','Gatling engines sized for you.','Upper bound on the users each Gatling engine carries (default 2,000).','Keeps engines healthy so the results describe the app, not the generator.','Max Users per Engine: 2000'],
+ ['split','scale','J','Split CSV','Run form','Split CSV','Each generator gets its own rows.','Divides the CSV data so every generator works on a distinct slice.','No two virtual users log in with the same account across machines, so results reflect real behaviour.','users.csv split into 6 slices of about 2,067 rows'],
+ ['gto','scale','G','Global Timeout','Load distribution','Global timeout','Runaway runs stop on their own.','Maximum time a Gatling run may take (default 90 minutes).','Protects VU-hours and stops a stuck run from blocking the pipeline.','Global Timeout: 90 min'],
+ ['regions','global','JG','Multi-region load','Load distribution','Multi-region load','Americas and Asia in one job.','Generate load from several regions across the Americas and Asia within the same job.','Generate load from the markets your users are actually in.','East US, Central India, Brazil South','Enterprise for multi-region'],
+ ['pct','global','JG','Test Load Distribution','Load distribution','Percentage per region','Decide where each user comes from.','Give each selected region a share of the total users.','Model a real traffic mix, and change it between runs without editing the script.','East US 50%, Central India 30%, Brazil South 20%','Enterprise'],
+ ['ovr','global','J','Total Load Distribution override','Run form','Split, not replicate','Exactly the users you asked for.','Divides total users across regions and then across machines. Without it, the thread count runs on every machine in every region.','500 users stays 500 users. The team avoids generating, and paying for, several times the planned load.','500 users, 2 regions, 3 machines: 84 / 83 / 83 per machine'],
+ ['ips','global','JGK','Static outbound IPs','Via support','Fixed egress IPs','Allowlist generators on staging.','Static outbound IP addresses for the generators, arranged through support.','Security teams can open staging to known sources only.','Allowlisted on the staging WAF'],
+ ['java','tune','J','Java Version','Run form','Java 11 or 25','Match the runtime your plugins need.','Choose the JVM for the JMeter run: 11 by default, 25 available.','Plans and plugins built for newer Java run without a custom image.','Java Version: 25'],
+ ['subres','tune','J','jmeter.save.saveservice.subresults','JMeter property override','Lean results files','Smaller results, faster reports.','Overridable JMeter property that controls whether sub-results are saved.','Long, high-volume runs produce results files that stay manageable.','jmeter.save.saveservice.subresults=false'],
+ ['bw','tune','J','httpclient.socket.https.cps','JMeter property override','Bandwidth simulation','Test like users on slower networks.','Overridable JMeter property that caps characters per second on each connection; 0 means unlimited.','Shows how APIs and pages behave for users on constrained mobile connections.','httpclient.socket.https.cps=12800'],
+ ['labels','auto','JG','Job Labels','Run form','Job labels','Trace a run to a build.','Tags on each run, such as release, scenario or branch.','Compare runs for the same release, and find a run from its build number.','release-4.12, checkout'],
+ ['wf','auto','J','Workflows','Scheduling','Scheduled runs','Nightly load without anyone clicking Run.','Schedule or chain runs with Workflows.','Performance regression checks happen every night, not when someone remembers.','Every day at 02:00 IST'],
+ ['cli','auto','GK','hyperexecute CLI','CI pipeline','CLI with an exit code','Two lines in any pipeline.','The same HyperExecute CLI used for functional suites runs Gatling and k6 load tests and returns an exit code.','Load tests join the release pipeline that already exists.','./hyperexecute --config hyperexecute.yaml'],
+ ['vars','auto','GK','--vars','hyperexecute.yaml','Pipeline variables','Raise load without a code change.','Pass values such as the user count from the pipeline into the run.','One script serves smoke, regression and peak runs.','--vars "users=400"'],
+ ['live','read','JG','Live reports','Job view','Live during the run','Watch the test as it happens.','Reports update while the test is running.','Stop a run early when errors climb, instead of waiting out the full duration.','Timeline refreshing as users ramp'],
+ ['summary','read','J','Summary','Job view','Six-tile summary','The run at a glance.','Virtual users, average response time, average throughput, error %, 90th percentile response time and average bandwidth.','The numbers a release manager asks for, on one screen.','500 VUs, 412 ms, 238 req/s, 1.8%'],
+ ['timeline','read','J','Timeline','Job view','Timeline report','Users against response time and errors.','Plots users over time against response time and errors.','Shows the exact moment the system starts to struggle.','Response time climbs at minute 18'],
+ ['reqstats','read','J','Request Stats','Job view','Per-request percentiles','p90, p95 and p99 per endpoint.','Statistics for each request: samples, average and percentile response times, and error rate.','Points at the endpoint that needs work, not just the average.','POST /api/checkout p95 2,110 ms'],
+ ['errors','read','J','Errors','Job view','Errors by code','Grouped by response code.','Errors grouped by response code with counts and a sample distribution.','A 503 and a 504 send the team to different places. This shows which.','503 x 1,046, 504 x 212'],
+ ['logs','read','J','Logs','Job view','Run logs','Raw evidence for every run.','Logs for the run, available on the job.','Engineers can confirm exactly what the generators did.','WARN POST /api/checkout 503'],
+ ['units','read','J','ms / s','Job view','Unit toggle','Milliseconds or seconds.','Switch reported times between milliseconds and seconds.','Everyone in the review reads the same units.','780 ms or 0.78 s'],
+ ['task','read','JGK','Task Metrics','Job view','Generator health','Did the app fail, or the generator?','CPU and memory of the load generators during the run.','Proves a slowdown is in the application, not in the test rig.','Generator CPU under 40% at peak'],
+ ['ghtml','read','G','Gatling HTML report','Job artifacts','Full Gatling report','Attached to every run.','The complete Gatling HTML report is collected and downloadable from the job.','Teams keep the report format they already know how to read.','Artifacts: TestReport'],
+ ['eph','safe','JGK','Per-run generators','Automatic','Generators that disappear','Created per run, destroyed after.','Load generators are provisioned for each run and torn down when it ends.','No idle fleet to pay for, patch or secure.','6 generators released at 10:30:05'],
+ ['oneacct','safe','JGK','One account','Platform','Same account as functional','One login, one set of credentials.','Functional and load runs share the account and credentials, and functional suites keep scaling while a load job runs.','One vendor to onboard, secure and renew.','LT_USERNAME, LT_ACCESS_KEY'],
+ ['ent','safe','JGK','Enterprise controls','Enterprise plan','Access control and retention','Governance for regulated teams.','Enterprise adds advanced access controls, data retention rules, advanced local testing and premium support.','Clears the security review that blocks most tool changes.','Custom retention and access policies','Enterprise'],
+ ['free','safe','J','Free plan','Sign-up','Free to start','100 VUs, 40-minute runs.','A free plan with 100 concurrent VUs, 40-minute runs and introductory VU-hours.','A performance engineer can prove their plan runs before anyone signs anything.','Upload, run and read the report today']
+].map(function(a){return {id:a[0],g:a[1],tools:a[2],set:a[3],where:a[4],t:a[5],b:a[6],what:a[7],why:a[8],ex:a[9],plan:a[10]||'',tag:a[11]||'doc',int:a[12]||''}});
+var TN={J:'JMeter',G:'Gatling',K:'k6'};
+var catG='global',catSel='ovr';
+function gIcon(id){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+GICON[id]+'</svg>'}
+var cc=$('#capcats');
+GRP.forEach(function(g,k){var n=FT.filter(function(f){return f.g===g.id}).length;
+  var b=el('<button type="button" role="tab" class="capcat" style="--gc:'+g.c+'" aria-selected="false"><span class="ci">'+gIcon(g.id)+'</span><span class="ct"><b>'+g.n+'</b><span>'+g.d+'</span></span><em>'+n+'</em></button>');
+  b.onclick=function(){if(catG===g.id)return;var a=GRP.findIndex(function(x){return x.id===catG});_dir=k>a?1:-1;catG=g.id;catSel=FT.find(function(f){return f.g===g.id}).id;renderCat(true)};cc.appendChild(b)});
+function renderCat(full){
+  var g=GRP.find(function(x){return x.id===catG}),list=FT.filter(function(f){return f.g===catG});
+  $$('#capcats .capcat').forEach(function(b,i){b.setAttribute('aria-selected',String(GRP[i].id===catG))});
+  var f=FT.find(function(x){return x.id===catSel})||list[0];catSel=f.id;
+  var d=$('#capd');d.style.setProperty('--gc',g.c);
+  if(full!==false||!d.querySelector('.capchips')){
+    d.innerHTML='<div class="caphead"><span class="ci lg">'+gIcon(g.id)+'</span><div><h3>'+g.n+'</h3><span class="muted small">'+list.length+' capabilities</span></div></div><div class="capchips"></div><div class="capone"></div>';
+    var box=d.querySelector('.capchips');
+    list.forEach(function(x,k){var c=el('<button type="button" class="capchip" style="--j:'+k+'" aria-pressed="false">'+x.t+'</button>');c.onclick=function(){if(catSel===x.id)return;var a=list.findIndex(function(y){return y.id===catSel});_dir=k>a?1:-1;catSel=x.id;renderCat(false)};box.appendChild(c)});
+    swap(d);
+  }
+  $$('.capchip',d).forEach(function(c,k){c.setAttribute('aria-pressed',String(list[k].id===catSel))});
+  var o=d.querySelector('.capone');
+  o.innerHTML='<div class="cap-why">'+f.why+'</div><div class="cap-meta"><span class="cap-ex">'+esc(f.ex)+'</span>'+f.tools.split('').map(function(t){return '<span class="tc">'+TN[t]+'</span>'}).join('')+(f.plan?'<span class="tag load">'+f.plan+'</span>':'')+'</div><p class="more small muted" style="margin-top:10px"><b>'+esc(f.set)+'</b> · '+f.where+'. '+f.what+'</p>'+(f.g==='global'?'<button class="btn ghost sm" type="button" data-go2="global" style="margin-top:14px;align-self:flex-start">See it on the map →</button>':'');
+  if(full===false)swap(o);
+  var t2=o.querySelector('[data-go2]');if(t2)t2.onclick=function(){go(CH.findIndex(function(c){return c.id==='global'}))};
+}
+renderCat(true);
+function openFeat(id){var f=FT.find(function(x){return x.id===id});if(!f)return;catG=f.g;catSel=id;renderCat(true);go(CH.findIndex(function(c){return c.id==='catalog'}))}
+$('#mockBody').addEventListener('click',function(e){var t=e.target.closest('[data-feat]');if(t)openFeat(t.dataset.feat)});
+
+/* ---------------- global load ---------------- */
+var DOTS='000000000000000000000001000000011111000000000111111111111111000000000000000000000000000000110000000000011111111110000000000100010000000000000000|000000000000000000110111110110001111110000000011111111111100000000000000000000000000000001000000100111111111111111111111000011110000000000000000|000111111110000110000111111110100011011110000010111111111110000000000000000011110000000000001001111111111111111111111111111111111111000011100000|111111111111111111111111111111111111111111111111111111111111111111111111110000000000111000000000010000000000000000000000000000000000000000000011|011011111111111111111111111111111010011111000001111100000001110000000000111110111100111111111111111111111111111111111111111111111111111111110010|001111111111111111111111111111100010011000000000111000000000000000000011111001111111111111111111111111111111111111111111111111111111101111100000|000111110000111111111111111111000000011100000000000000000000000000000011111000011111111111111111111111111111111111111111111111111100100000000000|000000100000000111111111111111100000011111100000000000000000000000100000011000111111111111111111111111111111111111111111111100000001100000000000|001000000000000011111111111111111110111111111000000000000000000001110001000011111111111111111111111111111111111111111111110000000011100000000000|000000000000000001111111111111111110111111111100000000000000000010111011111111111111111111111111111111111111111111111111111110000000000000000000|000000000000000001111111111111111111111110100100000000000000000000001111111111111111111111111111111111111111111111111111111101000000000000000000|000000000000000000111111111111111111111111000010000000000000000000011111111111111111111111111111111111111111111111111111111100000000000000000000|000000000000000000111111111111111111111110100000000000000000000000011111101111110101111001111111111111111111111111111111111000000000000000000000|000000000000000000111111111111111111111100000000000000000000000011111001010011100000011001111111111111111111111111111111000010000000000000000000|000000000000000000111111111111111111110000000000000000000000000011110001001010011111111101111111111111111111111111110010000010000000000000000000|000000000000000000011111111111111111100000000000000000000000000011100000010000011111111100111111111111111111111111111001000100000000000000000000|000000000000000000001111111111111111100000000000000000000000000001111111000000000011111111111111111111111111111111110000011100000000000000000000|000000000000000000000111111111111111000000000000000000000000000011111111110010000011111111111111111111111111111111111000100000000000000000000000|000000000000000000000001111111110001000000000000000000000000000011111111111111111111111011111111111111111111111111111000000000000000000000000000|000000000000000000000010111110000001000000000000000000000000000111111111111111111011111101111111111111111111111111110000000000000000000000000000|000000000000000000000001011110000000000000000000000000000000001111111111111111111101111110100001111111111111111111111000000000000000000000000000|000000000000000000000000001110000011100000000000000000000000011111111111111111111110111111110000111111110111111110000000000000000000000000000000|000000000000000000000000001110001000000100000000000000000000011111111111111111111110111111100000011111000111110000000000000000000000000000000000|000000000000000000000000000011111000000000000000000000000000011111111111111111111111011111000000011110000011111000001000000000000000000000000000|000000000000000000000000000000011110000000000000000000000000011111111111111111111111011100000000001100000001111100001000000000000000000000000000|000000000000000000000000000000000110000000000000000000000000011111111111111111111111100000000000001100000001011100001000000000000000000000000000|000000000000000000000000000000000010001011100000000000000000001111111111111111111111111100000000000100000001001000010000000000000000000000000000|000000000000000000000000000000000000011111111000000000000000000111111111111111111111111100000000000010000000000000000010000000000000000000000000|000000000000000000000000000000000000011111111110000000000000000010000011111111111111111000000000000000000010100000100000000000000000000000000000|000000000000000000000000000000000000011111111111000000000000000000000000111111111111110000000000000000000001010001100000000000000000000000000000|000000000000000000000000000000000000111111111111100000000000000000000000111111111111100000000000000000000000100011100000000000000000000000000000|000000000000000000000000000000000000111111111111111000000000000000000000111111111111000000000000000000000000010011101000011110001000000000000000|000000000000000000000000000000000000111111111111111111000000000000000000011111111111000000000000000000000000000000000000000111001000000000000000|000000000000000000000000000000000000111111111111111111000000000000000000011111111111000000000000000000000000000011000000000111100001000000000000|000000000000000000000000000000000000011111111111111111000000000000000000011111111111000000000000000000000000000000000100000000010000000000000000|000000000000000000000000000000000000011111111111111110000000000000000000011111111111000000000000000000000000000000000000111000000000000000000000|000000000000000000000000000000000000001111111111111100000000000000000000011111111111000100000000000000000000000000000011110001000000000000000000|000000000000000000000000000000000000000111111111111100000000000000000000011111111110001100000000000000000000000000000111111111000000000000000000|000000000000000000000000000000000000000011111111111100000000000000000000011111111100001000000000000000000000000000001111111111100000000000000000|000000000000000000000000000000000000000011111111111000000000000000000000001111111100011000000000000000000000000000111111111111110000000000000000|000000000000000000000000000000000000000011111111100000000000000000000000001111111000000000000000000000000000000000111111111111111000000000000000|000000000000000000000000000000000000000011111111100000000000000000000000001111111000000000000000000000000000000000111111111111111000000000000000|000000000000000000000000000000000000000111111111000000000000000000000000000111110000000000000000000000000000000000111111111111111000000000000000|000000000000000000000000000000000000000111111110000000000000000000000000000111100000000000000000000000000000000000111100001111111000000000000000|000000000000000000000000000000000000000111111000000000000000000000000000000000000000000000000000000000000000000000000000000111110000000001000000|000000000000000000000000000000000000000111111000000000000000000000000000000000000000000000000000000000000000000000000000000011110000000000100000|000000000000000000000000000000000000000111100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000|000000000000000000000000000000000000001111000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000010000000|000000000000000000000000000000000000001110000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000|000000000000000000000000000000000000001111000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000|000000000000000000000000000000000000001110000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000|000000000000000000000000000000000000001110000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000|000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'.split('|');
+var GEO={eus:[37.54,-77.43],wus:[47.13,-119.28],cin:[18.52,73.86],sea:[1.35,103.82],brs:[-23.55,-46.63],mxc:[20.59,-100.39]};
+var LBL={eus:[20,-24,'start'],wus:[-20,-20,'end'],cin:[-20,-28,'end'],sea:[22,32,'start'],brs:[22,8,'start'],mxc:[-20,30,'end']};
+var TGT=[{id:'va',n:'US East (Virginia)',ll:[38.9,-77.4]},{id:'mum',n:'India (Mumbai)',ll:[19.08,72.88]},{id:'fra',n:'Europe (Frankfurt)',ll:[50.11,8.68]},{id:'sg',n:'Singapore',ll:[1.29,103.85]},{id:'sp',n:'Brazil (São Paulo)',ll:[-23.5,-46.6]}];
+var PRE=[
+ {n:'Americas + India',w:{eus:50,cin:30,brs:20}},
+ {n:'US launch',w:{eus:60,wus:40}},
+ {n:'Americas',w:{eus:40,wus:30,mxc:15,brs:15}},
+ {n:'India + APAC',w:{cin:60,sea:40}},
+ {n:'Even global',w:{eus:1,wus:1,cin:1,sea:1,brs:1,mxc:1}}
+];
+var gW={},gT='va';
+function setW(w){REG.forEach(function(r){gW[r.id]=w[r.id]||0})}
+setW(PRE[0].w);
+function P(lat,lon){if(lon<-170)lon+=360;return [(lon+170)/2.5*10,(76-lat)/2.5*10]}
+function hav(a,b){var R=6371,toR=Math.PI/180,dl=(b[0]-a[0])*toR,dn=(b[1]-a[1])*toR,x=Math.sin(dl/2)*Math.sin(dl/2)+Math.cos(a[0]*toR)*Math.cos(b[0]*toR)*Math.sin(dn/2)*Math.sin(dn/2);return 2*R*Math.asin(Math.sqrt(x))}
+var dotPath=(function(){var s='';DOTS.forEach(function(row,r){for(var c=0;c<row.length;c++)if(row.charAt(c)==='1'){var x=c*10+5,y=r*10+5;s+='M'+(x-3)+' '+y+'a3 3 0 1 0 6 0a3 3 0 1 0 -6 0'}});return s})();
+var pr=$('#gPresets');
+PRE.forEach(function(p,i){var b=el('<button type="button" class="chip" aria-pressed="'+(i===0)+'">'+p.n+'</button>');b.onclick=function(){setW(p.w);$$('#gPresets .chip').forEach(function(x){x.setAttribute('aria-pressed',String(x===b))});geo(false,true)};pr.appendChild(b)});
+var ts=$('#gTarget');TGT.forEach(function(t){ts.appendChild(el('<option value="'+t.id+'">'+t.n+'</option>'))});
+ts.onchange=function(){gT=ts.value;geo(false,true)};
+$('#gEven').onclick=function(){var on=REG.filter(function(r){return gW[r.id]>0});if(!on.length)on=REG;REG.forEach(function(r){gW[r.id]=on.indexOf(r)>=0?1:0});clearPre();geo(false,true)};
+['gUsers','gCap'].forEach(function(id){$('#'+id).addEventListener('input',geo)});
+function clearPre(){$$('#gPresets .chip').forEach(function(x){x.setAttribute('aria-pressed','false')})}
+var rowsBox=$('#gRows');
+REG.forEach(function(r){
+  var d=el('<div class="rgrow" data-r="'+r.id+'"><button type="button" class="ck" aria-label="Use '+r.n+'"></button><div class="stack" style="gap:6px;min-width:0"><span class="nm">'+r.n+'<small>'+r.c+'</small></span><input type="range" min="0" max="100" step="1" aria-label="'+r.n+' weight"></div><span class="pct"></span><div class="meta"><span class="mu"></span><span class="dist"></span></div></div>');
+  d.querySelector('.ck').onclick=function(){if(gW[r.id]>0){if(REG.filter(function(x){return gW[x.id]>0}).length===1)return toast('Keep at least one region');gW[r.id]=0}else{var on=REG.filter(function(x){return gW[x.id]>0});var avg=on.reduce(function(s,x){return s+gW[x.id]},0)/Math.max(1,on.length);gW[r.id]=avg||1}clearPre();geo(false,true)};
+  d.querySelector('input').oninput=function(){var v=+this.value;if(v===0&&REG.filter(function(x){return gW[x.id]>0&&x.id!==r.id}).length===0){this.value=1;v=1}gW[r.id]=v;clearPre();geo(true)};
+  rowsBox.appendChild(d);
+});
+function geo(fromSlider,anim){
+  var U=+$('#gUsers').value,cap=+$('#gCap').value;$('#ogUsers').textContent=fmt(U);$('#ogCap').textContent=fmt(cap);
+  var on=REG.filter(function(r){return gW[r.id]>0}),sum=on.reduce(function(s,r){return s+gW[r.id]},0);
+  var pct={},left=100;on.forEach(function(r){pct[r.id]=Math.floor(gW[r.id]/sum*100);left-=pct[r.id]});
+  on.slice().sort(function(a,b){return (gW[b.id]/sum*100%1)-(gW[a.id]/sum*100%1)}).forEach(function(r){if(left>0){pct[r.id]++;left--}});
+  var us={},uleft=U;on.forEach(function(r){us[r.id]=Math.floor(U*pct[r.id]/100);uleft-=us[r.id]});if(on.length)us[on[0].id]+=uleft;
+  var maxU=Math.max.apply(null,on.map(function(r){return us[r.id]}));var M=Math.max(1,Math.ceil(maxU/cap));
+  var tg=TGT.find(function(t){return t.id===gT});
+  REG.forEach(function(r){
+    var row=$('.rgrow[data-r='+r.id+']'),act=gW[r.id]>0,inp=row.querySelector('input');
+    row.classList.toggle('off',!act);row.querySelector('.ck').setAttribute('aria-pressed',String(act));
+    if(!fromSlider||document.activeElement!==inp)inp.value=Math.round(act?gW[r.id]/Math.max.apply(null,on.map(function(x){return gW[x.id]}))*100:0);
+    row.querySelector('.pct').textContent=act?pct[r.id]+'%':'off';
+    var per=act?split(us[r.id],M):[];
+    row.querySelector('.mu').textContent=act?fmt(us[r.id])+' users · '+M+' × ≤'+fmt(Math.max.apply(null,per)):'not in this run';
+  });
+  $$('.rgrow .dist').forEach(function(s,i){s.textContent=fmt(Math.round(hav(GEO[REG[i].id],tg.ll)/10)*10)+' km to app'});
+  /* map */
+  var T=P(tg.ll[0],tg.ll[1]),svg='<path class="ld" d="'+dotPath+'"/>';
+  var arcs='',pins='',labels='';
+  REG.forEach(function(r){
+    var p=P(GEO[r.id][0],GEO[r.id][1]),act=gW[r.id]>0;
+    if(act){
+      var w=2+pct[r.id]/100*12,dx=T[0]-p[0],dy=T[1]-p[1],dist=Math.sqrt(dx*dx+dy*dy);
+      var d;
+      if(dist<40){d='M'+p[0]+' '+p[1]+' C'+(p[0]+60)+' '+(p[1]-70)+' '+(p[0]-60)+' '+(p[1]-70)+' '+p[0]+' '+p[1]}
+      else{var mx=(p[0]+T[0])/2,my=(p[1]+T[1])/2-Math.min(220,dist*.32);d='M'+p[0]+' '+p[1]+' Q'+mx+' '+my+' '+T[0]+' '+T[1]}
+      arcs+='<path class="arc'+(anim?' draw':'')+'"'+(anim?' pathLength="1"':'')+' d="'+d+'" stroke-width="'+w.toFixed(1)+'"/><path class="flow" d="'+d+'" stroke-width="'+Math.max(2,w*.45).toFixed(1)+'"/>';
+      pins+='<circle class="halo" cx="'+p[0]+'" cy="'+p[1]+'" r="'+(14+pct[r.id]/100*26).toFixed(1)+'"/><circle class="pin" cx="'+p[0]+'" cy="'+p[1]+'" r="9"/>';
+    }else pins+='<circle class="pin off" cx="'+p[0]+'" cy="'+p[1]+'" r="6"/>';
+    var L=LBL[r.id],lx=p[0]+L[0],ly=p[1]+L[1];
+    labels+='<text x="'+lx+'" y="'+ly+'" text-anchor="'+L[2]+'"'+(act?'':' class="off"')+'>'+r.n+(act?' · '+pct[r.id]+'%':'')+'</text>'+(act?'<text class="sub" x="'+lx+'" y="'+(ly+22)+'" text-anchor="'+L[2]+'">'+fmt(us[r.id])+' users</text>':'');
+  });
+  var tgt='<circle class="tgth" cx="'+T[0]+'" cy="'+T[1]+'" r="22"><animate attributeName="r" values="14;30;14" dur="2.4s" repeatCount="indefinite"/><animate attributeName="opacity" values=".7;0;.7" dur="2.4s" repeatCount="indefinite"/></circle><rect class="tgt" x="'+(T[0]-10)+'" y="'+(T[1]-10)+'" width="20" height="20" rx="4" transform="rotate(45 '+T[0]+' '+T[1]+')"/>';
+  var tx=T[0]-24,ty=T[1]+40;
+  var tlab='<text x="'+tx+'" y="'+ty+'" text-anchor="end" style="fill:var(--exec)">Your app</text><text class="sub" x="'+tx+'" y="'+(ty+22)+'" text-anchor="end">'+tg.n+'</text>';
+  $('#gMap').innerHTML=svg+arcs+pins+tgt+labels+tlab;
+  /* flow line */
+  var f='<span class="bx">Total <b>'+fmt(U)+'</b> users</span><span class="ar">→</span>'+on.map(function(r){return '<span class="bx">'+r.n+' <b>'+pct[r.id]+'%</b> = '+fmt(us[r.id])+'</span>'}).join('')+'<span class="ar">→</span><span class="bx"><b>'+M+'</b> machine'+(M>1?'s':'')+' per region · '+(M*on.length)+' generators</span>';
+  $('#gFlow').innerHTML=f+'<p class="small muted" style="flex-basis:100%;margin-top:6px">Total Load Distribution override on, so every user is counted once. '+(on.length>1?'Multi-region needs the Enterprise plan.':'Single-region tests run on every plan.')+'</p>';
+}
+geo();
+
+/* ---------------- sliding thumbs and tab ink ---------------- */
+function inks(){
+  $$('.seg').forEach(function(g){if(!g.offsetParent)return;var t=g.querySelector('.seg-thumb');if(!t){t=document.createElement('i');t.className='seg-thumb';g.insertBefore(t,g.firstChild);g.classList.add('has-thumb')}var b=g.querySelector('button[aria-pressed=true]');if(!b){t.style.opacity=0;return}t.style.opacity=1;t.style.left=b.offsetLeft+'px';t.style.top=b.offsetTop+'px';t.style.width=b.offsetWidth+'px';t.style.height=b.offsetHeight+'px'});
+  $$('.tabs').forEach(function(g){if(!g.offsetParent)return;var t=g.querySelector('.tab-ink');if(!t){t=document.createElement('i');t.className='tab-ink';g.appendChild(t);g.classList.add('has-ink')}var b=g.querySelector('button[aria-selected=true]');if(!b)return;t.style.left=b.offsetLeft+'px';t.style.width=b.offsetWidth+'px'});
+}
+document.addEventListener('click',function(){requestAnimationFrame(inks)});
+window.addEventListener('resize',inks);
+try{document.fonts&&document.fonts.ready.then(inks)}catch(e){}
+
+/* ---------------- audience ---------------- */
+function setAud(a,quiet){document.body.classList.toggle('aud-ex',a==='ex');$$('.audSeg button').forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.a===a))});try{localStorage.setItem('perfkit-aud',a)}catch(e){}
+  if(!quiet){$$('[data-aud="'+a+'"]').forEach(function(n){if(n.offsetParent)swap(n)})}}
+$$('.audSeg button').forEach(function(b){b.addEventListener('click',function(){setAud(b.dataset.a)})});
+(function(){var h=(location.hash||'').replace('#','');var a=null;if(h==='existing')a='ex';else if(h==='new')a='new';else{try{a=localStorage.getItem('perfkit-aud')}catch(e){}}setAud(a==='ex'?'ex':'new',true)})();
+
+/* ---------------- headline words ---------------- */
+function splitWords(h){if(h.dataset.split)return;h.dataset.split='1';var k=0;(function walk(n){Array.prototype.slice.call(n.childNodes).forEach(function(c){if(c.nodeType===3){var parts=c.textContent.split(/(\s+)/),f=document.createDocumentFragment();parts.forEach(function(p){if(!p)return;if(/^\s+$/.test(p)){f.appendChild(document.createTextNode(p));return}var w=document.createElement('span');w.className='w';var i=document.createElement('span');i.textContent=p;i.style.setProperty('--w',k++);w.appendChild(i);f.appendChild(w)});n.replaceChild(f,c)}else if(c.nodeType===1&&c.tagName.toLowerCase()!=='svg')walk(c)})})(h)}
+
+/* ---------------- problem scene ---------------- */
+function setProb(m){var pr=$('#prob');if(!pr)return;pr.dataset.s=m;$('.pstats').dataset.s=m;$$('#probSeg button').forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.p===m))});requestAnimationFrame(inks);
+  $$('.pstats b').forEach(function(b,k){var v=b.dataset[m];if(b.textContent===v)return;setTimeout(function(){b.textContent=v;b.classList.remove('flip');void b.offsetWidth;b.classList.add('flip')},REDUCED?0:(m==='after'?700:0)+k*110)})}
+function playProb(delay){setProb('before');clearTimeout(window._pt);window._pt=setTimeout(function(){if(CH[cur].id==='problem')setProb('after')},REDUCED?0:delay)}
+$$('#probSeg button').forEach(function(b){b.onclick=function(){clearTimeout(window._pt);setProb(b.dataset.p)}});
+$('#probReplay').onclick=function(){playProb(900)};
+
+/* ---------------- merge ---------------- */
+function setMerge(m){var mg=$('#merge');if(!mg)return;mg.dataset.s=m;$('.merge-wrap').dataset.s=m;$$('#mergeSeg button').forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.m===m))});$$('.mstats b').forEach(function(b,k){var v=b.dataset[m];if(b.textContent===v)return;setTimeout(function(){b.textContent=v;b.classList.remove('flip');void b.offsetWidth;b.classList.add('flip')},REDUCED?0:250+k*90)})}
+$$('#mergeSeg button').forEach(function(b){b.onclick=function(){clearTimeout(window._mt);setMerge(b.dataset.m)}});
+
+/* ---------------- spotlight ---------------- */
+var SPOT='.capcat,.panel,.feat,.tt,.plan,.pillar,.mcard,.profb,.fq,.stp,.regc,.rb,.layer,.jstep,.stop';
+document.addEventListener('pointermove',function(e){var t=e.target&&e.target.closest&&e.target.closest(SPOT);if(!t)return;var r=t.getBoundingClientRect();t.style.setProperty('--mx',(e.clientX-r.left)+'px');t.style.setProperty('--my',(e.clientY-r.top)+'px')},{passive:true});
+
+/* ---------------- hero traffic map ---------------- */
+(function(){
+  var cv=$('#heroCv');if(!cv)return;var ctx=cv.getContext('2d');
+  var L0=-150,L1=138,T0=62,T1=-36,APP=[50.11,8.68];
+  var LB={eus:[9,-8,'left'],wus:[-9,-8,'right'],mxc:[-9,14,'right'],brs:[9,4,'left'],cin:[-9,-9,'right'],sea:[-10,17,'right']};
+  var W=0,H=0,s=1,oy=0,dpr=1,base=document.createElement('canvas'),arcs=[],parts=[],rings=[],t0=performance.now();
+  function X(lon){return (lon-L0)*s}function Y(lat){return oy+(T0-lat)*s}
+  function size(){
+    var r=cv.getBoundingClientRect();if(!r.width)return false;
+    dpr=Math.min(2,window.devicePixelRatio||1);W=r.width;H=r.height;cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr);
+    s=W/(L1-L0);oy=Math.max(0,H-(T0-T1)*s-4);
+    base.width=cv.width;base.height=cv.height;var b=base.getContext('2d');b.setTransform(dpr,0,0,dpr,0,0);b.clearRect(0,0,W,H);
+    var rr=Math.max(.9,s*.95);
+    DOTS.forEach(function(row,ri){var lat=76-ri*2.5-1.25;if(lat>T0||lat<T1)return;for(var c=0;c<row.length;c++){if(row.charAt(c)!=='1')continue;var lon=-170+c*2.5+1.25;if(lon>180)lon-=360;if(lon<L0||lon>L1)continue;var x=X(lon),y=Y(lat);var g=Math.max(0,1-Math.hypot(x-W*.55,y-H*.6)/(W*.75));b.fillStyle='rgba(36,56,100,'+(.10+g*.16).toFixed(3)+')';b.beginPath();b.arc(x,y,rr,0,6.2832);b.fill()}});
+    var tx=X(APP[1]),ty=Y(APP[0]);
+    arcs=REG.map(function(r){var p=[X(GEO[r.id][1]),Y(GEO[r.id][0])],dx=tx-p[0],dy=ty-p[1],d=Math.sqrt(dx*dx+dy*dy);return {id:r.id,n:r.n,p:p,t:[tx,ty],c:[(p[0]+tx)/2,(p[1]+ty)/2-Math.min(H*.42,d*.42)]}});
+    b.lineWidth=1;arcs.forEach(function(a){b.strokeStyle='rgba(30,86,227,.16)';b.beginPath();b.moveTo(a.p[0],a.p[1]);b.quadraticCurveTo(a.c[0],a.c[1],a.t[0],a.t[1]);b.stroke()});
+    return true;
+  }
+  function q(a,t){var u=1-t;return [u*u*a.p[0]+2*u*t*a.c[0]+t*t*a.t[0],u*u*a.p[1]+2*u*t*a.c[1]+t*t*a.t[1]]}
+  function frame(now){
+    var tm=(now-t0)/1000;
+    ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,W,H);ctx.drawImage(base,0,0,W,H);
+    if(!REDUCED){
+      arcs.forEach(function(a,k){if(Math.random()<.16)parts.push({a:a,t:0,v:.0038+Math.random()*.0042,w:1.2+Math.random()*1.4})});
+      parts=parts.filter(function(p){
+        p.t+=p.v;if(p.t>=1){if(Math.random()<.25)rings.push({r:4,o:.7});return false}
+        var h=q(p.a,p.t),tl=q(p.a,Math.max(0,p.t-.07));
+        var g=ctx.createLinearGradient(tl[0],tl[1],h[0],h[1]);g.addColorStop(0,'rgba(30,86,227,0)');g.addColorStop(1,'rgba(30,86,227,.95)');
+        ctx.strokeStyle=g;ctx.lineWidth=p.w;ctx.beginPath();var st=6;for(var i=0;i<=st;i++){var pt=q(p.a,Math.max(0,p.t-.07)+(.07*i/st));if(i===0)ctx.moveTo(pt[0],pt[1]);else ctx.lineTo(pt[0],pt[1])}ctx.stroke();
+        ctx.fillStyle='rgba(18,58,170,1)';ctx.beginPath();ctx.arc(h[0],h[1],p.w*.9,0,6.2832);ctx.fill();
+        return true});
+    }else{arcs.forEach(function(a){ctx.strokeStyle='rgba(30,86,227,.55)';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(a.p[0],a.p[1]);ctx.quadraticCurveTo(a.c[0],a.c[1],a.t[0],a.t[1]);ctx.stroke()})}
+    /* app */
+    var T=arcs.length?arcs[0].t:[0,0];
+    rings=rings.filter(function(r){r.r+=.8;r.o-=.018;if(r.o<=0)return false;ctx.strokeStyle='rgba(13,148,136,'+r.o.toFixed(3)+')';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(T[0],T[1],r.r,0,6.2832);ctx.stroke();return true});
+    var pr=REDUCED?0:(tm%2)/2;ctx.strokeStyle='rgba(13,148,136,'+(.6*(1-pr)).toFixed(3)+')';ctx.lineWidth=2;ctx.beginPath();ctx.arc(T[0],T[1],8+pr*22,0,6.2832);ctx.stroke();
+    ctx.save();ctx.translate(T[0],T[1]);ctx.rotate(Math.PI/4);ctx.fillStyle='#0D9488';ctx.fillRect(-6,-6,12,12);ctx.restore();
+    /* regions */
+    ctx.font='500 '+Math.max(9.5,Math.min(12,W/70))+'px "DM Mono", ui-monospace, monospace';
+    arcs.forEach(function(a,k){
+      var ph=REDUCED?0:((tm+k*.33)%1.6)/1.6;ctx.strokeStyle='rgba(30,86,227,'+(.55*(1-ph)).toFixed(3)+')';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(a.p[0],a.p[1],4+ph*14,0,6.2832);ctx.stroke();
+      ctx.fillStyle='#1E56E3';ctx.beginPath();ctx.arc(a.p[0],a.p[1],4,0,6.2832);ctx.fill();
+      var L=LB[a.id];ctx.textAlign=L[2];ctx.fillStyle='rgba(11,26,58,.78)';ctx.fillText(a.n,a.p[0]+L[0],a.p[1]+L[1]);
+    });
+  }
+  function loop(now){if(!document.hidden&&!$('#ch-intro').hidden){if(!W||Math.abs(cv.getBoundingClientRect().width-W)>1)size();if(W)frame(now)}if(!REDUCED)requestAnimationFrame(loop)}
+  window.addEventListener('resize',function(){size()});
+  if(REDUCED){setTimeout(function(){if(size())frame(performance.now())},50);window.addEventListener('resize',function(){if(size())frame(performance.now())})}
+  else requestAnimationFrame(loop);
+})();
+
+/* ---------------- boot ---------------- */
+var h=(location.hash||'').replace('#','');var idx=CH.findIndex(function(c){return c.id===h});
+go(idx>=0?idx:0,true);
+window.addEventListener('hashchange',function(){var k=CH.findIndex(function(c){return c.id===(location.hash||'').replace('#','')});if(k>=0&&k!==cur)go(k,true)});
+})();
+</script>
+
+</body>
+</html>
