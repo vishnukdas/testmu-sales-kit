@@ -1,34 +1,418 @@
 <!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="robots" content="noindex,nofollow">
-<title>Test Manager Demo Story</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600&family=Source+Sans+3:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400&display=swap">
-<link rel="stylesheet" href="../../assets/kit.css">
-</head>
-<body>
-<header class="hero">
-  <div class="wrap">
-    <a class="back" href="../../">&larr; All sales kits</a>
-    <span class="brand">TestMu AI · Demo Story · Placeholder</span>
-    <h1>Test Manager Demo Story</h1>
-    <p>The customer-facing story SEs present in Stage 3. This page is a placeholder until the kit is built.</p>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Test Manager Story</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap">
+<style>
+:root{--bg:#F4F6FA;--surface:#EDF1F7;--card:#FFF;--raise:#F7F9FC;--border:rgba(16,32,64,.10);--border-hi:rgba(16,32,64,.18);--text:#0B1A3A;--text-sec:#475674;--text-dim:#6B7894;--blue:#1E56E3;--teal:#0D8A80;--cyan:#0891B2;--violet:#7C3AED;--good:#0B8A4B;--warn:#A9700F;--bad:#D0344C;--navy:#0B1A3A;--navy2:#13306F;--shadow:0 1px 2px rgba(16,32,64,.05),0 10px 28px -14px rgba(16,32,64,.18);--sans:'Plus Jakarta Sans',system-ui,-apple-system,sans-serif;--mono:'DM Mono',ui-monospace,Menlo,Consolas,monospace;color-scheme:light}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.55;padding:0 max(20px,env(safe-area-inset-right,0px)) 110px max(20px,env(safe-area-inset-left,0px));min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.grid-bg{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:radial-gradient(rgba(16,32,64,.07) 1px,transparent 1px);background-size:32px 32px;-webkit-mask-image:radial-gradient(ellipse 80% 80% at 50% 40%,#000 25%,transparent 100%);mask-image:radial-gradient(ellipse 80% 80% at 50% 40%,#000 25%,transparent 100%)}
+.blob{position:fixed;border-radius:50%;filter:blur(110px);pointer-events:none;z-index:0;opacity:.1}.blob.a{width:520px;height:300px;background:var(--blue);top:-120px;left:8%}.blob.b{width:400px;height:260px;background:var(--teal);top:40px;right:4%}
+.chrome{position:sticky;top:0;z-index:50;margin:0 calc(-1*max(20px,env(safe-area-inset-left,0px)));padding:12px max(20px,env(safe-area-inset-right,0px)) 0;background:rgba(255,255,255,.9);backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
+.row{display:flex;align-items:center;gap:14px;max-width:1280px;margin:auto}
+.brand{display:flex;align-items:center;gap:12px;white-space:nowrap}.brand img{height:20px;filter:brightness(0);opacity:.88;display:block}.brand .d{width:1px;height:20px;background:var(--border-hi)}
+.mark{display:inline-flex;align-items:center;gap:7px;font-weight:800;font-size:15px}.mark svg{width:20px;height:20px;color:var(--blue)}
+.rail{flex:1;min-width:0;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;padding:2px}.rail::-webkit-scrollbar{display:none}
+.rail button{flex:none;font-size:12.5px;font-weight:600;color:var(--text-sec);padding:7px 12px;border-radius:999px;border:1px solid transparent;white-space:nowrap;transition:.2s}.rail button:hover{color:var(--text);border-color:var(--border)}.rail button[aria-current=true]{color:var(--text);background:rgba(30,86,227,.13);border-color:rgba(30,86,227,.45)}
+.tools{display:flex;gap:8px;flex:none}.pill{font-size:12px;font-weight:700;padding:7px 14px;border-radius:999px;border:1px solid var(--border-hi);color:var(--text-sec);transition:.2s;white-space:nowrap}.pill:hover{color:var(--text);border-color:var(--blue)}.pill[aria-pressed=true]{background:var(--navy);color:#fff;border-color:var(--navy)}
+.progress{height:3px;margin:10px calc(-1*max(20px,env(safe-area-inset-left,0px))) 0}.progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--navy2),var(--blue),var(--teal));transition:width .6s cubic-bezier(.2,.8,.2,1)}
+@media(max-width:860px){.row{flex-wrap:wrap}.tools{margin-left:auto}.rail{order:3;flex-basis:100%}}@media(max-width:480px){.brand img,.brand .d{display:none}#fsBtn{display:none}}
+main{max-width:1280px;margin:auto;position:relative;z-index:1;padding-top:40px}
+.chapter{display:grid;gap:22px}
+.kicker{font:500 12px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--blue);display:flex;align-items:center;gap:10px}.kicker::before{content:"";width:18px;height:2px;background:var(--blue)}
+h1{font-size:clamp(34px,5vw,60px);line-height:1.06;letter-spacing:-.03em;font-weight:800;text-wrap:balance;max-width:17ch}
+h2{font-size:clamp(28px,3.6vw,44px);line-height:1.1;letter-spacing:-.025em;font-weight:800;text-wrap:balance;max-width:24ch;margin-top:10px}
+.hl{background:linear-gradient(90deg,var(--blue),var(--teal));-webkit-background-clip:text;background-clip:text;color:transparent}
+.lede{font-size:clamp(16px,1.6vw,19px);color:var(--text-sec);max-width:62ch;margin-top:10px}
+.hero{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:40px;align-items:center;min-height:62vh}.hero>div{display:grid;gap:18px;justify-items:start;min-width:0}.hero .lede{margin:0}.hero>.hv{justify-items:stretch;align-self:center}@media(max-width:960px){.hero{grid-template-columns:1fr;min-height:0}}
+.lockup{display:flex;align-items:center;gap:12px}.lockup img{height:24px;filter:brightness(0);opacity:.88}.lockup .d{width:1px;height:22px;background:var(--border-hi)}
+.seg{display:inline-flex;gap:4px;padding:4px;background:var(--surface);border:1px solid var(--border);border-radius:999px;flex-wrap:wrap}.seg button{font-size:13px;font-weight:700;padding:8px 16px;border-radius:999px;color:var(--text-sec);transition:.25s}.seg button[aria-pressed=true]{background:var(--card);color:var(--navy);box-shadow:0 1px 2px rgba(16,32,64,.08),0 4px 12px -4px rgba(16,32,64,.22)}
+.cta{display:flex;gap:10px;flex-wrap:wrap}.btn{font-weight:700;font-size:14px;padding:12px 20px;border-radius:12px;background:var(--blue);color:#fff;transition:.2s;text-decoration:none;display:inline-block}.btn:hover{transform:translateY(-1px);background:#1848c4}.btn.ghost{background:var(--card);color:var(--text);border:1px solid var(--border-hi)}
+.panel{background:var(--card);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);padding:22px;min-width:0}
+.label{font:500 11px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim)}
+.illus{font:500 11px var(--mono);color:var(--text-dim);border:1px solid var(--border);border-radius:6px;padding:2px 7px;background:var(--raise);white-space:nowrap}
+.nt{display:none;font-size:13px;color:var(--text-sec);background:rgba(30,86,227,.06);border-left:3px solid var(--blue);border-radius:0 8px 8px 0;padding:9px 12px}body.notes .nt{display:block}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:16px}.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:14px}.grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:14px}
+.ic{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:rgba(30,86,227,.1);color:var(--blue);flex:none}.ic svg{width:21px;height:21px}.ic.t{background:rgba(13,138,128,.11);color:var(--teal)}.ic.v{background:rgba(124,58,237,.1);color:var(--violet)}.ic.c{background:rgba(8,145,178,.11);color:var(--cyan)}
+.vcard{display:grid;gap:9px;align-content:start;transition:transform .25s}.vcard:hover{transform:translateY(-3px)}.vcard b{font-size:16.5px}.vcard p{font-size:14.5px;color:var(--text-sec)}
+/* hero visual */
+.hv{position:relative;display:grid;gap:10px;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:22px;box-shadow:var(--shadow);width:100%}
+.hvr{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:10px 12px;background:var(--raise);border:1px solid var(--border);border-radius:12px;font-size:14px;animation:rise .6s both}
+.hvr:nth-child(3){animation-delay:.1s}.hvr:nth-child(4){animation-delay:.2s}.hvr:nth-child(5){animation-delay:.3s}.hvr:nth-child(6){animation-delay:.4s}
+.tag{font:500 11px var(--mono);padding:2px 8px;border-radius:6px;white-space:nowrap;background:var(--surface);color:var(--text-sec)}.tag.p{background:rgba(11,138,75,.12);color:var(--good)}.tag.f{background:rgba(208,52,76,.12);color:var(--bad)}.tag.n{background:rgba(16,32,64,.07)}.tag.a{background:rgba(30,86,227,.11);color:var(--blue)}.tag.k{background:rgba(124,58,237,.11);color:var(--violet)}.tag.w{background:rgba(169,112,15,.13);color:var(--warn)}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+/* problem */
+.prob{position:relative;height:440px;border-radius:24px;background:radial-gradient(ellipse at 50% 50%,var(--card),var(--surface) 75%);border:1px solid var(--border);overflow:hidden}
+.prob[data-s=after]{background:radial-gradient(ellipse at 50% 50%,rgba(30,86,227,.08),var(--card) 60%)}
+.pc{position:absolute;width:250px;padding:13px 15px;background:var(--card);border:1px solid var(--border-hi);border-radius:14px;box-shadow:var(--shadow);font-size:14px;font-weight:600;display:flex;gap:10px;align-items:center;transition:left .8s cubic-bezier(.2,.8,.2,1),top .8s cubic-bezier(.2,.8,.2,1),transform .8s,border-color .5s;left:var(--x);top:var(--y);transform:rotate(var(--r))}
+.pc i{width:18px;height:18px;border-radius:50%;background:rgba(208,52,76,.18);flex:none;transition:.5s}.pc .af{display:none}
+.prob[data-s=after] .pc{left:var(--ax);top:var(--ay);transform:none;border-color:rgba(13,138,128,.4)}.prob[data-s=after] .pc i{background:var(--teal)}.prob[data-s=after] .pc .af{display:inline}.prob[data-s=after] .pc .bf{display:none}
+.hub{position:absolute;left:50%;top:50%;width:172px;height:112px;margin:-56px 0 0 -86px;border-radius:18px;background:linear-gradient(135deg,var(--navy),var(--navy2) 60%,var(--blue));color:#fff;display:grid;place-content:center;justify-items:center;text-align:center;font-weight:800;opacity:0;transform:scale(.7);transition:.6s .15s}.hub svg{width:28px;height:28px;margin-bottom:4px}.hub small{font-weight:500;font-size:11.5px;opacity:.8}.prob[data-s=after] .hub{opacity:1;transform:none}
+@media(max-width:900px){.prob{height:auto;padding:14px;display:grid;gap:9px}.pc{position:static;width:auto;transform:none!important}.hub{position:static;margin:0 auto;order:-1;display:none;width:auto;height:auto;padding:12px 20px}.prob[data-s=after] .hub{display:grid}}
+/* capabilities */
+.caps{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}@media(max-width:900px){.caps{grid-template-columns:1fr}}
+.capcats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;align-content:start}
+.capcat{display:flex;align-items:center;gap:11px;text-align:left;padding:13px;border-radius:16px;background:var(--card);border:1px solid var(--border);box-shadow:var(--shadow);transition:.25s;min-width:0}.capcat:hover{transform:translateY(-2px)}.capcat[aria-pressed=true]{border-color:var(--teal);box-shadow:inset 3px 0 0 var(--teal),var(--shadow)}.capcat b{display:block;font-size:14px}.capcat span{display:block;font-size:12px;color:var(--text-sec)}
+@media(max-width:560px){.capcat span.s{display:none}}
+.chips{display:flex;gap:8px;flex-wrap:wrap}.chip{font-size:13px;font-weight:600;padding:8px 13px;border-radius:999px;border:1px solid var(--border-hi);background:var(--card);color:var(--text-sec);transition:.2s}.chip:hover{border-color:var(--blue);color:var(--text)}.chip[aria-pressed=true]{background:var(--teal);color:#fff;border-color:var(--teal)}
+.capbox{background:var(--raise);border:1px solid var(--border);border-radius:14px;padding:18px;font-size:18px;font-weight:700;letter-spacing:-.01em;min-height:96px}
+.swap{animation:rise .35s both}
+/* simulator */
+.sim{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:16px}@media(max-width:900px){.sim{grid-template-columns:1fr}}
+.ctl{display:grid;gap:15px;align-content:start}.ctl>div{display:grid;gap:7px}
+.src{font-size:13.5px;color:var(--text-sec);background:var(--raise);border:1px solid var(--border);border-radius:10px;padding:11px 13px}.src b{color:var(--text);display:block;margin-bottom:2px}
+.out{display:grid;gap:10px;align-content:start;min-height:330px}.scen{border:1px solid var(--border);border-radius:13px;background:var(--raise);padding:12px 14px;display:grid;gap:8px;animation:rise .4s both}.scen>div:first-child{display:flex;justify-content:space-between;gap:10px;font-weight:700;font-size:14.5px}
+.case{display:grid;gap:4px;background:var(--card);border:1px solid var(--border);border-radius:9px;padding:9px 11px;font-size:13.5px}.case .h{display:flex;gap:8px;justify-content:space-between;align-items:center;font-weight:600}.case pre{font:12px/1.6 var(--mono);color:var(--text-sec);white-space:pre-wrap}
+.dup{border-style:dashed;opacity:.8}
+/* run */
+.calc{display:flex;gap:12px;align-items:center;flex-wrap:wrap;font-weight:700}.calc input{width:150px;accent-color:var(--blue)}.big{font-size:40px;font-weight:800;letter-spacing:-.03em;color:var(--blue);font-variant-numeric:tabular-nums;line-height:1.1}
+.stp{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding:9px 0;border-top:1px solid var(--border);font-size:14px}.stb{display:flex;gap:4px}.stb button{font-size:11.5px;font-weight:700;padding:5px 9px;border:1px solid var(--border-hi);border-radius:7px;color:var(--text-sec)}.stb button[aria-pressed=true][data-s=P]{background:var(--good);color:#fff;border-color:var(--good)}.stb button[aria-pressed=true][data-s=F]{background:var(--bad);color:#fff;border-color:var(--bad)}.stb button[aria-pressed=true][data-s=N]{background:var(--text-dim);color:#fff;border-color:var(--text-dim)}
+@media(max-width:520px){.stp{grid-template-columns:1fr}}
+/* trace */
+.chain{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}@media(max-width:760px){.chain{grid-template-columns:1fr}}
+.lnk{padding:14px;border-radius:14px;background:var(--card);border:1px solid var(--border);box-shadow:var(--shadow);text-align:left;display:grid;gap:3px;transition:.2s}.lnk b{font-size:14.5px}.lnk span{font-size:12px;color:var(--text-sec)}.lnk[aria-pressed=true]{background:var(--navy);color:#fff;border-color:var(--navy)}.lnk[aria-pressed=true] span{color:#C8D4EC}
+/* insights */
+.wid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,170px),1fr));gap:10px}.w{background:var(--raise);border:1px solid var(--border);border-radius:12px;padding:13px;display:grid;gap:3px}.w b{font-size:27px;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1.15}.w span{font-size:12.5px;color:var(--text-sec)}
+.bar{display:flex;height:12px;border-radius:6px;overflow:hidden;background:var(--surface)}.bar i{display:block;transition:width .6s}.lg{display:flex;gap:12px;flex-wrap:wrap;font-size:12.5px;color:var(--text-sec)}.lg i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px}
+.chart{display:flex;align-items:flex-end;gap:7px;height:110px}.chart i{flex:1;background:linear-gradient(180deg,var(--blue),rgba(30,86,227,.3));border-radius:5px 5px 0 0;transition:height .6s}
+/* flow */
+.flow{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;counter-reset:s}@media(max-width:900px){.flow{grid-template-columns:1fr}}.fs{position:relative;display:grid;gap:7px;align-content:start;padding:16px}.fs b{font-size:15px}.fs p{font-size:13px;color:var(--text-sec)}
+/* migrate */
+.lists{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:14px}.lists ul{list-style:none;display:grid;gap:6px;font-size:14px;margin-top:7px}.lists li{padding-left:22px;position:relative}.lists li::before{position:absolute;left:0;top:0;font-weight:800}.mv li::before{content:"✓";color:var(--good)}.st li::before{content:"–";color:var(--warn)}
+.statement{padding:15px 18px;border-radius:14px;background:linear-gradient(120deg,var(--navy),var(--navy2));color:#fff;font-weight:700;font-size:15.5px}
+.tl{display:grid;gap:0}.tli{display:grid;grid-template-columns:30px minmax(0,1fr);gap:10px;padding-bottom:14px}.tli em{font:500 12px var(--mono);font-style:normal;width:26px;height:26px;border-radius:50%;background:rgba(30,86,227,.12);color:var(--blue);display:grid;place-items:center}.tli b{display:block;font-size:14.5px}.tli span{font-size:13.5px;color:var(--text-sec)}
+/* faq */
+.fqs{display:grid;gap:8px}.fq{border:1px solid var(--border);border-radius:14px;background:var(--card);overflow:hidden}.fq>button{width:100%;display:flex;justify-content:space-between;gap:14px;text-align:left;padding:14px 16px;font-size:14.5px;font-weight:700}.fq>button::after{content:"+";color:var(--text-dim)}.fq.open>button::after{content:"−"}.fq>div{display:none;padding:0 16px 15px;font-size:14.5px;color:var(--text-sec)}.fq.open>div{display:block}
+.search{width:100%;max-width:440px;padding:11px 14px;border:1px solid var(--border-hi);border-radius:11px;font:inherit;background:var(--card);color:var(--text)}
+/* nav */
+.nav{position:fixed;inset:auto 16px 14px 16px;z-index:40;display:flex;justify-content:space-between;align-items:flex-end;pointer-events:none}.nav>*{pointer-events:auto}.nv{display:grid;gap:0;background:var(--card);border:1px solid var(--border-hi);border-radius:14px;padding:9px 16px;box-shadow:var(--shadow);text-align:left;transition:.2s}.nv:hover{transform:translateY(-2px);border-color:var(--blue)}.nv small{font:500 10px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim)}.nv b{font-size:14px}.nv.next{background:rgba(226,233,250,.97);text-align:right}
+.lft{display:flex;gap:10px;align-items:flex-end}.count{font:500 12px var(--mono);color:var(--text-sec);padding:4px 10px;border:1px solid var(--border);background:var(--card);border-radius:999px;margin-bottom:6px}@media(max-width:520px){.count{display:none}}
+.wipe{position:fixed;inset:0;z-index:95;display:grid;place-items:center;background:radial-gradient(ellipse at 70% 30%,rgba(30,86,227,.55),transparent 60%),linear-gradient(120deg,var(--navy),var(--navy2) 60%,var(--blue));color:#fff;visibility:hidden;pointer-events:none;text-align:center}.wipe b{display:block;font-size:clamp(26px,4vw,42px);letter-spacing:-.02em}.wipe span{font:500 12px var(--mono);opacity:.8}
+.wipe.in{visibility:visible;animation:wi .28s cubic-bezier(.76,0,.24,1) forwards}.wipe.in.back{animation-name:wib}.wipe.out{visibility:visible;animation:wo .32s cubic-bezier(.76,0,.24,1) forwards}
+@keyframes wi{from{clip-path:inset(0 0 0 100%)}to{clip-path:inset(0)}}@keyframes wib{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0)}}@keyframes wo{from{clip-path:inset(0)}to{clip-path:inset(0 100% 0 0)}}
+.rv{animation:rise .5s both}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.wipe{display:none}}
+@media print{.chrome,.nav,.wipe{display:none}}
+/* v2 */
+.plain{display:flex;gap:10px;align-items:flex-start;max-width:78ch;margin-top:12px;padding:11px 15px;background:var(--card);border:1px solid var(--border);border-left:4px solid var(--teal);border-radius:0 12px 12px 0;font-size:15.5px;color:var(--text)}.plain b{white-space:nowrap;color:var(--teal);font-size:12px;font-family:var(--mono);letter-spacing:.06em;text-transform:uppercase;margin-top:3px}
+.roof{display:grid;gap:0;width:100%}
+.rtop{clip-path:polygon(50% 0,100% 100%,0 100%);background:linear-gradient(135deg,var(--navy),var(--navy2) 60%,var(--blue));color:#fff;text-align:center;padding:38px 20% 16px;font-weight:800;font-size:clamp(15px,1.6vw,19px);line-height:1.2}.rtop small{display:block;font-weight:500;font-size:12px;opacity:.85;margin-top:2px}
+.pillars{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;padding:8px 10px;background:rgba(19,48,111,.05);border-inline:1px solid var(--border)}
+.pil{display:grid;justify-items:center;gap:6px;padding:14px 4px;background:var(--card);border:1px solid var(--border);border-radius:12px;font-size:13.5px;font-weight:700;transition:.25s;text-align:center}.pil:hover{transform:translateY(-3px);border-color:var(--blue)}.pil svg{width:22px;height:22px;color:var(--blue)}.pil[aria-pressed=true]{background:var(--blue);color:#fff;border-color:var(--blue)}.pil[aria-pressed=true] svg{color:#fff}.pil.dim{opacity:.38}
+.base{background:var(--navy);color:#DDE6F7;text-align:center;font-size:12.5px;padding:9px;border-radius:0 0 12px 12px;font-weight:600}
+@media(max-width:560px){.pil{font-size:11.5px;padding:10px 1px}.pil svg{width:17px;height:17px}.rtop{padding-inline:12%}}
+.rooflay{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:20px;align-items:start}@media(max-width:900px){.rooflay{grid-template-columns:1fr}}
+.kv{display:grid;gap:12px}.kv>div{display:grid;gap:2px}.kv p{font-size:15px}.kv .off{color:var(--text-sec)}
+.jsteps{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}.js{flex:1 0 auto;display:flex;gap:7px;align-items:center;justify-content:center;font-size:13px;font-weight:700;padding:9px 13px;border-radius:10px;background:var(--card);border:1px solid var(--border);color:var(--text-sec);white-space:nowrap}.js em{font:500 11px var(--mono);font-style:normal;opacity:.7}.js[aria-current=true]{background:var(--navy);color:#fff;border-color:var(--navy)}.js.done{color:var(--teal);border-color:rgba(13,138,128,.35)}
+.jlay{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,.75fr);gap:16px;align-items:start}@media(max-width:960px){.jlay{grid-template-columns:1fr}}
+.app{background:#fff;border:1px solid var(--border-hi);border-radius:14px;box-shadow:var(--shadow);overflow:hidden;font-size:13px;min-height:380px}
+.abar{display:flex;gap:8px;align-items:center;justify-content:space-between;padding:9px 14px;background:#FAFBFD;border-bottom:1px solid var(--border);font-size:12px;color:var(--text-sec)}
+.atabs{display:flex;gap:14px;padding:0 14px;border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none}.atabs span{padding:9px 1px;font-weight:600;color:var(--text-sec);white-space:nowrap;font-size:12.5px}.atabs .on{color:var(--text);box-shadow:inset 0 -2px 0 #D9541E}
+.abody{padding:14px;display:grid;gap:9px}
+.acta{font-weight:700;font-size:12px;padding:6px 11px;border-radius:7px;background:#1A8341;color:#fff;white-space:nowrap}.acta.ai{background:#fff;color:var(--text);border:1px solid #9b8cf0}.acta.g{background:#fff;color:var(--text);border:1px solid var(--border-hi)}
+.arow{display:flex;gap:10px;justify-content:space-between;align-items:center;border:1px solid var(--border);border-radius:9px;padding:9px 11px}.arow b{font-weight:600;font-size:13.5px}.arow small{display:block;color:var(--text-dim);font-size:11.5px}
+.split{display:grid;grid-template-columns:150px minmax(0,1fr);gap:12px}@media(max-width:560px){.split{grid-template-columns:1fr}}.side{display:grid;gap:5px;align-content:start;font-size:12.5px;color:var(--text-sec)}.side .sel{background:var(--surface);border-left:3px solid #D9541E;padding:5px 8px;font-weight:700;color:var(--text)}.side span{padding:3px 8px}
+.jcap{display:grid;gap:13px}.jcap h3{font-size:20px;letter-spacing:-.01em;line-height:1.2}.jcap p{font-size:14.5px;color:var(--text-sec)}.before{background:rgba(208,52,76,.06);border-radius:10px;padding:10px 12px;font-size:13.5px;color:var(--text-sec)}.before b{color:var(--bad);display:block;font:500 11px var(--mono);text-transform:uppercase;letter-spacing:.06em}
+.statrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,105px),1fr));gap:8px}.st8{border:1px solid var(--border);border-radius:9px;padding:9px;display:grid;gap:1px}.st8 b{font-size:20px;line-height:1.15;font-variant-numeric:tabular-nums}.st8 span{font-size:11.5px;color:var(--text-sec)}
+.donut{width:118px;height:118px;border-radius:50%;display:grid;place-items:center;flex:none}.donut i{width:74px;height:74px;background:#fff;border-radius:50%;display:grid;place-items:center;font-style:normal;font-weight:800;font-size:19px}
+table.rp{border-collapse:collapse;width:100%;font-size:13px;min-width:520px}table.rp th,table.rp td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--border)}table.rp th{font:500 11px var(--mono);color:var(--text-dim);text-transform:uppercase}
+.twrap{overflow-x:auto}
+.verdict{display:flex;gap:12px;align-items:center;padding:12px 15px;border-radius:12px;background:rgba(169,112,15,.1);font-weight:700;font-size:15px}.verdict i{width:12px;height:12px;border-radius:50%;background:var(--warn);flex:none}
+.stack{display:grid;gap:10px}.lay{display:grid;grid-template-columns:150px minmax(0,1fr);gap:14px;align-items:center;padding:15px 16px;border-radius:14px;background:var(--card);border:1px solid var(--border);box-shadow:var(--shadow)}.lay>b{font-size:15px}.lay p{font-size:14px;color:var(--text-sec)}.lay .prods{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:4px}.lay .prods span{font-weight:700;font-size:13px;padding:4px 10px;border-radius:7px;background:rgba(30,86,227,.1);color:var(--blue)}.lay.me{background:linear-gradient(120deg,var(--navy),var(--navy2));color:#fff}.lay.me p{color:#D3DDF2}.lay.me .prods span{background:rgba(255,255,255,.16);color:#fff}@media(max-width:620px){.lay{grid-template-columns:1fr}}
+.pc{width:262px}.pc small{display:block;font:500 10.5px var(--mono);color:var(--text-dim);letter-spacing:.04em;text-transform:uppercase;margin-bottom:1px}
+.ask{justify-self:center;text-align:center;font-weight:800;font-size:clamp(17px,2vw,22px);letter-spacing:-.01em}
+.chapter{grid-template-columns:minmax(0,1fr)}
+#decSeg,#scaleSeg{justify-self:start}
+.askrow{display:flex;gap:16px;align-items:center;justify-content:center;flex-wrap:wrap}
+@media(max-width:560px){.plain{flex-direction:column;gap:3px}}
+.jlay>*{min-width:0}.jsteps{min-width:0}.app .split[style]{grid-template-columns:minmax(0,1fr)!important}@media(min-width:620px){.app .split[style]{grid-template-columns:minmax(0,1fr) 190px!important}}
+</style></head><body>
+<div class="grid-bg"></div><div class="blob a"></div><div class="blob b"></div>
+<header class="chrome"><div class="row">
+  <div class="brand"><img src="data:image/png;base64,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" alt="TestMu AI"><span class="d"></span><span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>Test Manager</span></div>
+  <nav class="rail" id="rail" aria-label="Chapters"></nav>
+  <div class="tools"><button class="pill" id="notesBtn" type="button" aria-pressed="false" title="Show detail and limits">Details</button><button class="pill" id="fsBtn" type="button">Present</button></div>
+</div><div class="progress"><i id="prog"></i></div></header>
+<main>
+<section class="chapter" id="ch-intro"><div class="hero">
+  <div>
+    <div class="lockup"><img src="data:image/png;base64,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" alt="TestMu AI"><span class="d"></span><span class="mark">Test Manager</span></div>
+    <div class="seg audSeg" role="group" aria-label="Audience"><button type="button" data-a="new" aria-pressed="true">New to Test Manager</button><button type="button" data-a="ex" aria-pressed="false">Already a customer</button></div>
+    <div class="kicker">Test management, under one roof</div>
+    <h1 data-aud="new">One place to plan, write, run and <span class="hl">sign off</span> your testing.</h1>
+    <h1 data-aud="ex" hidden>Your tests already run with us. Bring <span class="hl">the plan</span> under the same roof.</h1>
+    <p class="lede" data-aud="new">Most teams keep test cases in one tool, automation results in another and release status in a spreadsheet. Test Manager brings that work together, so anyone can see what was tested and whether you are ready to ship.</p>
+    <p class="lede" data-aud="ex" hidden>Test Manager adds test cases, manual testing and release reporting to the TestMu account you already use, next to the automated runs you already have.</p>
+    <div class="cta"><button class="btn" type="button" data-go="journey">Follow one ticket to release</button><button class="btn ghost" type="button" data-go="problem">Why it matters</button><button class="btn ghost" type="button" data-go="migrate">Moving from another tool</button></div>
   </div>
-</header>
-<main><div class="wrap">
-  <section class="view">
-    <div class="gate">
-      <div><span class="kicker">Status</span><p><span class="pill p-prog">In progress</span></p></div>
-      <div><span class="kicker">Timing</span><p>This week</p></div>
+  <div class="panel"><div class="roof" id="heroRoof"></div></div>
+</div></section>
+
+<section class="chapter" id="ch-problem" hidden>
+  <div><div class="kicker">The problem</div><h2>Testing is one job, spread across too many places.</h2><div class="plain"><b>In plain terms</b><span>Ask a simple question, and see how many places hold part of the answer.</span></div></div>
+  <div class="askrow"><div class="ask">"Are we ready to ship?"</div><div class="seg" id="probSeg" role="group" aria-label="Before and after"><button type="button" data-s="before" aria-pressed="true">Today</button><button type="button" data-s="after" aria-pressed="false">With Test Manager</button></div></div>
+  <div class="prob" id="prob" data-s="before">
+    <div class="hub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M6 10v9h12v-9"/></svg>Test Manager<small>One answer</small></div>
+    <div class="pc" style="--x:5%;--y:7%;--r:-3deg;--ax:3%;--ay:8%"><i></i><span class="bf"><small>Test tool or spreadsheet</small>Test cases that may be out of date</span><span class="af"><small>Repository</small>One trusted set of test cases</span></div>
+    <div class="pc" style="--x:39%;--y:27%;--r:2deg;--ax:3%;--ay:39%"><i></i><span class="bf"><small>Word docs and tickets</small>Every test written by hand</span><span class="af"><small>AI generation</small>Drafted from tickets, then reviewed</span></div>
+    <div class="pc" style="--x:71%;--y:7%;--r:3deg;--ax:3%;--ay:70%"><i></i><span class="bf"><small>CI dashboard</small>Automation results nobody else sees</span><span class="af"><small>Test runs</small>Manual and automated results together</span></div>
+    <div class="pc" style="--x:9%;--y:64%;--r:2deg;--ax:calc(97% - 262px);--ay:8%"><i></i><span class="bf"><small>Jira, separately</small>Requirements not tied to results</span><span class="af"><small>Jira stays, now linked</small>Each ticket tied to its tests</span></div>
+    <div class="pc" style="--x:41%;--y:67%;--r:-2deg;--ax:calc(97% - 262px);--ay:39%"><i></i><span class="bf"><small>Chat and email</small>Bugs and evidence scattered</span><span class="af"><small>Issues and evidence</small>Bugs linked to the step that failed</span></div>
+    <div class="pc" style="--x:71%;--y:47%;--r:-3deg;--ax:calc(97% - 262px);--ay:70%"><i></i><span class="bf"><small>Spreadsheet and slides</small>Release status built by hand</span><span class="af"><small>Insights and reports</small>Status and traceability on demand</span></div>
+  </div>
+  <p class="nt">Jira, Azure DevOps and Linear stay your trackers. Test Manager links to them.</p>
+</section>
+
+<section class="chapter" id="ch-roof" hidden>
+  <div><div class="kicker">Under one roof</div><h2>Five steps of testing. One place for all of them.</h2><div class="plain"><b>In plain terms</b><span>Pick a step, or tell us your role, to see what changes for you.</span></div></div>
+  <div class="rooflay">
+    <div class="panel" style="display:grid;gap:14px"><div class="roof" id="mainRoof"></div><div><span class="label">I am a</span><div class="chips" id="roles" style="margin-top:7px"></div></div></div>
+    <div class="panel kv" id="roofD"></div>
+  </div>
+</section>
+
+<section class="chapter" id="ch-journey" hidden>
+  <div><div class="kicker">See it work</div><h2>Follow one ticket from idea to release.</h2><div class="plain"><b>In plain terms</b><span>A team needs to ship a promo code feature at checkout. Here is what happens at each step. <span class="illus">Example screens</span></span></div></div>
+  <div class="jsteps" id="jsteps"></div>
+  <div class="jlay"><div id="jscreen"></div><div class="panel jcap" id="jcap"></div></div>
+</section>
+
+<section class="chapter" id="ch-generate" hidden>
+  <div><div class="kicker">AI generation</div><h2>Try it: turn a ticket into test cases.</h2><div class="plain"><b>In plain terms</b><span>Give it what you already have. It drafts the tests, and your team decides what to keep. Change the settings below and generate again.</span></div></div>
+  <div class="sim">
+    <div class="panel ctl">
+      <div style="display:flex;justify-content:space-between;align-items:center"><span class="label">Try it</span><span class="illus">Illustrative example</span></div>
+      <div><span class="label">Input</span><div class="chips" id="genIn"></div><div class="src" id="genSrc"></div></div>
+      <div><span class="label">Max scenarios</span><div class="chips" id="genMax"></div></div>
+      <div><span class="label">Format</span><div class="chips" id="genFmt"></div></div>
+      <div><span class="label">Check against existing tests</span><div class="chips" id="genMem"></div></div>
+      <button class="btn" id="genBtn" type="button">Generate</button>
     </div>
-    <div class="block"><h3>What this will contain</h3><ul class="ph-list"><li>The problem the product solves</li><li>How it works, shown step by step</li><li>What the customer gets back</li><li>Getting started, with a view for prospects and one for existing customers</li><li>FAQs</li></ul></div>
-    <div class="block"><h3>Inputs needed from the product team</h3><ul class="ph-list"><li>Product walkthrough and screens</li><li>Docs pages to cite for each figure</li><li>Demo environment or sample project</li></ul>
-      <p class="coach"><b>Format</b>Same structure as the <a href="../../plays/performance-testing/">Performance Testing sales play</a>, so reps learn one layout for every product.</p></div>
-  </section>
-</div></main>
-</body>
-</html>
+    <div class="panel out" id="genOut" aria-live="polite"></div>
+  </div>
+  <p class="nt">Inputs: text, Jira, Azure DevOps or Linear issues, PDFs, images, audio, video, CSV or XLSX, documents, Markdown, JSON, XML. Up to 10 files per upload, 50 MB each. Public URLs only. Azure DevOps and Linear links send text. The check against existing tests (Memory Enhancement) avoids new duplicates; existing ones use the separate duplicate scan. AI features use credits and depend on your plan.</p>
+</section>
+
+<section class="chapter" id="ch-decide" hidden>
+  <div><div class="kicker">Release sign-off</div><h2>Know what was tested, what failed and why.</h2><div class="plain"><b>In plain terms</b><span>Everyone looks at the same numbers. No one has to build a report before the release meeting.</span></div></div>
+  <div class="seg" id="decSeg" role="group" aria-label="View"><button type="button" data-v="ins" aria-pressed="true">Project insights</button><button type="button" data-v="tr" aria-pressed="false">Traceability report</button><button type="button" data-v="ev" aria-pressed="false">Run report</button></div>
+  <div class="panel" id="decD" style="display:grid;gap:14px"></div>
+  <p class="nt">Reports include Detailed Execution History and the Traceability Report across requirements, defects, test cases and executions. Flaky, always failing, new failure and anomaly signals appear in the Evidence Report for KaneAI and Kane CLI runs.</p>
+</section>
+
+<section class="chapter" id="ch-scale" hidden>
+  <div><div class="kicker">Built for your size</div><h2>Start with one team. Grow to the whole organization.</h2><div class="plain"><b>In plain terms</b><span>The same product works for one project today and many teams later, with more control as you grow.</span></div></div>
+  <div class="seg" id="scaleSeg" role="group" aria-label="Team size"><button type="button" data-v="team" aria-pressed="true">For a growing team</button><button type="button" data-v="ent" aria-pressed="false">For an enterprise</button></div>
+  <div class="grid3" id="scaleD"></div>
+  <p class="nt">SSO is on the Enterprise plan. Role-based access control, version history, API access and insights are on Premium and above. Check current plan details with your TestMu team.</p>
+</section>
+
+<section class="chapter" id="ch-platform" hidden>
+  <div><div class="kicker">The bigger picture</div><h2 data-aud="new">Start with test management. Add the rest when you need it.</h2><h2 data-aud="ex" hidden>You already have part of this. Test Manager connects it.</h2><div class="plain"><b>In plain terms</b><span>Test Manager is where your testing is planned and tracked. The rest of TestMu AI writes and runs the tests, and every result comes back to the same place.</span></div></div>
+  <div class="stack">
+    <div class="lay me"><b>Plan and track</b><div><div class="prods"><span>Test Manager</span></div><p>Test cases, test runs, issues, reports and release status.</p></div></div>
+    <div class="lay"><b>Write the automation</b><div><div class="prods"><span>KaneAI</span><span>Kane CLI</span></div><p>Automate a test case in plain language from its own screen, or generate Selenium, Playwright, Cypress, WebdriverIO or Appium code.</p></div></div>
+    <div class="lay"><b>Run it</b><div><div class="prods"><span>Browser and device cloud</span><span>HyperExecute</span></div><p>Real browsers and devices, with test orchestration in the cloud.</p></div></div>
+    <div class="lay"><b>Understand it</b><div><div class="prods"><span>Insights</span><span>Evidence reports</span></div><p>Trends, failures and proof of what ran, back in Test Manager.</p></div></div>
+  </div>
+  <div class="statement">One vendor, one login and one view of quality. You can use only Test Manager and keep your current automation.</div>
+  <p class="nt">Automating with KaneAI needs KaneAI access, and Create and Automate is currently marked experimental, so review steps afterwards. Running tests uses a TestMu execution plan.</p>
+</section>
+
+<section class="chapter" id="ch-migrate" hidden>
+  <div><div class="kicker">Moving to Test Manager</div><h2>Choose your current tool. See what moves.</h2><div class="plain"><b>In plain terms</b><span>You do not need to start again. Your test cases come with you, and you can try it on one project first.</span></div></div>
+  <div class="statement">Your test assets move. Keep your current tool for audit history. Start with one project while your current tool keeps running.</div>
+  <div class="chips" id="migTools" role="group" aria-label="Current tool"></div>
+  <div class="panel" id="migD" style="display:grid;gap:14px"></div>
+  <div class="grid2">
+    <div class="panel"><span class="label">A safe way to move</span><div class="tl" style="margin-top:12px" id="migPlan"></div></div>
+    <div class="panel" style="display:grid;gap:10px;align-content:start"><span class="label">Before you start</span><ul style="list-style:none;display:grid;gap:8px;font-size:14.5px;color:var(--text-sec)"><li>Export any run reports you must keep, before your old licence ends.</li><li>Connect Jira first, so linked issues come across where your source supports it.</li><li>Plan seats and user access separately. Users are set up apart from the test data.</li><li>Create the custom fields you need before a CSV import.</li></ul></div>
+  </div>
+  <p class="nt">Migrations are one-time imports, not a continuous sync. CSV files are limited to 10 MB each, so split large ones. On the Zephyr and CSV paths, folder names over 100 characters and tags over 48 are shortened.</p>
+</section>
+
+<section class="chapter" id="ch-faq" hidden>
+  <div><div class="kicker">Questions</div><h2>Questions teams ask before they switch.</h2></div>
+  <input class="search" id="fqS" type="search" placeholder="Search, for example: Jira, history" aria-label="Search questions">
+  <div class="fqs" id="fqs"></div>
+  <p id="fqE" hidden style="color:var(--text-sec)">No match. Ask your TestMu team.</p>
+</section>
+
+<section class="chapter" id="ch-start" hidden>
+  <div><div class="kicker">Get started</div><h2 data-aud="new">See it on one of your own projects.</h2><h2 data-aud="ex" hidden>Add it to the account you already have.</h2></div>
+  <div class="grid4" id="startGrid"></div>
+  <div class="grid4" style="margin-top:6px"><div class="panel"><div class="big" style="font-size:30px">3M+</div><span style="font-size:13.5px;color:var(--text-sec)">users on the TestMu AI platform</span></div><div class="panel"><div class="big" style="font-size:30px">18K+</div><span style="font-size:13.5px;color:var(--text-sec)">enterprises on the platform</span></div><div class="panel"><div class="big" style="font-size:30px">1.5B+</div><span style="font-size:13.5px;color:var(--text-sec)">tests on the platform</span></div><div class="panel"><div class="big" style="font-size:30px">132</div><span style="font-size:13.5px;color:var(--text-sec)">countries</span></div></div>
+  <div class="cta"><a class="btn" href="https://www.testmuai.com/support/docs/test-manager/" target="_blank" rel="noopener">Read the docs</a><a class="btn ghost" href="https://www.testmuai.com/" target="_blank" rel="noopener">testmuai.com</a></div>
+</section>
+</main>
+<div class="nav"><div class="lft"><button class="nv" id="prev" type="button"><small>Previous</small><b id="prevL"></b></button><span class="count" id="count"></span></div><button class="nv next" id="next" type="button"><small>Next</small><b id="nextL"></b></button></div>
+<div class="wipe" id="wipe"><div><span id="wn"></span><b id="wt"></b></div></div>
+
+<script>
+(function(){'use strict';
+var $=function(s,r){return (r||document).querySelector(s)},$$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+var REDUCED=false;try{REDUCED=matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){}
+var IC_={up:'<path d="M12 16V5M7 10l5-5 5 5M5 19h14"/>',spark:'<path d="M12 3l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/>',box:'<rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 10h16M10 4v16"/>',play:'<path d="M7 5l12 7-12 7z"/>',link:'<path d="M10 14a4 4 0 0 0 6 0l3-3a4 4 0 0 0-6-6l-1 1M14 10a4 4 0 0 0-6 0l-3 3a4 4 0 0 0 6 6l1-1"/>',chart:'<path d="M4 20V4M4 20h16M8 16v-4M13 16V8M18 16v-7"/>',bot:'<rect x="5" y="8" width="14" height="11" rx="2"/><path d="M12 8V4M9 13h.01M15 13h.01"/>',shield:'<path d="M12 3l7 3v6c0 4-3 7-7 9-4-2-7-5-7-9V6z"/>'};
+var CH=[['intro','Overview'],['problem','The problem'],['roof','Under one roof'],['journey','Follow a ticket'],['generate','Try AI'],['decide','Release sign-off'],['scale','Teams and enterprises'],['platform','The bigger picture'],['migrate','Moving over'],['faq','FAQs'],['start','Get started']];
+var cur=-1,aud='new';
+var rail=$('#rail');CH.forEach(function(c,i){var b=document.createElement('button');b.type='button';b.textContent=c[1];b.onclick=function(){go(i)};rail.appendChild(b)});
+function paint(i){
+  CH.forEach(function(c,k){$('#ch-'+c[0]).hidden=k!==i});
+  $$('button',rail).forEach(function(b,k){b.setAttribute('aria-current',String(k===i));if(k===i&&b.scrollIntoView)try{b.scrollIntoView({inline:'center',block:'nearest'})}catch(e){}});
+  $('#prog').style.width=((i+1)/CH.length*100)+'%';
+  $('#prev').hidden=i===0;$('#next').hidden=i===CH.length-1;
+  if(i>0)$('#prevL').textContent=CH[i-1][1];if(i<CH.length-1)$('#nextL').textContent=CH[i+1][1];
+  $('#count').textContent=(i+1)+' / '+CH.length;
+  window.scrollTo(0,0);
+  if(!REDUCED)$$('#ch-'+CH[i][0]+' > *').forEach(function(n,k){n.classList.remove('rv');void n.offsetWidth;n.style.animationDelay=(k*60)+'ms';n.classList.add('rv')});
+  if(CH[i][0]==='problem')playProb();
+  if(CH[i][0]==='generate'&&!genDone)generate();
+}
+var tok=0;
+function go(i,nohash){
+  if(i<0||i>=CH.length||i===cur)return;
+  var prev=cur;cur=i;
+  if(!nohash)try{history.replaceState(null,'','#'+CH[i][0])}catch(e){}
+  if(prev<0||REDUCED){paint(i);return}
+  var w=$('#wipe'),t=++tok;$('#wn').textContent=String(i+1).padStart(2,'0')+' / '+CH.length;$('#wt').textContent=CH[i][1];
+  w.className='wipe in'+(i<prev?' back':'');
+  setTimeout(function(){if(t!==tok)return;paint(i);w.className='wipe out';setTimeout(function(){if(t===tok)w.className='wipe'},330)},300);
+}
+$('#prev').onclick=function(){go(cur-1)};$('#next').onclick=function(){go(cur+1)};
+document.addEventListener('click',function(e){var b=e.target.closest('[data-go]');if(b)go(CH.map(function(c){return c[0]}).indexOf(b.dataset.go))});
+document.addEventListener('keydown',function(e){if(/INPUT|TEXTAREA/.test(e.target.tagName))return;if(e.key==='ArrowRight')go(cur+1);if(e.key==='ArrowLeft')go(cur-1)});
+$('#notesBtn').onclick=function(){var on=document.body.classList.toggle('notes');this.setAttribute('aria-pressed',String(on))};
+$('#fsBtn').onclick=function(){try{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}catch(e){}};
+function setAud(a){aud=a;$$('[data-aud]').forEach(function(x){x.hidden=x.dataset.aud!==a});$$('.audSeg button').forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.a===a))});renderAud();try{localStorage.setItem('tmstory-aud',a)}catch(e){}}
+$$('.audSeg button').forEach(function(b){b.onclick=function(){setAud(b.dataset.a)}});
+function chips(host,items,val,on,cls){host.innerHTML='';items.forEach(function(it){var b=document.createElement('button');b.type='button';b.className=cls||'chip';b.textContent=it[1];b.setAttribute('aria-pressed',String(it[0]===val));b.onclick=function(){$$('button',host).forEach(function(x){x.setAttribute('aria-pressed','false')});b.setAttribute('aria-pressed','true');on(it[0])};host.appendChild(b)})}
+
+/* problem */
+var pT;function setProb(s){$('#prob').dataset.s=s;$$('#probSeg button').forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.s===s))})}
+function playProb(){clearTimeout(pT);setProb('before');if(!REDUCED)pT=setTimeout(function(){setProb('after')},1800)}
+$$('#probSeg button').forEach(function(b){b.onclick=function(){clearTimeout(pT);setProb(b.dataset.s)}});
+
+/* audience content */
+function renderAud(){
+ var S=aud==='new'?[['One project','Choose a real project and your current tool.'],['Import','See what carries over and check it against the source.'],['Generate','Create test cases from ten recent tickets and time it.'],['Run a cycle','Run tests with evidence, then review the results together.']]:[['Talk to your account team','Get Test Manager seats enabled for a trial.'],['Import','Bring in one project from your current tool.'],['Connect','Link Jira or Azure DevOps and your automated results.'],['Review','Look at one release in a single view, and decide.']];
+ $('#startGrid').innerHTML=S.map(function(s,i){return '<div class="panel vcard"><span class="tag a" style="justify-self:start">Step '+(i+1)+'</span><b>'+s[0]+'</b><p>'+s[1]+'</p></div>'}).join('');
+}
+
+/* roof */
+var SVG={plan:'<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>',write:'<path d="M12 3l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/>',run:'<path d="M7 5l12 7-12 7z"/>',track:'<path d="M10 14a4 4 0 0 0 6 0l3-3a4 4 0 0 0-6-6l-1 1M14 10a4 4 0 0 0-6 0l-3 3a4 4 0 0 0 6 6l1-1"/>',decide:'<path d="M4 20V4M4 20h16M8 16v-4M13 16V8M18 16v-7"/>'};
+var P=[['plan','Plan','Organise what needs testing, by project and release.','Spreadsheets, or a separate test tool.','Projects, folders, reusable modules, datasets and milestones. Manual and automated tests sit together.'],
+['write','Write','Turn requirements into test cases.','Testers write every case by hand from tickets and documents.','AI drafts test cases from tickets and files. Your team reviews them, and duplicates are flagged.'],
+['run','Run','Execute tests and record the results.','Manual results in one place, automation in another.','Run manual tests step by step with evidence, on real browsers and devices when you need them. Automated results sit alongside.'],
+['track','Track','Connect tickets, tests and bugs.','Links kept by hand, or not at all.','Link Jira, Azure DevOps or Linear issues to a test case, a run or the exact step that failed.'],
+['decide','Decide','Know if you can ship.','A report built by hand before each release.','Insights, Execution History and Traceability reports, ready whenever someone asks.']];
+function roofHtml(id){return '<div class="rtop">Test Manager<small>One place for your testing</small></div><div class="pillars" id="'+id+'P">'+P.map(function(p,i){return '<button type="button" class="pil" data-i="'+i+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+SVG[p[0]]+'</svg>'+p[1]+'</button>'}).join('')+'</div><div class="base">Access control · Audit trail · Version history · SSO</div>'}
+$('#heroRoof').innerHTML=roofHtml('h');$('#mainRoof').innerHTML=roofHtml('m');
+$$('#hP .pil').forEach(function(b){b.onclick=function(){pick(+b.dataset.i);go(CH.map(function(c){return c[0]}).indexOf('roof'))}});
+var ROLE=[['QA leader',[4,0],'See coverage and status across projects, without asking anyone to build a report.'],['Test lead',[0,2,4],'Plan the cycle, assign the work and see progress as it happens.'],['Tester',[1,2,3],'Spend less time writing cases, follow clear steps and log bugs where they happen.'],['Automation engineer',[2,1],'Put automated results next to manual ones, and turn approved cases into automation.'],['Release manager',[4,3],'Go from a release to its tickets, tests and open bugs in one place.']];
+var roleI=-1;
+function pick(i){$$('#mP .pil').forEach(function(b){b.setAttribute('aria-pressed',String(+b.dataset.i===i))});var p=P[i],d=$('#roofD');d.innerHTML='<b style="font-size:21px">'+p[1]+'</b><div><span class="label">The job</span><p>'+p[2]+'</p></div><div><span class="label">Usually done with</span><p class="off">'+p[3]+'</p></div><div><span class="label">In Test Manager</span><p>'+p[4]+'</p></div>'+(roleI>-1?'<div class="statement" style="font-size:14px;font-weight:600">'+ROLE[roleI][2]+'</div>':'');d.classList.remove('swap');void d.offsetWidth;d.classList.add('swap')}
+$$('#mP .pil').forEach(function(b){b.onclick=function(){pick(+b.dataset.i)}});
+chips($('#roles'),ROLE.map(function(r,i){return [i,r[0]]}),-1,function(i){roleI=i;$$('#mP .pil').forEach(function(b){b.classList.toggle('dim',ROLE[i][1].indexOf(+b.dataset.i)<0)});pick(ROLE[i][1][0])});
+pick(0);
+
+/* journey */
+function app(tab,body,crumb){var T=['Test Cases','Test Runs','Milestones','Datasets','Insights','Reports','Settings'];return '<div class="app swap"><div class="abar"><span>Test Manager / '+(crumb||'Checkout web')+'</span><span class="illus">Example</span></div><div class="atabs">'+T.map(function(t){return '<span class="'+(t===tab?'on':'')+'">'+t+'</span>'}).join('')+'</div><div class="abody">'+body+'</div></div>'}
+function row(t,s,r){return '<div class="arow"><div><b>'+t+'</b><small>'+s+'</small></div>'+r+'</div>'}
+var J=[
+['Ticket','One requirement arrives','The product team raises a ticket in Jira. Paste its link, attach the PRD, and ask for test scenarios.','Someone reads the ticket and starts a blank test case.',app('Test Cases','<div class="arow" style="display:block"><small>Jira SHOP-214</small><b>Apply a promo code at checkout</b><p style="color:var(--text-sec);margin-top:4px">One code per order. Invalid or expired codes show an error. The discount updates the total.</p></div><div style="border:1px solid var(--border-hi);border-radius:12px;padding:14px;display:grid;gap:12px;margin-top:6px"><span style="color:var(--text-sec)">https://acme.atlassian.net/browse/SHOP-214</span><div style="display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap"><span class="tag a">Generate scenarios</span><span class="tag">Promotions-PRD.pdf</span></div></div>')],
+['Write','AI drafts the tests','Scenarios and test cases are drafted for you, marked by priority and type. Existing tests are checked, so you do not repeat them.','Slow writing by hand, and the same test written twice.',app('Test Cases',row('Apply a valid promo code','2 test cases','<span class="tag">Must have</span>')+row('Reject codes that cannot be used','3 test cases','<span class="tag">Must have</span>')+row('Basket boundaries','2 test cases','<span class="tag">Should have</span>')+row('Skipped: Apply discount code','Already in your repository','<span class="tag w">Duplicate</span>')+'<div style="display:flex;gap:8px;justify-content:flex-end"><span class="acta g">Refine</span><span class="acta">Create</span></div>')],
+['Review','Your team stays in charge','A tester checks the drafts and saves them to the repository, with their folder, priority and status. Every change is versioned.','Test cases in shared folders with no history.',app('Test Cases','<div class="split"><div class="side"><span class="sel">All Test Cases 148</span><span>Checkout 36</span><span>Payments 52</span><span>Promotions 7</span></div><div style="display:grid;gap:8px"><div style="display:flex;gap:7px;justify-content:flex-end;flex-wrap:wrap"><span class="acta g">Review Duplicates</span><span class="acta ai">Generate with AI</span><span class="acta">Add Test Case</span></div>'+row('Valid code updates the total','TC-1042 · Promotions','<span class="tag p">Live</span>')+row('Expired code shows an error','TC-1043 · Promotions','<span class="tag p">Live</span>')+row('Basket just below the minimum','TC-1044 · Promotions','<span class="tag n">Draft</span>')+'</div></div>')],
+['Automate','Automate what repeats','Open a test case and automate it with KaneAI. Keep the rest manual. Both stay in the same repository.','Automation scripts in a repo, unconnected to the test plan.',app('Test Cases','<b style="font-size:16px">Valid code updates the total</b><div class="atabs" style="padding:0"><span class="on">Test Summary</span><span>Code</span><span>Runs</span><span>Issues</span><span>Version History</span></div><div class="split" style="grid-template-columns:minmax(0,1fr) 190px"><div style="display:grid;gap:7px;color:var(--text-sec)"><span>1. Add an item and open checkout</span><span>2. Enter a valid code and select Apply</span><span>3. Check the discount and new total</span></div><div style="display:grid;gap:7px"><span class="acta ai" style="text-align:center">Automate with KaneAI</span><small>Type: Functional</small><small>Priority: High</small><small>Automation Status: Not Automated</small></div></div>','Checkout web')],
+['Run','Run it all together','Create one test run for the release. Choose browsers and devices, assign the work, and see manual and automated results side by side.','Testers update a sheet, while automation reports elsewhere.',app('Test Runs',row('Release 4.2 regression','48 test cases · 6 configurations','<span class="tag">31 / 48 Passed</span>')+'<div class="bar"><i style="width:65%;background:var(--good)"></i><i style="width:4%;background:var(--bad)"></i><i style="width:31%;background:rgba(16,32,64,.16)"></i></div>'+row('Valid code updates the total','KaneAI · Chrome on macOS','<span class="tag p">Passed</span>')+row('Expired code shows an error','Manual · Safari on iPhone','<span class="tag p">Passed</span>')+row('Remove and reapply a code','Manual · Chrome on Android','<span class="tag f">Failed</span>'),'Checkout web')],
+['Fix','A bug goes straight to Jira','A step fails on Android. The tester adds a screenshot and links the bug to that step, so the developer sees exactly what broke, and where.','Screenshots in chat, and a bug with no link to the test.',app('Test Runs',row('Remove and reapply a code','Chrome on Android','<span class="tag f">Failed</span>')+row('1. Apply a valid code','Passed','<span class="tag p">Passed</span>')+row('2. Remove the code','Total did not return to the original price','<span class="tag f">Failed</span>')+'<div class="arow"><div><b>SHOP-231</b><small>Total not restored after removing code · Jira · In Progress</small></div><span class="tag a">Linked to step 2</span></div><div class="arow"><div><small>Evidence</small><b>android-checkout.png</b></div><span class="tag">Attachment</span></div>')],
+['Decide','Everyone sees the answer','Open the reports before the release meeting. Every ticket shows its tests, results and open bugs. The team makes the call on the same facts.','Rebuilding the status report by hand, and debating the numbers.',app('Reports','<div class="statrow"><div class="st8"><b>93%</b><span>Pass rate</span></div><div class="st8"><b>48</b><span>Test cases</span></div><div class="st8"><b>1</b><span>Open bug</span></div><div class="st8"><b>100%</b><span>Tickets covered</span></div></div>'+row('SHOP-214 Promo code at checkout','7 test cases · 6 passed · 1 failed','<span class="tag w">1 open bug</span>')+row('SHOP-198 Saved cards','9 test cases · 9 passed','<span class="tag p">Ready</span>')+'<div class="verdict"><i></i>Hold the promo code feature until SHOP-231 is fixed. The rest can ship.</div>')]
+];
+var jI=0;
+function jr(i){jI=i;var h=$('#jsteps');h.innerHTML='';J.forEach(function(x,k){var b=document.createElement('button');b.type='button';b.className='js'+(k<i?' done':'');if(k===i)b.setAttribute('aria-current','true');b.innerHTML='<em>'+(k+1)+'</em>'+x[0];b.onclick=function(){jr(k)};h.appendChild(b)});
+ $('#jscreen').innerHTML=J[i][4];var c=$('#jcap');c.innerHTML='<span class="label">Step '+(i+1)+' of '+J.length+'</span><h3>'+J[i][1]+'</h3><p>'+J[i][2]+'</p><div class="before"><b>Without one place</b>'+J[i][3]+'</div><div class="cta"><button class="btn ghost" type="button" id="jB"'+(i===0?' hidden':'')+'>Back</button><button class="btn" type="button" id="jN">'+(i===J.length-1?'See the reports':'Next step')+'</button></div>';
+ $('#jB').onclick=function(){jr(i-1)};$('#jN').onclick=function(){i===J.length-1?go(CH.map(function(c){return c[0]}).indexOf('decide')):jr(i+1)}}
+
+/* decide */
+function dec(v){var d=$('#decD');$$('#decSeg button').forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.v===v))});
+ var ill='<div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap"><b style="font-size:17px">TITLE</b><span class="illus">Example data</span></div>';
+ if(v==='ins')d.innerHTML=ill.replace('TITLE','Checkout web: last 30 days')+'<div class="statrow"><div class="st8"><b>148</b><span>Total test cases</span></div><div class="st8"><b>92</b><span>Manual</span></div><div class="st8"><b>56</b><span>Automated</span></div><div class="st8"><b>38%</b><span>Automation coverage</span></div></div><div class="grid2"><div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap"><div class="donut" style="background:conic-gradient(var(--good) 0 65%,var(--bad) 65% 69%,#C9D2E2 69%)"><i>288</i></div><div class="lg" style="display:grid;gap:5px"><b style="color:var(--text)">Test run summary</b><span><i style="background:var(--good)"></i>Passed 65%</span><span><i style="background:var(--bad)"></i>Failed 4%</span><span><i style="background:#C9D2E2"></i>Not started 31%</span></div></div><div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap"><div class="donut" style="background:conic-gradient(var(--blue) 0 70%,var(--teal) 70% 86%,var(--warn) 86%)"><i>148</i></div><div class="lg" style="display:grid;gap:5px"><b style="color:var(--text)">Test case summary</b><span><i style="background:var(--blue)"></i>Functional 70%</span><span><i style="background:var(--teal)"></i>Security 16%</span><span><i style="background:var(--warn)"></i>Performance 14%</span></div></div></div>';
+ if(v==='tr')d.innerHTML=ill.replace('TITLE','From requirement to result')+'<div class="twrap"><table class="rp"><thead><tr><th>Requirement</th><th>Test cases</th><th>Latest execution</th><th>Defects</th></tr></thead><tbody><tr><td><b>SHOP-214</b> Promo code</td><td>7</td><td><span class="tag f">1 failed</span></td><td>SHOP-231</td></tr><tr><td><b>SHOP-198</b> Saved cards</td><td>9</td><td><span class="tag p">All passed</span></td><td>None</td></tr><tr><td><b>SHOP-205</b> Guest checkout</td><td>12</td><td><span class="tag n">3 not started</span></td><td>None</td></tr></tbody></table></div><p style="font-size:14.5px;color:var(--text-sec)">Useful for auditors and release managers alike: for each requirement, see what covered it, what happened, and what is still open.</p>';
+ if(v==='ev')d.innerHTML=ill.replace('TITLE','Run report: automated regression')+'<div class="statrow"><div class="st8"><b>93%</b><span>Pass rate</span></div><div class="st8"><b>42</b><span>Passed</span></div><div class="st8"><b>3</b><span>Failed</span></div><div class="st8"><b>2</b><span>Flaky</span></div><div class="st8"><b>0</b><span>Always failing</span></div><div class="st8"><b>1</b><span>New failure</span></div></div><div class="atabs" style="padding:0"><span class="on">Report</span><span>Test Instances</span><span>Issues</span><span>Coverage</span></div><p style="font-size:14.5px;color:var(--text-sec)">Separate a new failure from a flaky test before anyone starts investigating, and download the evidence for your records.</p>';
+ d.classList.remove('swap');void d.offsetWidth;d.classList.add('swap')}
+$$('#decSeg button').forEach(function(b){b.onclick=function(){dec(b.dataset.v)}});
+
+/* scale */
+var SC2={team:[['Start small','Import a project or a CSV, and begin with one team.'],['Write less','AI drafts tests from your tickets, so a small team covers more.'],['No extra tools','Test cases, runs and reports in one place, linked to Jira, Azure DevOps or Linear.'],['Try before you commit','A free plan covers the repository, and paid plans add AI, runs and reports.'],['Grow into automation','Keep testing by hand today, and automate when you are ready.'],['Clear status','Anyone can see progress without another meeting.']],
+ent:[['One standard, many teams','Projects for each team, with modules, configurations and variables you can reuse.'],['Control who does what','Role-based access control, SSO and seat allocation by admins.'],['Audit-ready','Version history on test cases, audit logs on test instances, and evidence on results.'],['Traceable','Requirement, test case, execution and defect in a single report.'],['Fits your tools','Jira and Azure DevOps marketplace apps, an API, and bug logging across 25+ tools.'],['Fewer vendors','Bring test management, automation and execution together, on one contract if you choose.']]};
+function scale(v){$$('#scaleSeg button').forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.v===v))});$('#scaleD').innerHTML=SC2[v].map(function(x){return '<div class="panel vcard swap"><b>'+x[0]+'</b><p>'+x[1]+'</p></div>'}).join('')}
+$$('#scaleSeg button').forEach(function(b){b.onclick=function(){scale(b.dataset.v)}});
+
+/* generation */
+var IN={jira:['Jira ticket','SHOP-214: Apply a promo code at checkout','Customers can enter one promo code. Invalid or expired codes show an error. The discount updates the order total.'],doc:['PRD document','Promotions PRD, section 4.pdf','One code per order, minimum basket of $20, excluded categories are not discounted.'],img:['Screenshot','checkout-summary.png','Order summary with a promo code field and an Apply button.'],audio:['Voice note','Recorded requirement, 40 seconds','"Promo codes should work once per customer, and the total should update right away."']};
+var SC=[
+ ['Apply a valid promo code','Must have',[['Valid code updates the total','Positive',['Add an item and open checkout','Enter a valid code and select Apply','Check the discount line and new total'],'Given a basket above the minimum\nWhen I apply a valid promo code\nThen the order total is reduced']]],
+ ['Reject codes that cannot be used','Must have',[['Expired code shows an error','Negative',['Enter an expired code','Select Apply','Check the error and unchanged total'],'Given an expired promo code\nWhen I apply it\nThen an error is shown\nAnd the total does not change']]],
+ ['Basket boundaries','Should have',[['Basket just below the minimum','Edge',['Add items just under the minimum','Enter a valid code','Check that the code is declined'],'Given a basket just below the minimum\nWhen I apply a valid code\nThen the code is declined']]],
+ ['Remove and reapply','Could have',[['Removing a code restores the total','Positive',['Apply a valid code','Remove the code','Check the original total returns'],'Given an applied promo code\nWhen I remove it\nThen the original total returns']]]
+];
+var G={inp:'jira',max:3,fmt:'manual',mem:'on'},genDone=false,genT=[];
+function genCtl(){chips($('#genIn'),Object.keys(IN).map(function(k){return [k,IN[k][0]]}),G.inp,function(v){G.inp=v;src();generate()});chips($('#genMax'),[[2,'2'],[3,'3'],[4,'4']],G.max,function(v){G.max=v;generate()});chips($('#genFmt'),[['manual','Manual steps'],['bdd','BDD']],G.fmt,function(v){G.fmt=v;generate()});chips($('#genMem'),[['on','On'],['off','Off']],G.mem,function(v){G.mem=v;generate()});src()}
+function src(){var s=IN[G.inp];$('#genSrc').innerHTML='<b>'+esc(s[1])+'</b>'+esc(s[2])}
+function cardCase(c){var ty={Positive:'p',Negative:'f',Edge:'w'}[c[1]];var body=G.fmt==='bdd'?c[3]:c[2].map(function(x,i){return (i+1)+'. '+x}).join('\n');return '<div class="case"><div class="h"><span>'+esc(c[0])+'</span><span class="tag '+ty+'">'+c[1]+'</span></div><pre>'+esc(body)+'</pre></div>'}
+function generate(){
+ genDone=true;genT.forEach(clearTimeout);genT=[];var o=$('#genOut');
+ var list=SC.slice(0,G.max);
+ o.innerHTML='<div style="display:flex;justify-content:space-between;gap:10px;align-items:center"><b>'+list.length+' scenarios from '+esc(IN[G.inp][0].toLowerCase())+'</b><span class="tag a">Draft, review before saving</span></div>';
+ var add=function(i){var d=document.createElement('div');d.className='scen';var s=list[i];d.innerHTML='<div><span>'+esc(s[0])+'</span><span class="tag">'+s[1]+'</span></div>'+s[2].map(cardCase).join('');o.appendChild(d)};
+ list.forEach(function(_,i){genT.push(setTimeout(function(){add(i)},REDUCED?0:220*(i+1)))});
+ genT.push(setTimeout(function(){var d=document.createElement('div');d.className='scen dup';d.innerHTML=G.mem==='on'?'<div><span>Skipped: "Apply discount code"</span><span class="tag w">Already in your repository</span></div>':'<div><span>Possible duplicate: "Apply discount code"</span><span class="tag f">Also exists in your repository</span></div>';o.appendChild(d)},REDUCED?0:220*(list.length+1)));
+}
+$('#genBtn').onclick=generate;
+
+/* migrate */
+var MIG={
+ TestRail:{p:'One-click import',n:['TestRail email','Host name','API key'],m:['Your selected projects, one or several at a time','Progress on the projects page, and an email when it finishes'],s:['Export the run reports you need before your licence ends','We will review exactly what carried over on your first project together']},
+ Xray:{p:'One-click import, Xray Cloud on Jira Cloud',n:['Xray Client ID and Client Secret','Jira host, email and API token','Jira integration, for linked issues'],m:['Test cases, folders, steps and BDD scenarios','Attachments and rich text','Custom fields, created with matching names','Linked Jira issues, with the Xray key as a tag'],s:['Test plans and test runs','Execution logs and pass or fail history','Datasets and Jira comments','Server and Data Center editions are not covered']},
+ 'Zephyr Scale':{p:'One-click import, Jira Cloud',n:['Zephyr Scale API token','Jira host, email and API token','Jira integration, for linked issues'],m:['Test cases, folders, steps and BDD scenarios','Inline screenshots and rich text','Custom fields, with Zephyr keys as tags','Steps from called test cases'],s:['General file attachments and original owners','Test cycles and test runs','Execution logs and history','Datasets. Data Center is not covered']},
+ 'Zephyr Enterprise':{p:'Guided CSV import, folder by folder',n:['A Detailed export saved as CSV UTF-8','A Test Manager project and custom fields'],m:['Mapped fields, steps and folders','Jira links once Jira is connected'],s:['Attachments, which become links to your Zephyr server','Cycles, phases and executions','Version history and owners']},
+ qTest:{p:'One-click import',n:['qTest instance URL','API bearer token with read access','Jira integration, for requirement links'],m:['Projects, modules and test cases','Steps, with called cases expanded','Custom fields','Attachments and Jira requirement links'],s:['Test runs, executions and results','Cycles and test plans','Defects']},
+ Katalon:{p:'One-click import from a project zip, up to 500 MB',n:['A Katalon Studio project as one zip'],m:['Desktop web tests, as editable KaneAI tests in a new project','A review of every step before anything is created','Masked variables, saved as secrets or global variables'],s:['Mobile app tests','Generated code and step screenshots','Run history. Some steps translate approximately and are flagged in review']},
+ 'CSV or other':{p:'CSV import, from any tool with an export',n:['A CSV of up to 10 MB per file','Custom fields created first'],m:['Title, ID, steps and outcomes','BDD scenarios and custom fields','Folders and Jira tickets'],s:['Anything without a mapped column','Check attachments and history for your tool']}
+};
+var migK='TestRail';
+function mig(k){migK=k;var d=MIG[k];function li(a){return a.map(function(x){return '<li>'+esc(x)+'</li>'}).join('')}
+ var o=$('#migD');o.innerHTML='<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"><b style="font-size:19px">'+esc(k)+'</b><span class="tag a">'+esc(d.p)+'</span></div><div class="lists"><div><span class="label">You will need</span><ul style="list-style:disc;padding-left:18px">'+d.n.map(function(x){return '<li style="padding:0">'+esc(x)+'</li>'}).join('')+'</ul></div><div class="mv"><span class="label">Moves</span><ul>'+li(d.m)+'</ul></div><div class="st"><span class="label">'+(k==='TestRail'?'Plan for':'Stays behind')+'</span><ul>'+li(d.s)+'</ul></div></div>';o.classList.remove('swap');void o.offsetWidth;o.classList.add('swap')}
+chips($('#migTools'),Object.keys(MIG).map(function(k){return [k,k]}),migK,mig);
+$('#migPlan').innerHTML=[['Import one project','Your current tool keeps running.'],['Check it','Compare counts, folders, fields and links.'],['Connect your tracker','Link Jira, Azure DevOps or Linear.'],['Run one real cycle','Work a release in Test Manager.'],['Roll out','Move other projects, team by team.']].map(function(x,i){return '<div class="tli"><em>'+(i+1)+'</em><div><b>'+x[0]+'</b><span>'+x[1]+'</span></div></div>'}).join('');
+
+/* faq */
+var FQ=[
+ ['Will our execution history move?','Plan on keeping it in your current tool. The documented Xray, Zephyr and qTest paths bring your test assets, not runs or results. Export any TestRail run reports you need before your licence ends.'],
+ ['Does the import change anything in our current tool?','The Xray and Zephyr Scale imports are read-only on the source, and your tool keeps running while you evaluate. Imports are one-time, not a continuous sync.'],
+ ['Which Jira editions are covered for migration?','One-click from Xray and Zephyr Scale covers Jira Cloud. For Server, Data Center or Zephyr Enterprise, use a CSV import.'],
+ ['Can AI write our test cases without review?','Your team stays in control. AI produces drafts, and you choose what to save. You can refine them in plain language first.'],
+ ['What can we generate test cases from?','Text, Jira, Azure DevOps or Linear issues, PDFs, images, audio, video, spreadsheets, documents, Markdown, JSON and XML. Up to 10 files per upload, 50 MB each. Web pages must be public today.'],
+ ['How do we avoid duplicates?','While generating, AI checks your repository so new cases do not repeat existing ones. A separate duplicate scan finds existing overlaps for side-by-side review.'],
+ ['Do manual and automated tests sit together?','Yes. Both live in one repository, and results appear in one view, including KaneAI runs.'],
+ ['Do we need TestMu to run our tests?','No. You can use Test Manager to plan and track tests. Running on TestMu browsers, devices or HyperExecute uses a TestMu execution plan.'],
+ ['Is there a self-hosted option?','Test Manager is a cloud product. Talk to your TestMu team about your requirements.'],
+ ['Does it support BDD?','Yes. Generate or write Given, When, Then scenarios. AI output does not include Scenario Outline, Feature or Background sections, so review it for your conventions.'],
+ ['How do users and access work?','Admins allocate seats per user and can revoke and reassign them. Plan user setup separately from the test data. SSO is on the Enterprise plan.'],
+ ['What about security and compliance?','TestMu AI holds company-level certifications including SOC 2 Type II and ISO 27001, and supports GDPR requirements. Ask your TestMu team for the documents.'],
+ ['Can we try it first?','A free plan covers core repository use, and your TestMu team can set up a trial on one of your projects.']
+];
+$('#fqs').innerHTML=FQ.map(function(f,i){return '<div class="fq" data-q="'+esc((f[0]+' '+f[1]).toLowerCase()).replace(/"/g,'')+'"><button type="button" aria-expanded="false">'+esc(f[0])+'</button><div>'+esc(f[1])+'</div></div>'}).join('');
+$$('.fq>button').forEach(function(b){b.onclick=function(){var o=b.parentNode.classList.toggle('open');b.setAttribute('aria-expanded',String(o))}});
+$('#fqS').oninput=function(){var q=this.value.toLowerCase().trim(),n=0;$$('.fq').forEach(function(d){var m=!q||d.dataset.q.indexOf(q)>-1;d.hidden=!m;if(m)n++});$('#fqE').hidden=n>0};
+
+genCtl();mig(migK);jr(0);dec('ins');scale('team');
+var a0='new';try{a0=localStorage.getItem('tmstory-aud')||'new'}catch(e){}
+function route(){var h=(location.hash||'').slice(1);if(h==='new'||h==='existing'){setAud(h==='new'?'new':'ex');return 0}var i=CH.map(function(c){return c[0]}).indexOf(h);return i<0?0:i}
+setAud(a0==='ex'?'ex':'new');go(route(),true);
+window.addEventListener('hashchange',function(){var i=route();if(i!==cur)go(i,true)});
+})();
+</script>
+</body></html>
