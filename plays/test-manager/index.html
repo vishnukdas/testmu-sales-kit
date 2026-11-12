@@ -802,8 +802,8 @@ What they said, in their words:</pre></div>
 
   <div class="block">
     <h3>Demo path</h3>
-    <p class="sub" data-aud="new">For a new logo, open the presentation in its New to Test Manager view. Lead with the problem and Follow a ticket, then answer the migration question for their tool. For a live import, prepare a sample source project before the call.</p>
-    <p class="sub" data-aud="ex" hidden>For an existing customer, open the Already a customer view. Lead with The bigger picture, then show what moves from their tool. For a live import, arrange a sample source project first.</p>
+    <p class="sub" data-aud="new">For a new logo, open the presentation in its New to Test Manager view. Lead with the problem, Write with AI and Run a cycle, then answer the migration question for their tool. For a live import, prepare a sample source project before the call.</p>
+    <p class="sub" data-aud="ex" hidden>For an existing customer, open the Already a customer view. Lead with The bigger picture and Automate, then show what moves from their tool. For a live import, arrange a sample source project first.</p>
     <div class="links" id="demoLinks"></div>
   </div>
 
@@ -994,12 +994,12 @@ $$('.chips').forEach(function(g){
 });
 ['#bCo','#bName','#bSeats','#bPrice','#bRate','#bDate'].forEach(function(s){$(s).addEventListener('input',build)});
 
-var DEMO={new:[['problem','The problem'],['roof','Under one roof'],['journey','Follow a ticket'],['generate','Try AI'],['decide','Release sign-off'],['scale','Teams and enterprises'],['migrate','Moving over'],['start','Get started']],
- ex:[['platform','The bigger picture'],['journey','Follow a ticket'],['generate','Try AI'],['decide','Release sign-off'],['migrate','Moving over'],['faq','FAQs'],['start','Get started']]};
+var DEMO={new:[['problem','The problem'],['roof','Under one roof'],['generate','Write with AI'],['journey','Run a cycle'],['trace','Traceability'],['decide','Release sign-off'],['migrate','Moving over'],['poc','Your POC']],
+ ex:[['platform','The bigger picture'],['automate','Automate'],['generate','Write with AI'],['journey','Run a cycle'],['migrate','Moving over'],['faq','FAQs'],['poc','Your POC']]};
 function renderDemo(){$('#demoLinks').innerHTML=DEMO[aud].map(function(d,i){return '<a href="'+STORY+'#'+d[0]+'" target="_blank" rel="noopener">'+(i+1)+'. '+esc(d[1])+'</a>'}).join('')+'<a href="'+STORY+'#'+(aud==='ex'?'existing':'new')+'" target="_blank" rel="noopener">Open full presentation</a>'}
 
 var OBJ=[
- {au:'ex',s:'We just renewed with our test management tool.',a:'When is the next renewal?',r:'Log the date and run a one-project POC in good time before it. The AM decides the commercial path. Meanwhile, ask how TestMu results reach their test cases.',sh:'Results in one view'},
+ {au:'ex',s:'We just renewed with our test management tool.',a:'When is the next renewal?',r:'Log the date and run a one-project POC in good time before it. The AM decides the commercial path. Meanwhile, ask how TestMu results reach their test cases.',sh:'Run a cycle'},
  {au:'ex',s:'Test cases are another team, with its own budget.',a:'Who leads that team, and could you introduce us?',r:'That is the normal case. Ask for the intro. Security and procurement already know TestMu, which shortens the path.',sh:''},
  {au:'ex',s:'We already have seats but barely use them.',a:'What stopped the rollout?',r:'Treat it as adoption with the AM, not a new sale. Start with one team, and import a project so people have something real to work with.',sh:'Moving over'},
  {s:'TestRail is cheaper.',a:'Which TestRail plan are you comparing, and what do you pay for add-ons or integrations?',r:'At list that is true for Professional ($38 to $39 against $49). Say so. Then compare the whole job: AI authoring with credits included, version history and results in one view. Work out how many hours a seat must save using their tester cost. If price alone decides it, do not force the deal. Check commercial terms with your team before offering anything.',sh:'Write the proposal'},
@@ -1007,10 +1007,10 @@ var OBJ=[
  {s:'Migration is too risky.',a:'What went wrong, or what are you most worried about?',r:'Their current tool keeps running, and the Xray and Zephyr Scale imports are documented as read-only on the source. Each tool has a documented path, except TestRail, where we verify the detail on one of their projects. Start with one project and check counts, folders, fields and links before going further.',sh:'Moving over'},
  {s:'We use Xray or Zephyr on Jira Data Center.',a:'Are you planning a move to Jira Cloud?',r:'One-click covers Jira Cloud only. Data Center means a CSV route, with more stays behind. Qualify carefully, and the Jira Cloud move can be the natural moment.',sh:''},
  {s:'We need to self-host.',a:'Is that a hard rule, or specific to certain data?',r:'Test Manager is cloud only. If it is a hard rule, say so and park the deal. Record the requirement for product, and promise no dates.',sh:''},
- {s:'Is Jira sync really two-way?',a:'What do you need to update from each side?',r:'Issues link at case, run, instance and step level, and details including status show in Test Manager. Marketplace apps show linked cases and execution history in the ticket. Show the behaviour in the demo rather than promising more.',sh:'Follow a ticket'},
- {s:'We do not trust AI-generated test cases.',a:'How do you review tests written by people today?',r:'Nothing is saved until a tester reviews it, and they can edit or refine with the Conversation Layer. Test it on their own tickets and measure how many drafts they keep. Check required custom fields after generating.',sh:'Try AI'},
- {s:'Will AI use up credits quickly?',a:'How many tickets a month would you generate from?',r:'Premium includes 2,000 credits per seat per month. Generation has been documented at 10 credits a scenario, and edits at 5 per scenario or 1 per case. Admins can set soft and hard limits. Confirm current rates before quoting.',sh:'Try AI'},
- {s:'Can our private URLs be used as AI input?',a:'Could you attach the document or link the ticket instead?',r:'Only public URLs can be analysed today. Private support is listed as coming soon, with no date. Files and linked tickets work.',sh:'Try AI'},
+ {s:'Is Jira sync really two-way?',a:'What do you need to update from each side?',r:'Issues link at case, run, instance and step level, and details including status show in Test Manager. Marketplace apps show linked cases and execution history in the ticket. Show the behaviour in the demo rather than promising more.',sh:'Traceability'},
+ {s:'We do not trust AI-generated test cases.',a:'How do you review tests written by people today?',r:'Nothing is saved until a tester reviews it, and they can edit or refine with the Conversation Layer. Test it on their own tickets and measure how many drafts they keep. Check required custom fields after generating.',sh:'Write with AI'},
+ {s:'Will AI use up credits quickly?',a:'How many tickets a month would you generate from?',r:'Premium includes 2,000 credits per seat per month. Generation has been documented at 10 credits a scenario, and edits at 5 per scenario or 1 per case. Admins can set soft and hard limits. Confirm current rates before quoting.',sh:'Write with AI'},
+ {s:'Can our private URLs be used as AI input?',a:'Could you attach the document or link the ticket instead?',r:'Only public URLs can be analysed today. Private support is listed as coming soon, with no date. Files and linked tickets work.',sh:'Write with AI'},
  {s:'We need 100+ users set up quickly.',a:'Do you use SSO and SCIM?',r:'Users do not move with the test data. Add them and allocate seats separately, and plan it in the POC.',sh:''},
  {s:'We have large attachments.',a:'Roughly how much storage do you use today?',r:'Premium includes 10 GB per user, and TestRail starts at 50 GB. Size it first. Attachment migration also varies by source tool.',sh:''},
  {s:'Security will need to review this.',a:'Is TestMu already approved?',r:'Enterprise adds SSO and premium support. Bring the company security documents through the usual process, and existing customers have no new vendor to approve.',sh:''},
