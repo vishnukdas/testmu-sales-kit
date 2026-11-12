@@ -18,8 +18,8 @@ products.json                  product list, status and timing
 |---|---|---|---|---|
 | Performance Testing | Live | Live | `plays/performance-testing/` | `stories/performance-testing/` |
 | Test Manager | In progress | This week | `plays/test-manager/` | `stories/test-manager/` |
-| KaneAI | Planned | After Test Manager feedback | `plays/kaneai/` | `stories/kaneai/` |
-| Kane CLI | Planned | After Test Manager feedback | `plays/kane-cli/` | `stories/kane-cli/` |
+| KaneAI | In progress | First draft, in review | `plays/kaneai/` | `stories/kaneai/` |
+| Kane CLI | In progress | First draft, in review | `plays/kane-cli/` | `stories/kane-cli/` |
 | Agent Testing | Planned | After KaneAI and Kane CLI | `plays/agent-testing/` | `stories/agent-testing/` |
 | Accessibility Testing | Planned | Later | `plays/accessibility/` | `stories/accessibility/` |
 | SmartUI | Planned | Later | `plays/smartui/` | `stories/smartui/` |

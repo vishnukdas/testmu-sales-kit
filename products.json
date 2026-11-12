@@ -20,16 +20,16 @@
     "name": "KaneAI",
     "sub": "",
     "line": "AI-native test authoring: plain-English tests that heal themselves and export to code.",
-    "status": "plan",
-    "when": "After Test Manager feedback"
+    "status": "prog",
+    "when": "First draft, in review"
   },
   {
     "slug": "kane-cli",
     "name": "Kane CLI",
     "sub": "",
     "line": "KaneAI from the terminal and CI pipelines.",
-    "status": "plan",
-    "when": "After Test Manager feedback"
+    "status": "prog",
+    "when": "First draft, in review"
   },
   {
     "slug": "agent-testing",

@@ -1,34 +1,1089 @@
 <!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="robots" content="noindex,nofollow">
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>KaneAI Sales Play</title>
+<meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600&family=Source+Sans+3:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400&display=swap">
-<link rel="stylesheet" href="../../assets/kit.css">
-</head>
-<body>
+<style>
+/* Layout: a field guide. Navy cover band, sticky stage tabs, one reading column (max 960px) of ruled sections. One brand navy, one steel-blue accent, muted status colours only for signal strength. */
+:root{
+  --bg:#F5F6F8; --card:#FFFFFF; --surface:#EFF2F6; --line:#DFE4EB;
+  --text:#18202E; --text-sec:#475264; --text-dim:#737E90;
+  --navy:#1B3355; --on-navy:#FFFFFF; --on-navy-2:#C9D4E5;
+  --accent:#2B5C8F; --tint:#E8EFF7;
+  --load:var(--accent); --plan:var(--accent); --exec:var(--accent); --pink:var(--accent);
+  --tint-load:var(--tint); --tint-plan:var(--tint); --tint-exec:var(--tint); --tint-pink:var(--tint);
+  --good:#2D7A4E; --warn:#99640F; --bad:#AE3A3A;
+  --tint-good:#E7F2EB; --tint-warn:#FAF1E0; --tint-bad:#F7E8E8;
+  --code-bg:#F1F4F8; --code-fg:#1F2A3C;
+  --display:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --sans:"Source Sans 3","Segoe UI",system-ui,-apple-system,sans-serif;
+  color-scheme:light;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--card)}
+a{color:var(--accent)}
+h1,h2,h3,h4{margin:0;text-wrap:balance;color:var(--text)}
+p{margin:0}
+.wrap{max-width:960px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.mono{font-family:var(--mono);font-size:.9em}
+.kicker{font:600 12px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim)}
+
+/* cover */
+.hero{background:var(--navy);color:var(--on-navy)}
+.hero .wrap{padding-block:30px 26px;display:grid;gap:12px}
+.brandrow{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between}
+.brand{font:600 12px var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--on-navy-2)}
+.hero h1{font:600 clamp(27px,4vw,36px)/1.15 var(--display);color:var(--on-navy);max-width:26ch}
+.hero p{color:var(--on-navy-2);max-width:70ch;font-size:16.5px}
+.hero a{color:#FFFFFF;text-underline-offset:3px}
+.aud{display:inline-flex;border:1px solid rgba(255,255,255,.28);border-radius:6px;overflow:hidden}
+.aud button{font:600 14px var(--sans);color:var(--on-navy-2);background:none;border:0;padding:7px 14px;cursor:pointer}
+.aud button+button{border-left:1px solid rgba(255,255,255,.28)}
+.aud button[aria-pressed="true"]{background:#FFFFFF;color:#1B3355}
+.aud button:focus-visible,.tab:focus-visible,.btn:focus-visible,.chip:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* stage tabs */
+.stagebar{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--card);border-bottom:1px solid var(--line)}
+.tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:0 0 auto;display:flex;flex-direction:column;align-items:flex-start;gap:0;background:none;border:0;border-bottom:3px solid transparent;padding:12px 16px 9px;cursor:pointer;color:var(--text-sec);font-family:var(--sans);text-align:left}
+.tab .who{font:600 11.5px var(--sans);letter-spacing:.07em;text-transform:uppercase;color:var(--text-dim)}
+.tab .nm{font-weight:600;font-size:15.5px}
+.tab:hover .nm{color:var(--text)}
+.tab[aria-selected="true"]{border-bottom-color:var(--accent);color:var(--text)}
+.tab[aria-selected="true"] .who{color:var(--accent)}
+
+/* page */
+main .wrap{padding-block:32px 72px;display:grid;gap:36px}
+section.view{display:grid;gap:36px}
+.vhead{display:grid;gap:10px;padding-bottom:22px;border-bottom:1px solid var(--line)}
+.vhead .kicker{color:var(--accent)!important}
+.vhead h2{font:600 clamp(23px,3vw,29px)/1.25 var(--display)}
+.vhead p{color:var(--text-sec);max-width:70ch;font-size:16.5px}
+.block{display:grid;gap:14px}
+.block>h3{font:600 20px/1.3 var(--display)}
+.block>.sub{color:var(--text-sec);max-width:72ch;margin-top:-6px}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:18px 20px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:14px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:14px}
+.grid2>*,.grid3>*{min-width:0}
+.grid2.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media (max-width:640px){.grid2.two{grid-template-columns:1fr}}
+.scripts{display:grid;gap:12px}
+.script{align-content:start}
+.tw td:first-child{min-width:150px}
+.tw td.mono:first-child{min-width:0;width:44px}
+
+/* stage gate */
+.gate{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));border:1px solid var(--line);border-radius:6px;background:var(--card);overflow:hidden}
+.gate>div{padding:16px 20px;display:grid;gap:6px;align-content:start;border-right:1px solid var(--line)}
+.gate>div:last-child{border-right:0}
+.gate .kicker{color:var(--accent)}
+.gate ul{margin:0;padding-left:18px;display:grid;gap:4px}
+.gate li,.gate p{color:var(--text-sec);font-size:15px}
+
+/* overview stages */
+.flow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:760px){.flow{grid-template-columns:1fr}}
+.stage{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:20px;display:grid;gap:10px;align-content:start}
+.stage .num{font:600 12px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.stage h3{font:600 19px/1.3 var(--display)}
+.stage ol{margin:0;padding-left:20px;color:var(--text-sec);display:grid;gap:4px;font-size:15px}
+.stage .exit{font-size:14.5px;background:var(--surface);border-radius:4px;padding:10px 12px;color:var(--text)}
+.target{font-size:15.5px;color:var(--text-sec)}
+.audnote{background:var(--tint);color:var(--text)!important;border-radius:4px;padding:10px 14px;font-size:15px}
+.target b{color:var(--text)}
+
+/* tables */
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:var(--card)}
+table{border-collapse:collapse;width:100%;min-width:640px;font-size:15px}
+th,td{text-align:left;vertical-align:top;padding:12px 16px;border-bottom:1px solid var(--line)}
+th{font:600 12px var(--sans);letter-spacing:.07em;text-transform:uppercase;color:var(--text-dim);background:var(--surface)}
+tr:last-child td{border-bottom:0}
+td b{font-weight:600}
+td .dim{color:var(--text-sec);font-size:14px}
+
+.pill{display:inline-block;font:600 11.5px var(--sans);letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:4px;white-space:nowrap}
+.p-strong{background:var(--tint-good);color:var(--good)}
+.p-med{background:var(--tint-warn);color:var(--warn)}
+.p-no{background:var(--tint-bad);color:var(--bad)}
+.p-info{background:var(--tint);color:var(--accent)}
+
+/* signals as a ruled list */
+.sig{display:grid;border:1px solid var(--line);border-radius:6px;background:var(--card);overflow:hidden}
+.sig .row{display:grid;grid-template-columns:90px 1fr;gap:2px 16px;align-items:start;padding:13px 18px;border-bottom:1px solid var(--line)}
+.sig .row:last-child{border-bottom:0}
+.sig .row .pill{margin-top:3px;justify-self:start}
+.sig .row b{font-weight:600}
+.sig .row span.d{grid-column:2;color:var(--text-sec);font-size:15px}
+@media (max-width:520px){.sig .row{grid-template-columns:1fr}.sig .row span.d{grid-column:1}}
+
+/* scripts */
+.script{background:var(--card);border:1px solid var(--line);border-radius:6px;overflow:hidden;display:grid}
+.script header{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--line)}
+.script header .t{font-weight:600;font-size:15px}
+.script header .m{font-size:13.5px;color:var(--text-dim);margin-left:6px}
+.script pre{margin:0;padding:16px 18px;white-space:pre-wrap;word-wrap:break-word;font:15px/1.65 var(--sans);color:var(--text)}
+.script pre .ph{background:var(--tint);color:var(--accent);border-radius:3px;padding:0 4px;font-weight:600}
+.btn{font:600 13.5px var(--sans);border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:4px;padding:5px 12px;cursor:pointer}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn.done{border-color:var(--good);color:var(--good)}
+code.bool{display:block;background:var(--code-bg);color:var(--code-fg);font:13.5px/1.6 var(--mono);padding:14px 18px;white-space:pre-wrap;word-break:break-word}
+
+/* discovery */
+.disc{display:grid;gap:0;border:1px solid var(--line);border-radius:6px;background:var(--card);overflow:hidden}
+.phase{display:flex;gap:10px;align-items:baseline;padding:12px 18px;background:var(--surface);border-bottom:1px solid var(--line)}
+.phase .n{font:700 13px var(--sans);color:var(--accent)}
+.phase h4{font:600 13px var(--sans);letter-spacing:.07em;text-transform:uppercase;color:var(--text-sec)}
+.q{padding:14px 18px;display:grid;gap:8px;border-bottom:1px solid var(--line)}
+.disc .q:last-child{border-bottom:0}
+.q .qt{font-weight:600;font-size:16px;display:flex;gap:12px}
+.qn{font:600 14px var(--sans);color:var(--accent);min-width:22px;font-variant-numeric:tabular-nums}
+.q .meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:6px 24px;font-size:14.5px;color:var(--text-sec);padding-left:34px}
+.q .meta div{min-width:0}
+.q .meta .k{font:600 11.5px var(--sans);letter-spacing:.07em;text-transform:uppercase;color:var(--text-dim);display:block}
+@media (max-width:520px){.q .meta{padding-left:0}}
+
+/* proposal builder */
+.builder{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:16px}
+@media (max-width:820px){.builder{grid-template-columns:1fr}}
+.form{display:grid;gap:16px;align-content:start}
+.field{display:grid;gap:6px}
+.field label,.field .lb{font-weight:600;font-size:14.5px}
+.field .hint{font-size:13px;color:var(--text-dim)}
+.field input[type=number],.field input[type=text],.field select{font:15.5px var(--sans);color:var(--text);background:var(--card);border:1px solid var(--line);border-radius:4px;padding:9px 11px;width:100%}
+.field input:focus{outline:2px solid var(--accent);outline-offset:0;border-color:var(--accent)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font:500 14px var(--sans);border:1px solid var(--line);background:var(--card);color:var(--text-sec);border-radius:4px;padding:5px 11px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--tint);border-color:var(--accent);color:var(--text)}
+.out{display:grid;gap:12px;align-content:start}
+.rec{border:1px solid var(--line);border-radius:6px;padding:16px 18px;background:var(--card);display:grid;gap:6px}
+.rec .plan{font:600 24px var(--display);color:var(--accent)}
+.rec ul{margin:0;padding-left:18px;color:var(--text-sec);font-size:15px;display:grid;gap:3px}
+.flags{display:grid;gap:8px}
+.flag{font-size:14.5px;padding:10px 14px;border-radius:4px;border:1px solid var(--line);background:var(--card)}
+.flag.w{border-color:transparent;background:var(--tint-warn)}
+.flag.b{border-color:transparent;background:var(--tint-bad)}
+
+/* objections */
+.search{font:16px var(--sans);color:var(--text);background:var(--card);border:1px solid var(--line);border-radius:4px;padding:11px 14px;width:100%}
+.objs{display:grid;border:1px solid var(--line);border-radius:6px;background:var(--card);overflow:hidden}
+details.o{border-bottom:1px solid var(--line)}
+details.o:last-child{border-bottom:0}
+details.o summary{cursor:pointer;list-style:none;padding:14px 18px;display:flex;gap:12px;align-items:baseline;justify-content:space-between}
+details.o summary::-webkit-details-marker{display:none}
+details.o summary .s{font-weight:600;font-size:16px}
+details.o summary::after{content:"+";color:var(--text-dim);font-weight:600;margin-left:4px}
+details.o[open] summary::after{content:"\2212"}
+details.o .body{padding:0 18px 16px;display:grid;gap:10px;font-size:15px}
+details.o .body .k{font:600 11.5px var(--sans);letter-spacing:.07em;text-transform:uppercase;color:var(--accent);display:block}
+details.o .body p{color:var(--text-sec)}
+
+/* content blocks */
+.qual{display:grid;gap:4px;align-content:start}
+.qual b{font-weight:600;font-size:16px}
+.qual p{color:var(--text-sec);font-size:15px}
+.cmp{display:grid;gap:10px;align-content:start}
+.cmp h4{font:600 18px/1.3 var(--display)}
+.cmp ul{margin:0;padding-left:18px;display:grid;gap:6px;color:var(--text-sec);font-size:15px}
+.cmp ul b{color:var(--text);font-weight:600}
+.warnline{font-size:14.5px;background:var(--tint-warn);border-radius:4px;padding:10px 12px}
+.formula{font-size:15.5px;background:var(--surface);border-radius:4px;padding:12px 16px}
+.coach{background:var(--tint);border-radius:4px;padding:12px 16px;font-size:15px;color:var(--text-sec)}
+.coach b{display:block;font:600 11.5px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:2px}
+.roles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media (max-width:640px){.roles{grid-template-columns:1fr}}
+.roles>*{min-width:0}
+.role{display:grid;gap:8px;align-content:start}
+.role .pill{justify-self:start}
+.role b{font-size:16px;font-weight:600}
+.role ul{margin:0;padding-left:18px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:3px 20px;color:var(--text-sec);font-size:15px}
+.prob{display:grid;gap:4px;align-content:start}
+.prob b{font-size:16px;font-weight:600}
+.prob p{color:var(--text-sec);font-size:15px}
+.cost{background:var(--navy);color:var(--on-navy);border-radius:6px;padding:14px 20px;display:flex;flex-wrap:wrap;gap:8px 22px;align-items:center;font-weight:600;font-size:15px}
+.cost .kicker{color:var(--on-navy-2)}
+.reasons{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,170px),1fr));gap:10px}
+.reasons>*{min-width:0}
+.reason{display:grid;gap:4px;align-content:start;padding:14px 16px}
+.reason .n{font:700 13px var(--sans);color:var(--accent);font-variant-numeric:tabular-nums}
+.reason b{font-size:15.5px;font-weight:600}
+.reason p{color:var(--text-sec);font-size:14.5px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:12px}
+.stats>*{min-width:0}
+.stat{display:grid;gap:4px;align-content:start}
+.stat .v{font:600 24px/1.2 var(--display);color:var(--accent);font-variant-numeric:tabular-nums}
+.stat .l{color:var(--text-sec);font-size:15px}
+.close{background:var(--navy);color:var(--on-navy);border-radius:6px;padding:24px;display:grid;gap:12px}
+.close .kicker{color:var(--on-navy-2)!important}
+.close q{font:600 clamp(19px,2.4vw,24px)/1.35 var(--display);color:var(--on-navy);quotes:none}
+.close p{color:var(--on-navy-2)}
+.pathchips{display:flex;flex-wrap:wrap;gap:8px}
+.pathchips span{border:1px solid rgba(255,255,255,.3);border-radius:4px;padding:4px 11px;font-size:14px;color:var(--on-navy)}
+.guard{border:1px solid var(--line);background:var(--card);border-radius:6px;padding:16px 20px;display:grid;gap:8px}
+.guard h3{font:600 12px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--bad)}
+.guard ul{margin:0;padding-left:18px;display:grid;gap:4px;color:var(--text-sec)}
+.note{font-size:14px;color:var(--text-dim);max-width:75ch}
+.links{display:flex;flex-wrap:wrap;gap:8px}
+.links a{font:600 14px var(--sans);text-decoration:none;border:1px solid var(--line);background:var(--card);border-radius:4px;padding:7px 12px;color:var(--text)}
+.links a:hover{border-color:var(--accent);color:var(--accent)}
+.steps{display:grid;border:1px solid var(--line);border-radius:6px;background:var(--card);overflow:hidden}
+.steps .st{display:grid;grid-template-columns:120px 1fr;gap:6px 16px;padding:14px 18px;border-bottom:1px solid var(--line)}
+.steps .st:last-child{border-bottom:0}
+.steps .st .when{font:600 14px var(--sans);color:var(--accent)}
+.steps .st b{display:block;margin-bottom:2px;font-weight:600}
+.steps .st p{color:var(--text-sec);font-size:15px}
+@media (max-width:560px){.steps .st{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head><body style="margin:0">
 <header class="hero">
   <div class="wrap">
-    <a class="back" href="../../">&larr; All sales kits</a>
-    <span class="brand">TestMu AI · Sales Play · Internal and confidential</span>
-    <h1>KaneAI Sales Play</h1>
-    <p>The internal sales play for BDRs, AEs and SEs. This page is a placeholder until the kit is built.</p>
+    <a class="back" href="../../" style="font:600 14px var(--sans);text-decoration:none;color:var(--on-navy-2)">&larr; All sales kits</a>
+    <div class="brandrow">
+      <span class="brand">TestMu AI · Sales Play · Internal and confidential</span>
+      <div class="aud" role="group" aria-label="Account type">
+        <button type="button" id="audNew" aria-pressed="true">New logo</button>
+        <button type="button" id="audEx" aria-pressed="false">Existing TestMu customer</button>
+      </div>
+    </div>
+    <h1>Win AI test authoring deals with KaneAI</h1>
+    <p>A field guide for BDRs, AEs and SEs: who to target, how to qualify, and how to win against low-code recorders, plain-English tools, enterprise suites and coding agents. The customer-facing story for Stage 3 lives in the <a href="../../stories/kaneai/" target="_blank" rel="noopener">KaneAI presentation</a>. For developer and coding-agent deals, use the <a href="../../plays/kane-cli/">Kane CLI play</a>. Switch the account type above and the scripts change with it.</p>
   </div>
 </header>
+
+<nav class="stagebar" aria-label="Stages">
+  <div class="wrap tabs" role="tablist">
+    <button class="tab" role="tab" data-v="overview"><span class="who">The play</span><span class="nm">Overview</span></button>
+    <button class="tab" role="tab" data-v="bdr"><span class="who">Stage 1 · BDR</span><span class="nm">Book the meeting</span></button>
+    <button class="tab" role="tab" data-v="ae"><span class="who">Stage 2 · AE + SE</span><span class="nm">Win the deal</span></button>
+    <button class="tab" role="tab" data-v="se"><span class="who">Stage 3 · SE</span><span class="nm">Prove it</span></button>
+    <button class="tab" role="tab" data-v="objections"><span class="who">Any stage</span><span class="nm">Objections</span></button>
+  </div>
+</nav>
+
 <main><div class="wrap">
-  <section class="view">
-    <div class="gate">
-      <div><span class="kicker">Status</span><p><span class="pill p-plan">Planned</span></p></div>
-      <div><span class="kicker">Timing</span><p>After Test Manager feedback</p></div>
+
+<section class="view" id="v-overview" hidden>
+  <div class="vhead">
+    <span class="kicker">Overview</span>
+    <h2>How to use this play</h2>
+    <p class="audnote" data-aud="ex" hidden>You are viewing the existing customer play: for accounts that already run tests on TestMu but write their automation by hand, or own KaneAI and barely use it. It is an attach motion with the account manager involved from the first step. Stages 1 and 2 change; the problem framing, alternatives and objections still apply.</p>
+    <p>The buyer has more tests to automate than people who can automate them. Manual testers know the product but cannot write framework code, automation engineers are the queue every request waits in, and the suite they do have breaks every time the UI moves. KaneAI lets any tester author an end-to-end test in plain English, proposes the checks, heals the test when the UI changes, and exports real code when they want it. Do not sell it as a no-code recorder. Sell it as more coverage from the same team, with no lock-in.</p>
+  </div>
+
+  <div class="flow">
+    <div class="stage">
+      <span class="num">Stage 1 · For BDRs</span>
+      <h3>Book the first meeting</h3>
+      <ol data-aud="new"><li>Find the QA leader and the automation owner</li><li>Spot a signal: a manual backlog, a tool renewal, a hiring gap</li><li>Qualify with five questions</li><li>Handle the brush-off and book the call</li></ol>
+      <div class="exit" data-aud="new"><b>Exit:</b> a meeting with someone who owns test automation or its budget, and the handoff note filled in.</div>
+      <ol data-aud="ex" hidden><li>Check usage and align with the AM</li><li>Find who writes the automation today</li><li>Ask the champion for the QA lead</li><li>Qualify with five attach questions and book the call</li></ol>
+      <div class="exit" data-aud="ex" hidden><b>Exit:</b> an attach call with the QA lead, the AM and the AE.</div>
     </div>
-    <div class="block"><h3>What this will contain</h3><ul class="ph-list"><li>Stage 1 for BDRs: personas, qualifiers, signals, peak timing, outreach scripts, five qualifying questions, brush-offs, handoff note</li><li>Stage 2 for AEs: discovery questions, the problem, the product answer, technical and business comparison, proof points, ROI calculator, proposal builder</li><li>Stage 3 for SEs: demo path, POC plan, success criteria</li><li>Objections, plus a New logo and an Existing TestMu customer view</li></ul></div>
-    <div class="block"><h3>Inputs needed from the product team</h3><ul class="ph-list"><li>Positioning and the one-line pitch</li><li>Decision owners, influencers and users</li><li>Pricing and packaging from deal desk</li><li>Competitors and how we win against each</li><li>Customer proof points cleared for use</li><li>Common objections from the field</li></ul>
-      <p class="coach"><b>Format</b>Same structure as the <a href="../../plays/performance-testing/">Performance Testing sales play</a>, so reps learn one layout for every product.</p></div>
-  </section>
+    <div class="stage">
+      <span class="num">Stage 2 · For AEs, with an SE</span>
+      <h3>Win the deal</h3>
+      <ol><li>Learn how they author and maintain tests</li><li>Name the problem</li><li>Map each problem to KaneAI</li><li>Size agents and the plan honestly</li><li>Build the ROI and propose</li></ol>
+      <div class="exit"><b>Exit:</b> ten real test cases chosen, the app reachable from our cloud, a named owner and written POC success criteria.</div>
+    </div>
+    <div class="stage">
+      <span class="num">Stage 3 · For SEs</span>
+      <h3>Prove it</h3>
+      <ol><li>Demo on the story page</li><li>Have their testers author ten real tests</li><li>Change the UI and show the heal</li><li>Read out and hand back to the AE</li></ol>
+      <div class="exit"><b>Exit:</b> the POC meets the agreed criteria and the AE sends a proposal.</div>
+    </div>
+  </div>
+  <p class="coach"><b>Coach's note</b>BDRs own Stage 1 and hand over a qualified meeting. AEs pick up with discovery, the problem framing, the comparison and the ROI. Bring an SE as soon as the buyer asks about their app's access, login or mobile, and let the SE run Stage 3. The POC is the deal: who authors in it matters more than how many tests get authored.</p>
+
+  <div class="block">
+    <h3>Where to focus</h3>
+    <div class="grid3">
+      <div class="card"><span class="kicker">Best fit</span><p style="margin-top:6px">Web or mobile app teams with a large manual regression suite, a small automation team, and Jira or Azure DevOps. Manual testers who want to automate are the strongest sign.</p></div>
+      <div class="card"><span class="kicker">Fastest path</span><p style="margin-top:6px">Existing TestMu execution customers first: their tests already run on our grid and HyperExecute. Then teams on Katalon, Testim, mabl or testRigor with a renewal 90+ days out.</p></div>
+      <div class="card"><span class="kicker">Best attach</span><p style="margin-top:6px">Test Manager comes with every agent (one seat each). Kane CLI is in every plan for their developers. HyperExecute minutes are in Pro and Max.</p></div>
+    </div>
+  </div>
+
+  <div class="guard">
+    <h3>Do not say</h3>
+    <ul>
+      <li>"No maintenance." Healing reduces it. Adaptive Heal and Dynamic Test run on New Experience tests on Chrome, and re-authoring can turn a real defect into a pass, which is why auto-approve is off by default.</li>
+      <li>That it tests desktop, mainframe or green-screen apps. KaneAI covers web, mobile browsers and native mobile apps, plus API and database steps.</li>
+      <li>That it gets past CAPTCHA. It does not. The fix is allowlisting our IP ranges or a test key on staging.</li>
+      <li>That a database or app on a private network "just works". Tunnel reaches private web apps, but confirm database connectivity on day 0. POCs have stalled here.</li>
+      <li>"70% faster" or 600 hours a month as KaneAI numbers. Speed is HyperExecute. In the FyscalTech story only "60% faster test creation" is KaneAI.</li>
+      <li>Trepp or Kayak metrics as KaneAI proof. Those are HyperExecute and real device numbers.</li>
+      <li>"Two-way Jira sync" without showing what links and what updates.</li>
+      <li>Old prices: $2K per agent per year, or "$199 per 1,000 agents". Use the current plan page and recheck before quoting.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="view" id="v-bdr" hidden>
+  <div class="vhead">
+    <span class="kicker">Stage 1 · For BDRs</span>
+    <h2 data-aud="new">Find the people who own automation, spot the moment, qualify fast and book the meeting.</h2>
+    <p data-aud="new">You do not need to explain AI agents. You need the right person, a signal, and five questions that show whether there is a deal.</p>
+    <h2 data-aud="ex" hidden>Attach KaneAI to accounts that already run tests on TestMu.</h2>
+    <p data-aud="ex" hidden>This is an attach, not a cold sale. They already run tests on our grid or HyperExecute, written by a few engineers. Check what they use, align with the AM, and ask the champion who writes the tests and who wishes they could.</p>
+  </div>
+
+  <div class="gate" data-aud="ex" hidden>
+    <div><span class="kicker">Goal</span><p>An attach call with the QA lead, the AM and the AE.</p></div>
+    <div><span class="kicker">Book the meeting when</span><ul><li>Automation is written by a small group</li><li>Manual testing is still a big share of regression</li><li>The AM agrees the account is healthy enough to expand</li></ul></div>
+    <div><span class="kicker">Hand off</span><ul><li>Fill in the attach handoff note at the bottom</li><li>Tag the opportunity as an expansion with KaneAI in play</li></ul></div>
+  </div>
+
+  <div class="block" data-aud="ex" hidden>
+    <h3>Check the account before you reach out</h3>
+    <p class="sub">You already have data on this customer. Use it before the first message.</p>
+    <div class="tw"><table>
+      <thead><tr><th>Check</th><th>Where</th><th>What it tells you</th></tr></thead>
+      <tbody>
+        <tr><td><b>Products, plans and renewal dates</b></td><td>CRM</td><td>Whether to add mid-term or co-term with a renewal</td></tr>
+        <tr><td><b>Automation, HyperExecute or real device usage</b></td><td>CRM, product usage</td><td>Tests already run with us, so authored tests have a home</td></tr>
+        <tr><td><b>KaneAI agents and credits used</b></td><td>CRM, product usage</td><td>Unused agents or credits are an adoption job first, not a new sale</td></tr>
+        <tr><td><b>Test Manager seats and where test cases live</b></td><td>CRM, the champion</td><td>Manual cases already in Test Manager can be automated from their own screen</td></tr>
+        <tr><td><b>Open escalations or stability complaints</b></td><td>Support tool, the AM</td><td>Do not pitch an AI add-on into an account unhappy with reliability</td></tr>
+      </tbody>
+    </table></div>
+    <p class="coach"><b>Coach's note</b>Talk to the AM before anyone at the customer hears from you. If the account has KaneAI already and is struggling, this becomes a success plan with the AM and SE, not a pitch.</p>
+  </div>
+
+  <div class="gate" data-aud="new">
+    <div><span class="kicker">Goal</span><p>A discovery call with the AE.</p></div>
+    <div><span class="kicker">Book the meeting when</span><ul><li>They test a web or mobile app</li><li>Regression is still largely manual, or automation is a backlog</li><li>The person owns, leads or funds testing</li></ul></div>
+    <div><span class="kicker">Hand off</span><ul><li>Fill in the handoff note at the bottom</li><li>Tag the opportunity with KaneAI as the product in play</li></ul></div>
+  </div>
+
+  <div class="block" data-aud="ex" hidden>
+    <h3>Map the account: who you know, who you need</h3>
+    <div class="roles">
+      <div class="card role"><span class="pill p-info">Already know</span><b>Your way in</b><ul><li>Automation lead / SDET lead</li><li>TestMu account admin</li><li>Your account manager</li></ul></div>
+      <div class="card role"><span class="pill p-info">Need to find</span><b>The manual testing owner</b><ul><li>QA Manager / Test Lead</li><li>Manual testing lead</li><li>Whoever owns the regression backlog</li></ul></div>
+      <div class="card role"><span class="pill p-info">Signs off</span><b>Budget for the add-on</b><ul><li>Head of QA / Director of QE</li><li>VP or Director of Engineering</li><li>Whoever signed the last TestMu renewal</li></ul></div>
+      <div class="card role"><span class="pill p-info">Influencer</span><b>Already approved us once</b><ul><li>Security (approved TestMu)</li><li>Procurement (holds the renewal date)</li><li>Engineering managers who want faster sign-off</li></ul></div>
+    </div>
+    <p class="coach"><b>Coach's note</b>Automation engineers may see KaneAI as a threat. Position it as the way their backlog clears: testers author, automation engineers review and export the code.</p>
+  </div>
+
+  <div class="block" data-aud="new">
+    <h3>Four personas own test automation</h3>
+    <div class="roles">
+      <div class="card role"><span class="pill p-info">Signs off budget</span><b>Leaders and budget owners</b><ul><li>Head of QA</li><li>Director of Quality Engineering</li><li>VP or Director of Engineering</li></ul></div>
+      <div class="card role"><span class="pill p-info">Champion</span><b>QA and automation leads</b><ul><li>QA Manager / Test Manager</li><li>Automation Lead / SDET Lead</li><li>Quality Engineering Manager</li></ul></div>
+      <div class="card role"><span class="pill p-info">Feels the pain</span><b>Daily users</b><ul><li>Manual tester who wants to automate</li><li>QA Engineer running regression</li><li>SDET fixing broken scripts</li></ul></div>
+      <div class="card role"><span class="pill p-info">Influencer</span><b>Release and platform</b><ul><li>Engineering Manager</li><li>Release Manager</li><li>Salesforce or app platform admin</li><li>Security</li></ul></div>
+    </div>
+    <p class="coach"><b>Coach's note</b>Lead with QA managers: they own the coverage number and feel the gap every sprint. Automation leads decide whether the POC is fair. Get a leader in early, because KaneAI is sold on capacity, which is a budget conversation.</p>
+  </div>
+
+  <div class="block" data-aud="ex" hidden>
+    <h3>Qualifiers: is the account ready to attach?</h3>
+    <p class="sub">An account that meets all four and shows one strong signal below is a priority.</p>
+    <div class="grid2 two">
+      <div class="card qual"><b>Active, healthy TestMu usage</b><p>Tests running every week, no open stability escalations, the AM is comfortable.</p></div>
+      <div class="card qual"><b>Automation is a bottleneck</b><p>A few people write it; many people request it.</p></div>
+      <div class="card qual"><b>Web or mobile apps in scope</b><p>Not desktop or mainframe.</p></div>
+      <div class="card qual"><b>A known renewal or budget date</b><p>For their TestMu contract or a competing tool.</p></div>
+    </div>
+  </div>
+
+  <div class="block" data-aud="new">
+    <h3>Qualifiers: is it a fit?</h3>
+    <p class="sub">Check these first. An account that meets them and shows one strong signal below is a priority.</p>
+    <div class="grid2 two">
+      <div class="card qual"><b>A web or mobile app</b><p>Desktop, mainframe or green-screen apps are out of scope. Do not chase them.</p></div>
+      <div class="card qual"><b>A manual regression backlog</b><p>Tests people run by hand every release, or a list waiting to be automated.</p></div>
+      <div class="card qual"><b>Reachable from the cloud</b><p>Public staging, or a private app they can expose through Tunnel. Check databases separately.</p></div>
+      <div class="card qual"><b>A named owner for the POC</b><p>Someone who can give testers a week to author real tests.</p></div>
+    </div>
+  </div>
+
+  <div class="block" data-aud="ex" hidden>
+    <h3>Signals: reach out now</h3>
+    <p class="sub">Two medium signals are worth as much as one strong one.</p>
+    <div class="sig">
+      <div class="row"><span class="pill p-strong">Strong</span><b>Heavy automation usage, few authors</b><span class="d">Lots of runs from a handful of users means automation is a queue.</span></div>
+      <div class="row"><span class="pill p-strong">Strong</span><b>TestMu renewal in the next two quarters</b><span class="d">Adding agents at renewal is the easiest commercial path.</span></div>
+      <div class="row"><span class="pill p-strong">Strong</span><b>Manual cases already in Test Manager</b><span class="d">They can automate a case from its own screen.</span></div>
+      <div class="row"><span class="pill p-med">Medium</span><b>Complaints about flaky or broken scripts</b><span class="d">Check call notes and tickets for "flaky", "locator" or "maintenance".</span></div>
+      <div class="row"><span class="pill p-med">Medium</span><b>An AI mandate from leadership</b><span class="d">They are asked how AI will speed up QA.</span></div>
+      <div class="row"><span class="pill p-med">Medium</span><b>A competing AI tool in trial</b><span class="d">mabl, testRigor, BrowserStack AI or a coding agent. Better we are in the comparison.</span></div>
+      <div class="row"><span class="pill p-no">Park</span><b>Unused agents, falling usage or an open escalation</b><span class="d">Fix adoption and stability first. The AM decides when the account is ready.</span></div>
+    </div>
+  </div>
+
+  <div class="block" data-aud="new">
+    <h3>Signals: reach out now</h3>
+    <p class="sub">Two medium signals are worth as much as one strong one.</p>
+    <div class="sig">
+      <div class="row"><span class="pill p-strong">Strong</span><b>A low-code tool renewal 90+ days out</b><span class="d">Katalon, Testim, mabl, testRigor, Leapwork or Tosca. Less than 60 days usually means they sign again.</span></div>
+      <div class="row"><span class="pill p-strong">Strong</span><b>Hiring manual testers and SDETs at the same time</b><span class="d">Job posts that ask for "manual and automation" show the gap KaneAI closes.</span></div>
+      <div class="row"><span class="pill p-strong">Strong</span><b>Already a TestMu customer</b><span class="d">Switch to the Existing TestMu customer view at the top. That play starts with the account manager.</span></div>
+      <div class="row"><span class="pill p-med">Medium</span><b>Salesforce or packaged-app release cycles</b><span class="d">Three releases a year, MFA at login and brittle scripts. A strong demo.</span></div>
+      <div class="row"><span class="pill p-med">Medium</span><b>An AI mandate in QA</b><span class="d">Leadership wants AI in testing this year.</span></div>
+      <div class="row"><span class="pill p-med">Medium</span><b>Coding agents adopted by engineering</b><span class="d">Code ships faster than QA can test it. If developers are the buyer, use the Kane CLI play.</span></div>
+      <div class="row"><span class="pill p-med">Medium</span><b>A new QA leader</b><span class="d">New leaders review tools in their first two quarters.</span></div>
+      <div class="row"><span class="pill p-no">Park</span><b>Desktop or mainframe apps, or nothing may leave their network</b><span class="d">Out of scope. Note it and move on.</span></div>
+    </div>
+    <p class="coach"><b>Coach's note</b>Qualifiers tell you whether the account is a fit; signals tell you when to call. On every call, ask how many tests they run by hand each release and write the number down. It is the most useful thing a BDR can capture in this play.</p>
+  </div>
+
+  <div class="block">
+    <h3>Finding the person on LinkedIn</h3>
+    <div class="grid2">
+      <div class="card" style="display:grid;gap:8px"><span class="kicker">Titles</span><p>QA Manager, Test Manager, QA Lead, Automation Lead, SDET Lead, Quality Engineering Manager, Head of QA, Director of Quality Engineering</p></div>
+      <div class="card" style="display:grid;gap:8px"><span class="kicker">Keywords in profile or skills</span><p>Katalon, Testim, mabl, testRigor, Tosca, Leapwork, Selenium, Playwright, Appium, regression testing, manual testing, test automation, Salesforce testing</p></div>
+    </div>
+    <div class="script"><header><span class="t">Sales Navigator keyword search</span><button class="btn" data-copy="bool">Copy</button></header>
+      <code class="bool" id="bool">("QA manager" OR "QA lead" OR "automation lead" OR "SDET lead" OR "head of QA" OR "quality engineering") AND (Katalon OR Testim OR mabl OR testRigor OR Tosca OR Leapwork OR Selenium OR "regression testing" OR "manual testing")</code>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>Outreach</h3>
+    <p class="sub">Replace the highlighted fields. Keep the signal specific: the job post, the tool, the renewal.</p>
+    <div class="scripts" id="outreach"></div>
+  </div>
+
+  <div class="block" data-aud="ex" hidden>
+    <h3>Five attach questions</h3>
+    <p class="sub">For the champion or the QA lead. Short enough for a QBR or a quick call.</p>
+    <div class="tw"><table>
+      <thead><tr><th>Ask</th><th>Good answer</th><th>Watch out</th></tr></thead>
+      <tbody>
+        <tr><td><b>Who writes your automation today, and how many people ask them for tests?</b></td><td>A few engineers, many requests</td><td>Everyone already writes code happily: lead with Kane CLI instead.</td></tr>
+        <tr><td><b>How much of your regression is still run by hand?</b></td><td>A real share, with a number</td><td>Write the number down. The AE reuses it.</td></tr>
+        <tr><td><b>How much of the week goes into fixing broken scripts?</b></td><td>Hours, every sprint</td><td>None: lead with authoring speed, not healing.</td></tr>
+        <tr><td><b>Could two of your testers try it on ten real cases?</b></td><td>Yes, or "let me ask the QA lead"</td><td>Use the answer to ask for the intro.</td></tr>
+        <tr><td><b>Who would approve adding it to your plan?</b></td><td>A name, and whether it waits for renewal</td><td>Share it with the AM straight away.</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <div class="block" data-aud="new">
+    <h3>Short on time? Ask these five</h3>
+    <p class="sub">Numbers refer to the full discovery list in Stage 2.</p>
+    <div class="tw"><table>
+      <thead><tr><th>#</th><th>Ask</th><th>Good answer</th><th>Watch out</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">1</td><td><b>What do you test: web, mobile apps, or both?</b><br><span class="dim">Prompt: customer site, internal app, Salesforce, iOS, Android</span></td><td>Web and mobile apps</td><td>Desktop or mainframe: not a fit. Note it and move on.</td></tr>
+        <tr><td class="mono">5</td><td><b>How many tests do you run by hand each release?</b></td><td>Hundreds, and growing</td><td>Write down the number. The AE reuses it.</td></tr>
+        <tr><td class="mono">7</td><td><b>Who writes your automation, and how long is their backlog?</b></td><td>A small team with a queue</td><td>No one, and no plan to: check there is a budget owner.</td></tr>
+        <tr><td class="mono">17</td><td><b>Is there a tool renewal or a release deadline coming up?</b></td><td>A date 90+ days out</td><td>Under 60 days: nurture and come back.</td></tr>
+        <tr><td class="mono">19</td><td><b>Who else would be involved in choosing a tool, and who signs off budget?</b></td><td>A name and a role</td><td>Use it to bring the right people into the AE call.</td></tr>
+      </tbody>
+    </table></div>
+    <p class="coach"><b>Coach's note</b>These five show fit (1), the size of the gap (5), the bottleneck (7), the urgency (17) and the path to budget (19). A web or mobile app with a large manual suite and a small automation team is the strongest sign of a real opportunity.</p>
+  </div>
+
+  <div class="block" data-aud="ex" hidden>
+    <h3>Turn the brush-off into a conversation</h3>
+    <p class="sub">Existing customers push back differently. They like the platform; the question is scope and timing.</p>
+    <div class="tw"><table>
+      <thead><tr><th>They say</th><th>It usually means</th><th>You say</th></tr></thead>
+      <tbody>
+        <tr><td><b>"Our engineers write Selenium and that's fine."</b></td><td>No pain felt by this person</td><td>"Good. How many tests are waiting for them to write?"</td></tr>
+        <tr><td><b>"We tried KaneAI before."</b></td><td>A past trial that stalled</td><td>"What got in the way? A lot has changed, and I'd rather fix that first with the AM."</td></tr>
+        <tr><td><b>"We just renewed."</b></td><td>Timing, not fit</td><td>"Understood. A POC with two testers now leaves time to decide before the next one."</td></tr>
+        <tr><td><b>"Talk to procurement."</b></td><td>The commercial path, not a no</td><td>"Will do, with our AM. Who on the QA side should see the POC?"</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <div class="block" data-aud="ex" hidden>
+    <h3>Attach handoff note</h3>
+    <div class="script"><header><span class="t">Paste into the opportunity, and copy the AM</span><button class="btn" data-copy="handoffEx">Copy</button></header>
+<pre id="handoffEx">Account:
+Account manager:
+TestMu products, plans and renewal dates:
+KaneAI agents and credit use today:
+Champion and how they feel about TestMu:
+Who writes automation today (names, how many):
+Tests still run by hand each release:
+Apps in scope (web / mobile / both):
+Who approves the add-on:
+What they said, in their words:</pre></div>
+  </div>
+
+  <div class="block" data-aud="new">
+    <h3>Turn the brush-off into a conversation</h3>
+    <p class="sub">Do not argue with the first objection. Acknowledge it, then ask one question about how they work.</p>
+    <div class="tw"><table>
+      <thead><tr><th>They say</th><th>It usually means</th><th>You say</th></tr></thead>
+      <tbody>
+        <tr><td><b>"We already use Selenium or Playwright."</b></td><td>An automation team, maybe a busy one</td><td>"Most teams we talk to do. Who writes those tests, and how long is the list waiting for them?"</td></tr>
+        <tr><td><b>"We tried an AI testing tool. It was flaky."</b></td><td>A bad trial, the real barrier</td><td>"Fair. What broke? We'd prove it on ten of your own tests before you decide anything."</td></tr>
+        <tr><td><b>"Our developers use Copilot or Cursor for tests."</b></td><td>Code-level tests, not end to end</td><td>"Makes sense for unit tests. Who checks the full user journey before a release?"</td></tr>
+        <tr><td><b>"Just send me an email."</b></td><td>A polite brush-off</td><td>"Happy to. So it's useful, roughly how many tests do you run by hand each release?"</td></tr>
+        <tr><td><b>"No budget right now."</b></td><td>Timing, not fit</td><td>"Understood. When does your current tool renew, or when is budget set? Worth 20 minutes before then."</td></tr>
+        <tr><td><b>"That's not my area."</b></td><td>Wrong persona</td><td>"Who owns test automation? Can I say you suggested I reach out?"</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <div class="block" data-aud="new">
+    <h3>Handoff note to the AE</h3>
+    <div class="script"><header><span class="t">Paste into the opportunity</span><button class="btn" data-copy="handoff">Copy</button></header>
+<pre id="handoff">Account:
+Contact and role:
+Existing TestMu customer: Yes / No (if yes, use the Existing TestMu customer view)
+Signal that started this:
+Apps in scope (web / mobile / both / Salesforce / other):
+Current automation tool and framework:
+Tests run by hand each release:
+People who write automation today:
+Tool renewal or deadline:
+Other people involved:
+What they said, in their words:</pre></div>
+  </div>
+</section>
+
+<section class="view" id="v-ae" hidden>
+  <div class="vhead">
+    <span class="kicker">Stage 2 · For AEs, with an SE</span>
+    <h2>Learn how they author and maintain tests, name the problem, map it to KaneAI and build the case.</h2>
+    <p data-aud="new">Run discovery first, then use only the problems the buyer confirmed. Bring an SE as soon as app access, login, mobile or code export comes up.</p>
+    <p data-aud="ex" hidden>You already know where their tests run. Shorten group A, spend the call on B and D with the QA lead, agree the commercial path with the AM, and size agents from real authoring demand.</p>
+  </div>
+
+  <div class="gate" data-aud="ex" hidden>
+    <div><span class="kicker">Goal</span><p>KaneAI agents added to their TestMu contract, mid-term or at renewal.</p></div>
+    <div><span class="kicker">Move to Stage 3 when</span><ul><li>The QA lead is engaged, not only the champion</li><li>Ten real cases and two testers are chosen</li><li>Success criteria are written down</li><li>The AM agrees the commercial path</li></ul></div>
+    <div><span class="kicker">Stay in Stage 2 when</span><ul><li>Only automation engineers are involved</li><li>No date or target drives it</li></ul></div>
+  </div>
+
+  <div class="gate" data-aud="new">
+    <div><span class="kicker">Goal</span><p>A proposal the buyer agrees is worth testing in a POC.</p></div>
+    <div><span class="kicker">Move to Stage 3 when</span><ul><li>The app is web or mobile and reachable from our cloud</li><li>Ten real test cases are chosen</li><li>Testers, not only SDETs, will author in the POC</li><li>Success criteria are written down</li></ul></div>
+    <div><span class="kicker">Stay in Stage 2 when</span><ul><li>Network access or login is unresolved</li><li>No date drives the decision</li></ul></div>
+  </div>
+
+  <div class="block" id="disc"></div>
+
+  <div class="block">
+    <h3>Six reasons test automation falls behind</h3>
+    <div class="grid3">
+      <div class="card prob"><b>Few people can author</b><p>Automation needs framework skills, so every request queues behind a handful of engineers.</p></div>
+      <div class="card prob"><b>Maintenance eats the week</b><p>Every UI change breaks selectors. Fixing broken and flaky tests takes as long as writing new ones.</p></div>
+      <div class="card prob"><b>Code ships faster than QA</b><p>Coding agents speed up development. Testing capacity stays flat, so coverage per release falls.</p></div>
+      <div class="card prob"><b>Know-how stays manual</b><p>Manual testers know every edge case but cannot make that knowledge repeatable.</p></div>
+      <div class="card prob"><b>Low-code hit a ceiling</b><p>Recorders were quick to start, then hard to scale, debug or move off.</p></div>
+      <div class="card prob"><b>Tests trapped in a tool</b><p>Fear of lock-in keeps teams writing code by hand even when it is slower.</p></div>
+    </div>
+    <div class="cost"><span class="kicker">The cost</span><span>Untested paths in every release</span><span>An automation queue that never clears</span><span>Sprints lost to repairs</span><span>Release confidence going down</span></div>
+    <p class="coach"><b>Coach's note</b>TestMu's survey of 1,600+ enterprise teams puts test planning and authoring at 23% of QA hours, and fixing broken and flaky tests at another 23%. Quote it as our survey. Then pick the two or three problems this buyer confirmed; do not read all six.</p>
+  </div>
+
+  <div class="block">
+    <h3>Every problem has a KaneAI answer</h3>
+    <div class="tw"><table>
+      <thead><tr><th>The problem</th><th>How KaneAI answers</th><th>Show in the demo</th></tr></thead>
+      <tbody>
+        <tr><td><b>Few people can author</b></td><td>Testers write steps the way they write a test case. KaneAI resolves the elements, proposes the assertions and runs it. Manual Interaction Mode records real clicks into steps.</td><td>Author a test</td></tr>
+        <tr><td><b>Maintenance eats the week</b></td><td>Auto-Heal recovers broken locators on every run. Adaptive Heal re-authors from the failing step and saves a new version for approval.</td><td>Heal a UI change</td></tr>
+        <tr><td><b>Code ships faster than QA</b></td><td>Generate scenarios from Jira, Azure DevOps, PRDs, images, audio or video. Validate a GitHub PR with tests that match the change.</td><td>From ticket to test</td></tr>
+        <tr><td><b>Know-how stays manual</b></td><td>Automate a manual case from its own screen in Test Manager. Conditionals, modules, variables, datasets, API and database steps keep complex flows readable.</td><td>Author a test</td></tr>
+        <tr><td><b>Low-code hit a ceiling</b></td><td>Web, mobile browser and native apps. TOTP and MFA, network assertions, JavaScript snippets for edge cases. Runs on 3,000+ browser combos and 10,000+ real devices.</td><td>Everywhere it runs</td></tr>
+        <tr><td><b>Tests trapped in a tool</b></td><td>Export to Selenium (Python), Playwright (JS, Python), Cypress (JS), WebdriverIO (JS) or Appium (Python, Java, JS) and run it in their CI.</td><td>No lock-in</td></tr>
+      </tbody>
+    </table></div>
+    <p class="coach"><b>Coach's note</b>Lead with the row that matches the pain you heard. Be clear on the edges early: native mobile healing is narrower than web, CAPTCHA needs allowlisting, and desktop apps are out. A buyer who hears it from you trusts the rest.</p>
+  </div>
+
+  <div class="block">
+    <h3>KaneAI vs the alternatives · technical view</h3>
+    <div class="grid2">
+      <div class="card cmp">
+        <span class="kicker">vs Katalon, Testim, mabl</span>
+        <h4>An agent, not a recorder</h4>
+        <ul>
+          <li><b>Intent.</b> Steps are captured as intent, so healing rebuilds from what the step meant, not one selector.</li>
+          <li><b>Inputs.</b> Text, PDFs, images, audio, video, spreadsheets, JSON, XML and Jira or ADO links, up to 10 files.</li>
+          <li><b>Conversation.</b> Refine and restructure scenarios in conversation; a memory layer avoids duplicates.</li>
+          <li><b>Mobile.</b> Real devices on the same platform. mabl's card shows browser-only coverage.</li>
+          <li><b>Katalon.</b> Import a Katalon project zip as editable KaneAI tests (desktop web only).</li>
+        </ul>
+        <p class="warnline">These tools are mature and their users have years of tests. Do not promise a full migration. Prove new authoring on ten cases and keep the old suite running.</p>
+      </div>
+      <div class="card cmp">
+        <span class="kicker">vs testRigor</span>
+        <h4>Plain English plus the platform</h4>
+        <ul>
+          <li><b>Agent mode.</b> testRigor authors in English but has no adaptive agent or conversational refinement.</li>
+          <li><b>Languages.</b> Multilingual authoring; testRigor is English only.</li>
+          <li><b>Devices.</b> Our own real device cloud; testRigor runs real devices on partner clouds, including ours.</li>
+          <li><b>Code.</b> Export to five frameworks.</li>
+        </ul>
+        <p class="warnline">testRigor's private plans start around $300 a month. Compare on capacity per agent, not headline price.</p>
+      </div>
+      <div class="card cmp">
+        <span class="kicker">vs Tosca, UiPath, Leapwork</span>
+        <h4>Faster to start, nothing proprietary</h4>
+        <ul>
+          <li><b>Setup.</b> No models or modules to build before the first test.</li>
+          <li><b>Portability.</b> Standard code export instead of a proprietary format.</li>
+          <li><b>Execution.</b> HyperExecute and real devices on the same platform.</li>
+        </ul>
+        <p class="warnline">These suites cover desktop and SAP GUI. If those are in scope, KaneAI covers only the web and mobile part. Qualify it early.</p>
+      </div>
+      <div class="card cmp">
+        <span class="kicker">vs coding agents (Cursor, Copilot)</span>
+        <h4>The coding agent writes it. KaneAI proves it.</h4>
+        <ul>
+          <li><b>State.</b> A versioned suite re-run every release, not a one-off check.</li>
+          <li><b>Flakes.</b> Flaky test and anomaly detection instead of a single pass or fail.</li>
+          <li><b>Coverage.</b> Proposes what to test from the requirement, not only the file in context.</li>
+          <li><b>Triage.</b> AI root cause analysis groups and explains failures.</li>
+        </ul>
+        <p class="warnline">If developers are the buyer and want it in the terminal, switch to the Kane CLI play. Both sell together.</p>
+      </div>
+      <div class="card cmp">
+        <span class="kicker">vs BrowserStack AI, TestSigma Copilot</span>
+        <h4>Authoring that leads to the rest of the cycle</h4>
+        <ul>
+          <li><b>Lifecycle.</b> Plan in Test Manager, author in KaneAI, run on HyperExecute, analyse in Test Intelligence.</li>
+          <li><b>Inputs and memory.</b> Multi-modal inputs and duplicate avoidance.</li>
+        </ul>
+        <p class="warnline">Both claim AI authoring and maintenance. The difference shows in a side-by-side POC on their app, not on slides.</p>
+      </div>
+      <div class="card cmp">
+        <span class="kicker">vs hand-written Selenium or Playwright</span>
+        <h4>Keep the code. Change who writes it.</h4>
+        <ul>
+          <li><b>Authors.</b> Testers write the flow; engineers review and export.</li>
+          <li><b>Repairs.</b> Healing instead of fixing selectors by hand.</li>
+          <li><b>Output.</b> The same frameworks they already use.</li>
+        </ul>
+        <p class="warnline">Strong framework teams may only want generated code. That is a valid outcome: sell the authoring speed.</p>
+      </div>
+    </div>
+    <p class="note">Comparison points come from the GTM Buddy comp cards (29 competitors). Pull the full card for the competitor in the deal before the call.</p>
+  </div>
+
+  <div class="block">
+    <h3>Ten reasons KaneAI earns its price · business view</h3>
+    <div class="reasons">
+      <div class="card reason"><span class="n">01</span><b>More authors</b><p>Manual testers automate without learning a framework.</p></div>
+      <div class="card reason"><span class="n">02</span><b>A shorter queue</b><p>Automation engineers review instead of writing everything.</p></div>
+      <div class="card reason"><span class="n">03</span><b>Less repair</b><p>Healing handles UI changes that used to break the sprint.</p></div>
+      <div class="card reason"><span class="n">04</span><b>Tests from tickets</b><p>Scenarios drafted from the requirement as it is written.</p></div>
+      <div class="card reason"><span class="n">05</span><b>No lock-in</b><p>Export to five frameworks at any time.</p></div>
+      <div class="card reason"><span class="n">06</span><b>Web and mobile</b><p>One way of authoring across browsers and native apps.</p></div>
+      <div class="card reason"><span class="n">07</span><b>Test management included</b><p>One Test Manager seat with every agent.</p></div>
+      <div class="card reason"><span class="n">08</span><b>Execution included</b><p>HyperExecute minutes in Pro and Max.</p></div>
+      <div class="card reason"><span class="n">09</span><b>Developers covered</b><p>Kane CLI is in every plan.</p></div>
+      <div class="card reason"><span class="n">10</span><b>One vendor</b><p>Authoring, execution, devices and reporting on one contract.</p></div>
+    </div>
+    <p class="coach"><b>Coach's note</b>Use this with economic buyers. Points 1 to 3 carry the ROI, so measure them in the POC with their own testers rather than quoting a percentage.</p>
+  </div>
+
+  <div class="block">
+    <h3>Plans and capacity</h3>
+    <p class="sub">An agent lets one person author one test at a time. More agents means more people authoring at once. Prices per agent per month, billed annually.</p>
+    <div class="tw"><table>
+      <thead><tr><th>Plan</th><th>Price</th><th>Credits per agent</th><th>What it adds</th><th>Test creations</th></tr></thead>
+      <tbody>
+        <tr><td><b>Starter</b></td><td>$17</td><td>2,000 a month</td><td>Kane CLI local authoring on their own browser, AI test case generation, 1 Test Manager seat</td><td>About 25</td></tr>
+        <tr><td><b>Pro</b></td><td>$89</td><td>12,000 a month</td><td>KaneAI web in the cloud, 1 authoring session at a time, 100 HyperExecute minutes, Kane CLI, 1 Test Manager seat</td><td>About 150</td></tr>
+        <tr><td><b>Max</b></td><td>$179</td><td>25,000 a month</td><td>KaneAI web and mobile, 300 HyperExecute minutes, Kane CLI, 1 Test Manager seat</td><td>About 313</td></tr>
+        <tr><td><b>Enterprise</b></td><td>Custom</td><td>Unlimited</td><td>Custom agents, Test Manager seats and concurrency, negotiated minutes, SSO, IP allowlisting, 24x7 support</td><td>Unlimited</td></tr>
+      </tbody>
+    </table></div>
+    <p class="note">From testmuai.com/pricing, November 2026. Test creations are the page's estimate for 40-step tests, per agent per month. The comparison table shows $19, $99 and $199 against the $17, $89 and $179 cards; treat the higher figures as monthly billing and confirm with deal desk. Healing costs 1.5 to 2.5 credits a step and AI RCA 12 credits, on every plan.</p>
+  </div>
+
+  <div class="block">
+    <h3>Numbers to put in front of buyers</h3>
+    <div class="stats">
+      <div class="card stat"><span class="v">60%</span><span class="l">faster test creation at FyscalTech, a Singapore fintech (KaneAI only; their hours and throughput figures are platform-wide)</span></div>
+      <div class="card stat"><span class="v">5</span><span class="l">code export frameworks: Selenium, Playwright, Cypress, WebdriverIO, Appium</span></div>
+      <div class="card stat"><span class="v">10</span><span class="l">files at once as input, from text and PDFs to audio and video</span></div>
+      <div class="card stat"><span class="v">3,000+ · 10,000+</span><span class="l">browser combinations and real devices to run on</span></div>
+      <div class="card stat"><span class="v">Leader</span><span class="l">in the 2026 Gartner Magic Quadrant for Agentic Software Quality Assurance Platforms (company-level)</span></div>
+      <div class="card stat"><span class="v">$17</span><span class="l">per agent per month to start, billed annually</span></div>
+    </div>
+    <p class="note">Public quote: Todd Lemmonds, VP Quality Assurance at Lereta, in the KaneAI brochure. Case studies in GTM Buddy: FyscalTech (deck), plus anonymised EdTech, FinTech and Healthcare stories. Check each one names KaneAI results before you use it.</p>
+  </div>
+
+  <div class="block">
+    <h3>ROI: build the business case with their own numbers</h3>
+    <div class="tw"><table>
+      <thead><tr><th>What to measure</th><th>Ask the customer</th></tr></thead>
+      <tbody>
+        <tr><td><b>Tests to automate × hours to script each by hand</b></td><td>"How long does it take an engineer to automate one regression test today?"</td></tr>
+        <tr><td><b>Hours a week fixing broken and flaky tests</b></td><td>"How much of the week goes into keeping the suite green?"</td></tr>
+        <tr><td><b>Manual regression hours per release</b></td><td>"How many tester hours does a full regression take by hand?"</td></tr>
+        <tr><td><b>Current tool contracts</b></td><td>"What do you pay for your automation tool and grid today?"</td></tr>
+        <tr><td><b>Escaped defects from untested paths</b></td><td>"What did the last bug that reached production cost you?"</td></tr>
+      </tbody>
+    </table></div>
+    <p class="formula" data-aud="new"><b>Savings</b> = scripting hours saved + maintenance hours removed + manual regression hours freed + tools retired, set against agents on the right plan and the POC effort.</p>
+    <p class="formula" data-aud="ex" hidden><b>Savings</b> = scripting and repair hours saved on the suite they already run with us, set against adding agents to the TestMu contract they already pay for.</p>
+    <p class="coach"><b>Coach's note</b>Reuse the numbers the BDR captured and the answers to discovery questions 5, 13 and 14. The builder below sizes agents from real authoring demand, so you do not under-sell capacity and then lose the POC to a queue.</p>
+  </div>
+
+  <div class="block" data-aud="ex" hidden>
+    <h3>Pick the commercial path with the AM</h3>
+    <div class="tw"><table>
+      <thead><tr><th>Path</th><th>When it fits</th><th>What to propose</th></tr></thead>
+      <tbody>
+        <tr><td><b>Add mid-term</b></td><td>A competing tool renews before the TestMu contract</td><td>POC now, then an amendment that adds agents before that date</td></tr>
+        <tr><td><b>Co-term at renewal</b></td><td>Their TestMu renewal is within two quarters</td><td>POC now, agents priced into the renewal</td></tr>
+        <tr><td><b>Upgrade the plan</b></td><td>They own Starter and want cloud or mobile authoring</td><td>Move the agents they use to Pro or Max</td></tr>
+      </tbody>
+    </table></div>
+    <p class="coach"><b>Coach's note</b>The AM owns the account, pricing and forecast. Your job is the technical win and the business case.</p>
+  </div>
+
+  <div class="close">
+    <span class="kicker">The one-line pitch</span>
+    <q data-aud="new">"Your testers already know what to test. KaneAI lets them automate it in plain English, and keeps it working when the UI changes."</q>
+    <p data-aud="new">More coverage from the same team, and the code is yours whenever you want it.</p>
+    <q data-aud="ex" hidden>"Your tests already run on TestMu. Now anyone on your team can write them."</q>
+    <p data-aud="ex" hidden>Same login and vendor, and the automation queue stops depending on a few people.</p>
+    <div class="pathchips"><span>Ten real tests</span><span>Authored by your testers</span><span>Export the code any time</span></div>
+  </div>
+  <p class="coach"><b>Coach's note</b>Close on the low-risk path: ten real tests authored by two of their testers in a week, one UI change to show healing, and the code exported at the end. Suggest a POC scoped to their next release.</p>
+
+  <div class="block">
+    <h3>Write the proposal</h3>
+    <p class="sub">Fill in what you learned on the call. You get a starting plan, an agent count, the cost and savings picture, risks to raise with the SE, and a recap email.</p>
+    <div class="builder">
+      <div class="card form">
+        <div class="field"><label for="bCo">Company</label><input type="text" id="bCo" value="Acme Retail"></div>
+        <div class="field"><label for="bName">Contact first name</label><input type="text" id="bName" value="Priya"></div>
+        <div class="grid2">
+          <div class="field"><label for="bTests">Tests to automate per month</label><input type="number" id="bTests" min="1" step="1" value="120"><span class="hint">New tests plus the manual backlog</span></div>
+          <div class="field"><label for="bAuthors">People who will author</label><input type="number" id="bAuthors" min="1" step="1" value="4"><span class="hint">Testers and engineers</span></div>
+        </div>
+        <div class="grid2">
+          <div class="field"><label for="bHrs">Hours to script one test by hand</label><input type="number" id="bHrs" min="0" step="0.5" value="3"><span class="hint">Their figure, from discovery</span></div>
+          <div class="field"><label for="bMin">Minutes to author one in KaneAI</label><input type="number" id="bMin" min="1" step="5" value="30"><span class="hint">An assumption. Measure it in the POC.</span></div>
+        </div>
+        <div class="grid2">
+          <div class="field"><label for="bMaint">Hours a week fixing broken tests</label><input type="number" id="bMaint" min="0" step="1" value="15"></div>
+          <div class="field"><label for="bRate">Loaded cost per hour (USD)</label><input type="number" id="bRate" min="1" step="1" value="45"><span class="hint">An example. Ask for their figure.</span></div>
+        </div>
+        <div class="field"><span class="lb">Apps in scope</span><div class="chips" data-group="apps">
+          <button type="button" class="chip" data-val="web" aria-pressed="true">Web only</button>
+          <button type="button" class="chip" data-val="mobile" aria-pressed="false">Web and mobile apps</button>
+          <button type="button" class="chip" data-val="local" aria-pressed="false">Developers, local only</button>
+        </div></div>
+        <div class="field"><span class="lb">Tool today</span><div class="chips" data-group="tool">
+          <button type="button" class="chip" data-val="Selenium or Playwright" aria-pressed="true">Selenium or Playwright</button>
+          <button type="button" class="chip" data-val="Katalon" aria-pressed="false">Katalon</button>
+          <button type="button" class="chip" data-val="Testim or mabl" aria-pressed="false">Testim or mabl</button>
+          <button type="button" class="chip" data-val="testRigor" aria-pressed="false">testRigor</button>
+          <button type="button" class="chip" data-val="Tosca" aria-pressed="false">Tosca</button>
+          <button type="button" class="chip" data-val="manual" aria-pressed="false">Manual only</button>
+        </div></div>
+        <div class="field"><span class="lb">Must-haves and risks</span><div class="chips" data-group="musts" data-multi="1">
+          <button type="button" class="chip" data-val="sso" aria-pressed="false">SSO or IP allowlist</button>
+          <button type="button" class="chip" data-val="private" aria-pressed="false">App or DB on a private network</button>
+          <button type="button" class="chip" data-val="captcha" aria-pressed="false">CAPTCHA on login</button>
+          <button type="button" class="chip" data-val="mfa" aria-pressed="false">MFA or Salesforce</button>
+          <button type="button" class="chip" data-val="desktop" aria-pressed="false">Desktop or mainframe apps</button>
+          <button type="button" class="chip" data-val="code" aria-pressed="false">Must own the code</button>
+        </div></div>
+        <div class="field"><span class="lb">Problems they confirmed</span><div class="chips" data-group="pains" data-multi="1">
+          <button type="button" class="chip" data-val="authors" aria-pressed="true">Few people can author</button>
+          <button type="button" class="chip" data-val="maint" aria-pressed="true">Maintenance eats the week</button>
+          <button type="button" class="chip" data-val="speed" aria-pressed="false">Code ships faster than QA</button>
+          <button type="button" class="chip" data-val="manual" aria-pressed="false">Know-how stays manual</button>
+          <button type="button" class="chip" data-val="ceiling" aria-pressed="false">Low-code hit a ceiling</button>
+          <button type="button" class="chip" data-val="lock" aria-pressed="false">Afraid of lock-in</button>
+        </div></div>
+        <div class="field"><label for="bDate">Deadline that drives it</label><input type="text" id="bDate" value="the Q1 release"><span class="hint">A renewal or a release</span></div>
+      </div>
+      <div class="out">
+        <div class="rec" id="rec"></div>
+        <div class="flags" id="flags"></div>
+        <div class="script"><header><span class="t">Recap email after the call</span><button class="btn" data-copy="recap">Copy</button></header><pre id="recap"></pre></div>
+      </div>
+    </div>
+    <p class="note">Public list prices, November 2026, recheck before quoting: Starter $17, Pro $89, Max $179 per agent per month billed annually. Capacity uses the pricing page's test-creation estimate per agent. Enterprise pricing is custom.</p>
+  </div>
+</section>
+
+<section class="view" id="v-se" hidden>
+  <div class="vhead">
+    <span class="kicker">Stage 3 · SE</span>
+    <h2>Show it on the story page, then prove it with their own testers.</h2>
+    <p>The demo uses the KaneAI presentation, with the live product for anything the buyer wants to see for real. The POC has their testers author ten real tests on their own app. The result should answer three questions: could non-coders author, how long did it take, and did the tests survive a UI change.</p>
+  </div>
+
+  <div class="gate">
+    <div><span class="kicker">Goal</span><p>A POC that meets the success criteria agreed in Stage 2.</p></div>
+    <div><span class="kicker">Before the POC</span><ul><li>A staging URL or app build our cloud can reach</li><li>Test logins, with CAPTCHA off or allowlisted</li><li>Tunnel, and database access checked if needed</li><li>Ten real manual test cases</li><li>Two testers with time in week 1</li></ul></div>
+    <div><span class="kicker">Hand back to the AE</span><ul><li>Readout: who authored, time per test, healing result</li><li>Agent count and plan</li></ul></div>
+  </div>
+
+  <div class="block">
+    <h3>Demo path</h3>
+    <p class="sub" data-aud="new">For a new logo, open the presentation in its New to KaneAI view. Lead with the gap and Author a test, then the heal. Keep a live session ready on a public demo site.</p>
+    <p class="sub" data-aud="ex" hidden>For an existing customer, open the Already a customer view. Lead with The bigger picture, then author one of their own manual cases live from Test Manager.</p>
+    <div class="links" id="demoLinks"></div>
+  </div>
+
+  <div class="block">
+    <h3>POC plan</h3>
+    <p class="sub" data-aud="ex" hidden>No new account: the POC runs under the TestMu account they already have. Ask the account team to allocate KaneAI agents and credits for it, and include the AM in the readout.</p>
+    <div class="steps">
+      <div class="st"><span class="when">Day 0</span><div><b>Scope and access</b><p>Pick ten real manual cases from the next release. Confirm the app, logins, Tunnel and any database connection actually work from our cloud. Agree the people and pass criteria in writing.</p></div></div>
+      <div class="st"><span class="when">Day 1</span><div><b>Enable</b><p>One-hour session with the two testers: author one test together, show assertions, variables and modules. Set healing to Adaptive Heal with auto-approve off.</p></div></div>
+      <div class="st"><span class="when">Week 1</span><div><b>Author</b><p>Testers author the ten cases themselves. Record minutes per test against how long scripting takes today, and how many needed SE help.</p></div></div>
+      <div class="st"><span class="when">Week 2</span><div><b>Change, run, export</b><p>Run the suite after a real UI change, or a staged one. Review heals in Version History. Run in parallel on HyperExecute and export one test to their framework.</p></div></div>
+      <div class="st"><span class="when">Readout</span><div><b>Hand back to the AE</b><p>Who authored, time per test, heal results, failures and their root cause, open gaps with status, and the agent count for their monthly demand.</p></div></div>
+    </div>
+    <p class="coach"><b>Coach's note</b>Most POCs that fail, fail on access, not on authoring: a private database, a CAPTCHA, or a login that needs a human. Check all three on day 0. Log feature requests with honest status and do not commit to roadmap dates.</p>
+  </div>
+
+  <div class="block">
+    <h3>POC success criteria</h3>
+    <div class="script"><header><span class="t">Agree this before day 1</span><button class="btn" data-copy="crit">Copy</button></header>
+<pre id="crit">App and environment:
+Ten test cases in scope:
+Authors (names and roles):
+Pass when:
+  - At least   of 10 tests authored by testers without writing code
+  - Average time to author a test is under    minutes (today:    hours to script)
+  - Tests still pass, or heal with an approved version, after the agreed UI change
+  - Suite runs in parallel on HyperExecute in under    minutes
+  - One test exported to                      and runs in their CI
+  - Failures come with a root cause the team accepts
+Out of scope:
+Decision owner:                     Decision date:</pre></div>
+  </div>
+</section>
+
+<section class="view" id="v-objections" hidden>
+  <div class="vhead">
+    <span class="kicker">Any stage</span>
+    <h2>Objections and how to answer them.</h2>
+    <p>Ask a question back first. Some of these mean the deal is not a fit, and the answer says so.</p>
+  </div>
+  <input class="search" id="oSearch" type="search" placeholder="Search, for example: flaky, mobile, price, code" aria-label="Search objections">
+  <div class="objs" id="objs"></div>
+  <p class="note" id="oEmpty" hidden>No objection matches that search. Check the docs.</p>
+</section>
+
 </div></main>
-</body>
-</html>
+
+<script>
+(function(){
+var STORY='../../stories/kaneai/';
+var aud='new';
+function $(s){return document.querySelector(s)}
+function $$(s){return Array.prototype.slice.call(document.querySelectorAll(s))}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function ph(s){return esc(s).replace(/\{([^}]+)\}/g,'<span class="ph">{$1}</span>')}
+
+var OUT={
+ new:[
+  {t:'Cold call opener',m:'30 seconds',b:"Hi {name}, it's {you} from TestMu AI. I'll be quick. I saw {signal}. Most QA teams we talk to have more tests to automate than people who can automate them. KaneAI lets your testers write automated tests in plain English, and the tests repair themselves when the UI changes. Roughly how many tests do you still run by hand each release?"},
+  {t:'LinkedIn connection note',m:'Under 300 characters',b:"Hi {name}, saw your team works with {tool, e.g. Selenium, Katalon, mabl}. I'm at TestMu AI, where manual testers automate end-to-end tests in plain English and the tests heal when the UI changes. Would be good to connect."},
+  {t:'Cold email',m:'Day 1',b:"Subject: the automation queue at {company}\n\nHi {name},\n\nSaw {signal}. In most QA teams a few engineers write all the automation, everyone else waits, and a good part of the week goes into fixing scripts the last UI change broke.\n\nKaneAI lets any tester write an end-to-end test the way they write a test case, in plain English. It finds the elements, proposes the checks, heals when the UI moves, and exports Selenium, Playwright, Cypress or Appium code whenever you want it.\n\nWe could prove it on ten of your own tests in a week. Worth 20 minutes?\n\n{you}"},
+  {t:'Follow-up email',m:'Day 4',b:"Subject: re: the automation queue at {company}\n\nQuick one, {name}: how much of the week goes into fixing tests that broke after a UI change?\n\nIf the answer is \"too much\", I can show you a test healing itself on a site like yours in five minutes.\n\n{you}"},
+  {t:'Last email',m:'Day 10',b:"Subject: closing the loop\n\nHi {name}, I'll stop here. If test automation capacity comes up before {renewal or event}, reply with one word and I'll set up 20 minutes with our team.\n\n{you}"},
+  {t:'Voicemail',m:'20 seconds',b:"Hi {name}, {you} from TestMu AI. I'm calling about test automation at {company}. KaneAI lets your testers write automated tests in plain English, and the tests repair themselves when the UI changes. I'll send a short email. My number is {phone}."}
+ ],
+ ex:[
+  {t:'Ask the account champion',m:'Message to your existing contact',b:"Hi {name}, your tests already run on TestMu. Who writes them today, and how many people wait on that team? KaneAI lets testers author the same kind of test in plain English, and I'd like to show your QA lead how ten of your manual cases would look."},
+  {t:'Cold call opener',m:'30 seconds',b:"Hi {name}, it's {you} from TestMu AI. Your team already runs tests with {TestMu product}. KaneAI lets your manual testers author automated tests in plain English, and they run on the same grid. How much of your regression is still run by hand?"},
+  {t:'LinkedIn connection note',m:'Under 300 characters',b:"Hi {name}, {company} already runs tests on TestMu. KaneAI now lets manual testers author those tests in plain English, with self-healing and code export. Would be good to connect."},
+  {t:'Cold email',m:'Day 1',b:"Subject: more authors for the tests you already run with us\n\nHi {name},\n\nYour team already runs tests with {TestMu product}. KaneAI adds the authoring: testers write end-to-end tests in plain English, the tests heal when the UI changes, and you can export the code at any time.\n\nTwo of your testers could try it on ten real cases in a week, under the account you already have.\n\nOpen to 20 minutes with {ae}?\n\n{you}"},
+  {t:'Follow-up email',m:'Day 4',b:"Subject: re: more authors for the tests you already run with us\n\nHi {name}, one question: how long is the list of tests waiting to be automated? If it is long, that's the first thing we'd look at.\n\n{you}"},
+  {t:'Voicemail',m:'20 seconds',b:"Hi {name}, {you} from TestMu AI. Your team already runs tests on TestMu, and your testers can now author them in plain English with KaneAI. I'll send a short note. My number is {phone}."}
+ ]};
+function renderOut(){
+  var box=$('#outreach');box.innerHTML='';
+  OUT[aud].forEach(function(o,i){
+    var id='out'+i,d=document.createElement('div');d.className='script';
+    d.innerHTML='<header><span><span class="t">'+esc(o.t)+'</span> <span class="m">'+esc(o.m)+'</span></span><button class="btn" data-copy="'+id+'">Copy</button></header><pre id="'+id+'">'+ph(o.b)+'</pre>';
+    box.appendChild(d);
+  });
+}
+
+var DISC=[
+ {n:'A',h:'Apps and landscape',qs:[
+  {q:'What do you test: web, mobile browsers, native iOS and Android apps, or desktop?',l:'Web and mobile, with the split',p:'Fit, and whether they need Max for mobile'},
+  {q:'Where does the app run for testing, and can it be reached from outside your network?',l:'Public staging, or a private app behind a VPN',p:'Tunnel. Check databases and CAPTCHA now.'},
+  {q:'How do users log in: SSO, MFA, TOTP, or a CAPTCHA?',l:'The login path',p:'TOTP and MFA patterns, CAPTCHA allowlisting'},
+  {q:'What automation tools and frameworks do you use today?',l:'Selenium, Playwright, Katalon, mabl, testRigor, Tosca',p:'The comparison card and the export framework'}
+ ]},
+ {n:'B',h:'Authoring and maintenance',qs:[
+  {q:'How many tests do you run by hand each release?',l:'A number, and whether it grows',p:'Business case: manual regression hours'},
+  {q:'How long does it take to automate one regression test today?',l:'Hours per test',p:'Business case: scripting hours'},
+  {q:'Who writes the automation, and how long is their backlog?',l:'A few engineers and a queue',p:'More authors'},
+  {q:'Can your manual testers write code? Would they like to automate?',l:'No, and yes',p:'The persona the POC is for'},
+  {q:'What do you write tests from: Jira, PRDs, designs, recordings?',l:'Tickets and documents',p:'Scenario generation from multi-modal inputs'}
+ ]},
+ {n:'C',h:'Release speed and process',qs:[
+  {q:'How often do you release, and has that sped up with coding agents?',l:'More releases, same QA team',p:'The coverage gap'},
+  {q:'Where do tests run, and how long does a full regression take?',l:'Local grids, long runs',p:'HyperExecute and real devices'},
+  {q:'How do you decide whether a failure is a real bug or a flaky test?',l:'Someone reruns and guesses',p:'AI RCA, flaky and anomaly detection'}
+ ]},
+ {n:'D',h:'Pain, cost and risk',qs:[
+  {q:'How many hours a week go into fixing broken or flaky tests?',l:'A number per engineer',p:'Business case: maintenance'},
+  {q:'What do you pay for your automation tools and grid today?',l:'Contracts and seats',p:'Business case and tools retired'},
+  {q:'What was the last bug that reached production through an untested path?',l:'A real incident',p:'Coverage, and the cost of a gap'},
+  {q:'What would make you stop trusting an AI-authored test?',l:'A test that passes when it should fail',p:'Approval on heals, versioning, review'}
+ ]},
+ {n:'E',h:'Priority and buying process',qs:[
+  {q:'Is test automation a priority this year, and what is driving it?',l:'An AI mandate, a backlog, a renewal',p:'The reason to act now'},
+  {q:'When does your current tool renew, or when is budget set?',l:'A date 90+ days out',p:'The POC deadline'},
+  {q:'Who else would be involved in choosing a tool, and who signs off budget?',l:'Names, roles, security or procurement steps',p:'Write it into the POC success criteria'},
+  {q:'What would success look like six months from now?',l:'More coverage, fewer repairs, testers automating',p:'Becomes the readout after the POC'}
+ ]}
+];
+(function(){
+  var h='<h3>Discovery: map how they author and maintain tests</h3><p class="sub">Twenty questions in five groups. Spend most of the call on B and D, and quantify in D before you propose anything.</p><div class="disc">',k=0;
+  DISC.forEach(function(s){
+    h+='<div class="phase"><span class="n">'+s.n+'</span><h4>'+esc(s.h)+'</h4></div>';
+    s.qs.forEach(function(x){k++;h+='<div class="q"><div class="qt"><span class="qn">'+k+'</span>'+esc(x.q)+'</div><div class="meta"><div><span class="k">Listen for</span>'+esc(x.l)+'</div><div><span class="k">Points to</span>'+esc(x.p)+'</div></div></div>'});
+  });
+  h+='</div><p class="coach"><b>Coach’s note</b>Questions 1 to 3 decide whether the POC can even start: desktop apps, a database nobody can reach, or a CAPTCHA will stop it. Write down every number from 5, 6 and 13, because the business case reuses them.</p>';
+  $('#disc').innerHTML=h;
+})();
+
+var PAIN={
+ authors:'Your testers write automated tests in plain English, the way they write a test case today.',
+ maint:'Tests heal when the UI changes, and every repair is versioned for your team to approve.',
+ speed:'Scenarios are drafted from your Jira tickets and documents, so tests keep pace with what ships.',
+ manual:'Manual test cases can be automated from their own screen, keeping your testers’ know-how.',
+ ceiling:'Web, mobile and API steps in one test, running on 3,000+ browser combinations and 10,000+ real devices.',
+ lock:'You can export any test to Selenium, Playwright, Cypress, WebdriverIO or Appium at any time.'
+};
+var HEARD={authors:'Only a few people can write automation.',maint:'Fixing broken tests takes a big part of the week.',speed:'Development is moving faster than testing.',manual:'A lot of regression is still manual.',ceiling:'Your current tool is hard to scale.',lock:'You do not want tests locked into one tool.'};
+var PLAN={local:['Starter',17,25],web:['Pro',89,150],mobile:['Max',179,313]};
+function sel(g){return $$('[data-group="'+g+'"] .chip[aria-pressed="true"]').map(function(b){return b.dataset.val})}
+function fmt(n){return Number(Math.round(n)).toLocaleString('en-US')}
+function num(id,min,def){var v=parseFloat($(id).value);return isNaN(v)?def:Math.max(min,v)}
+function build(){
+  var tests=num('#bTests',1,1),authors=num('#bAuthors',1,1),hrs=num('#bHrs',0,0),mins=num('#bMin',1,1),maint=num('#bMaint',0,0),rate=num('#bRate',1,1);
+  var app=sel('apps')[0]||'web',tool=sel('tool')[0]||'Selenium or Playwright',musts=sel('musts'),pains=sel('pains');
+  var co=$('#bCo').value.trim()||'{company}',nm=$('#bName').value.trim()||'{name}',dl=$('#bDate').value.trim()||'{deadline}';
+  var ent=musts.indexOf('sso')>-1,p=PLAN[app];
+  var byCap=Math.max(1,Math.ceil(tests/p[2])),agents=byCap;
+  var cost=agents*p[1]*12;
+  var saveA=tests*12*Math.max(0,hrs-mins/60)*rate;
+  var rec='<span class="kicker">Starting plan</span><div class="plan">'+(ent?'Enterprise':p[0])+'</div><ul>';
+  rec+='<li>'+fmt(agents)+' agent'+(agents>1?'s':'')+': '+fmt(tests)+' tests a month needs at least '+fmt(byCap)+' at about '+p[2]+' test creations per agent, and '+fmt(authors)+' people want to author.</li>';
+  rec+=ent?'<li>SSO or IP allowlisting needs Enterprise, which has custom pricing.</li>':'<li>List: $'+fmt(cost)+' a year at $'+p[1]+' per agent per month, billed annually.</li>';
+  rec+='<li>Scripting time saved: about $'+fmt(saveA)+' a year, if each test takes '+fmt(mins)+' minutes instead of '+hrs+' hours. Prove the minutes in the POC.</li>';
+  rec+='<li>Maintenance today: '+fmt(maint)+' hours a week, about $'+fmt(maint*52*rate)+' a year. Measure how much healing removes; do not quote a percentage.</li>';
+  rec+=aud==='ex'?'<li>Existing customer: the account team adds agents to the current TestMu contract.</li>':'<li>Run the POC on ten real tests before any commitment.</li>';
+  $('#rec').innerHTML=rec+'</ul>';
+  var f=[];
+  if(musts.indexOf('desktop')>-1)f.push(['b','KaneAI does not test desktop, mainframe or green-screen apps. If those are the main scope, this is not a fit. Say so now.']);
+  if(musts.indexOf('private')>-1)f.push(['w','Private app: plan for TestMu Tunnel. Test any database connection on day 0. POCs have stalled when a private database could not be reached.']);
+  if(musts.indexOf('captcha')>-1)f.push(['w','KaneAI cannot solve CAPTCHAs. Get our IP ranges allowlisted, or a test key on staging, before the POC starts.']);
+  if(musts.indexOf('mfa')>-1)f.push(['','MFA and TOTP are supported patterns. Salesforce login with MFA is a strong demo; set up the test user first.']);
+  if(musts.indexOf('code')>-1)f.push(['','Export: Selenium (Python), Playwright (JS, Python), Cypress (JS), WebdriverIO (JS), Appium (Python, Java, JS). Confirm their language is on the list.']);
+  if(app==='mobile')f.push(['w','Native mobile authoring is on Max. Adaptive Heal and Dynamic Test apply to New Experience tests on Chrome, so show what healing covers on mobile before promising it.']);
+  if(app==='local')f.push(['','Local-only developers may fit Starter with Kane CLI. If developers are the buyer, use the Kane CLI play.']);
+  if(tool==='Katalon')f.push(['','Katalon projects import as editable KaneAI tests (zip up to 500 MB, desktop web only). Mobile tests and history do not move.']);
+  if(tool==='Tosca')f.push(['w','Tosca users often test SAP GUI or desktop. KaneAI covers only the web and mobile part. Qualify the scope.']);
+  if(tool==='testRigor')f.push(['','testRigor: lead with agent mode, conversational refinement, multilingual authoring and our own device cloud.']);
+  if(tool==='manual')f.push(['','No automation today: the POC must include Test Manager so the manual cases have a home, and a tester-led demo.']);
+  if(pains.indexOf('maint')>-1)f.push(['','Keep auto-approve off in the POC. Re-authoring can turn a real defect into a pass, and reviewers need to see the diff.']);
+  if(authors>agents)f.push(['w',fmt(authors)+' people want to author but '+fmt(agents)+' agents allow '+fmt(agents)+' at once. Check whether they author at the same time.']);
+  if(!pains.length)f.push(['b','No confirmed problem yet. Go back to discovery before proposing.']);
+  $('#flags').innerHTML=f.map(function(x){return '<div class="flag '+x[0]+'">'+esc(x[1])+'</div>'}).join('');
+  var t='Subject: test automation at '+co+': next steps\n\nHi '+nm+',\n\nThanks for the time today. What I heard:\n';
+  t+=pains.length?pains.map(function(p){return '- '+HEARD[p]}).join('\n'):'- {what you heard}';
+  t+='\n\nHow KaneAI helps:\n'+(pains.length?pains.map(function(p){return '- '+PAIN[p]}).join('\n'):'- {value}')+'\n';
+  t+='\n'+(aud==='ex'?'This runs under the TestMu account your team already uses, on the same grid.':'Your current '+(tool==='manual'?'process':tool)+' tests keep running while you evaluate, and anything authored in KaneAI can be exported as code.')+'\n';
+  t+='\nProposed next step: a POC where two of your testers author ten real tests from your next release, followed by one UI change to see how the tests hold up, finished before '+dl+'.\n\nCould you confirm the ten tests, a staging URL and test logins, and who will join the setup call?\n\nThanks,\n{you}';
+  $('#recap').innerHTML=ph(t);
+}
+$$('.chips').forEach(function(g){
+  var multi=g.dataset.multi==='1';
+  g.addEventListener('click',function(e){
+    var b=e.target.closest('.chip');if(!b)return;
+    if(multi){b.setAttribute('aria-pressed',String(b.getAttribute('aria-pressed')!=='true'))}
+    else{$$('[data-group="'+g.dataset.group+'"] .chip').forEach(function(x){x.setAttribute('aria-pressed',String(x===b))})}
+    build();
+  });
+});
+['#bCo','#bName','#bTests','#bAuthors','#bHrs','#bMin','#bMaint','#bRate','#bDate'].forEach(function(s){$(s).addEventListener('input',build)});
+
+var DEMO={new:[['problem','The gap'],['who','Who feels it'],['author','Author a test'],['control','You stay in control'],['layers','Every layer'],['heal','Heal a UI change'],['inputs','Start from anything'],['collab','Jira and GitHub'],['everywhere','Run everywhere'],['code','No lock-in'],['proof','Proof'],['poc','Your POC']],
+ ex:[['platform','The bigger picture'],['author','Author a test'],['layers','Every layer'],['heal','Heal a UI change'],['collab','Jira and GitHub'],['poc','Your POC']]};
+function renderDemo(){$('#demoLinks').innerHTML=DEMO[aud].map(function(d,i){return '<a href="'+STORY+'#'+d[0]+'" target="_blank" rel="noopener">'+(i+1)+'. '+esc(d[1])+'</a>'}).join('')+'<a href="'+STORY+'#'+(aud==='ex'?'existing':'new')+'" target="_blank" rel="noopener">Open full presentation</a>'}
+
+var OBJ=[
+ {au:'ex',s:'We already have KaneAI and nobody uses it.',a:'What stopped people using it?',r:'Treat it as adoption with the AM and SE, not a new sale. Run a two-tester enablement on ten real cases, and check whether they are on classic or New Experience authoring before anything else.',sh:'Author a test'},
+ {au:'ex',s:'Our automation team is happy with their framework.',a:'How many tests are waiting for them to write?',r:'They keep the framework. KaneAI adds authors, and the code exports to the frameworks they already use. Position the automation team as reviewers.',sh:'No lock-in'},
+ {s:'AI tests are flaky.',a:'What broke in the tool you tried?',r:'Flakiness usually comes from locators and waits. KaneAI finds elements by intent and context, waits for elements by default, and heals broken locators. Prove it on ten of their tests and one UI change, and show the flaky test and anomaly detection in reports.',sh:'Heal a UI change'},
+ {s:'Self-healing will hide real bugs.',a:'How would you want to review a repair?',r:'A real risk, and we say so. Auto-approve is off by default: Adaptive Heal saves a new version that waits for approval in Version History. Auto-Heal only recovers a locator and does not change the test.',sh:'Heal a UI change'},
+ {s:'We will be locked into your tool.',a:'Which framework would you want the code in?',r:'Export any test to Selenium (Python), Playwright (JS, Python), Cypress (JS), WebdriverIO (JS) or Appium (Python, Java, JS), and run it in your own CI.',sh:'No lock-in'},
+ {s:'Our developers already use Copilot or Cursor to write tests.',a:'Who checks the full user journey before a release?',r:'A coding agent writes and checks the change in the moment. KaneAI keeps a versioned suite that runs every release, detects flaky tests and explains failures. For developers in the terminal, Kane CLI is in every plan.',sh:'Everywhere it runs'},
+ {s:'Can it test our desktop or mainframe app?',a:'What share of your testing is desktop versus web and mobile?',r:'No. KaneAI covers web, mobile browsers and native iOS and Android apps, plus API and database steps. If desktop is the main scope, this is not the right fit.',sh:''},
+ {s:'Our app is behind a VPN, and the database too.',a:'Can the test environment be reached through a tunnel?',r:'TestMu Tunnel reaches private web apps. Test database connections on day 0, before anything else; private databases have stopped POCs.',sh:''},
+ {s:'Our login has a CAPTCHA.',a:'Can staging use a test key or allowlist IPs?',r:'KaneAI does not solve CAPTCHAs. Allowlist our public IP ranges (recommended), use a test key or turn the challenge off on staging, or allow a custom header on test environments only.',sh:''},
+ {s:'How does it handle MFA?',a:'Is it TOTP, SMS or push?',r:'TOTP and MFA are documented patterns, with secrets stored securely. A Salesforce login with MFA is a good live demo. SMS or push may need a test-user exemption.',sh:'Author a test'},
+ {s:'It is more expensive than testRigor, or than our recorder.',a:'How many tests a month would each person author?',r:'Compare capacity, not headline price. Plans list test-creation estimates per agent (about 25, 150 and 313 a month), and Pro and Max include HyperExecute minutes, a Test Manager seat and Kane CLI. Check commercial terms with your team before offering anything.',sh:'Write the proposal'},
+ {s:'Will credits run out?',a:'How many tests and runs a month do you expect?',r:'Credits per agent: 2,000 (Starter), 12,000 (Pro), 25,000 (Max), unlimited on Enterprise. Healing costs 1.5 to 2.5 credits a step and AI RCA 12. Admins can set soft and hard limits. Size it from the POC.',sh:''},
+ {s:'We need Salesforce testing.',a:'Which clouds, and how often do you release?',r:'Salesforce flows with MFA, dynamic Lightning elements and three releases a year are a strong fit. Use the Salesforce testing play alongside this one.',sh:''},
+ {s:'Is our data used to train models?',a:'What does your AI policy require?',r:'Bring the security and AI documents through the usual process. TestMu holds SOC 2 Type II and ISO 27001. Ask security for the current AI data handling statement rather than answering from memory.',sh:''},
+ {s:'Is there a customer like us?',a:'What would you most want to hear from them?',r:'Share the FyscalTech story (60% faster test creation) and the anonymised industry case studies in GTM Buddy, check each names KaneAI results, and ask the AE about a reference call. The POC on their own app is the real proof.',sh:'Proof'},
+ {s:'We need it to test our AI chatbot.',a:'Is it a chat, voice or phone agent?',r:'That is Agent Testing, a different product. Bring in the Agent Testing play.',sh:''}
+];
+(function(){
+  $('#objs').innerHTML=OBJ.map(function(o){
+    return '<details class="o"'+(o.au?' data-aud="'+o.au+'"':'')+' data-q="'+esc((o.s+' '+o.a+' '+o.r).toLowerCase())+'"><summary><span class="s">“'+esc(o.s)+'”</span>'+(o.sh?'<span class="pill p-info">'+esc(o.sh)+'</span>':'')+'</summary><div class="body">'+
+      (o.a?'<div><span class="k">Ask back</span>'+esc(o.a)+'</div>':'')+
+      '<div><span class="k">Answer</span><p>'+esc(o.r)+'</p></div>'+
+      (o.sh?'<div><span class="k">Show</span>'+esc(o.sh)+'</div>':'')+'</div></details>';
+  }).join('');
+  $('#oSearch').addEventListener('input',function(){
+    var q=this.value.toLowerCase().trim(),n=0;
+    $$('details.o').forEach(function(d){var m=(!q||d.dataset.q.indexOf(q)>-1)&&(!d.dataset.aud||d.dataset.aud===aud);d.hidden=!m;if(m)n++;if(q&&m)d.open=true});
+    $('#oEmpty').hidden=n>0;
+  });
+})();
+
+document.addEventListener('click',function(e){
+  var b=e.target.closest('[data-copy]');if(!b)return;
+  var el=document.getElementById(b.dataset.copy),txt=el.innerText;
+  function ok(){b.textContent='Copied';b.classList.add('done');setTimeout(function(){b.textContent='Copy';b.classList.remove('done')},1500)}
+  function fallback(){var r=document.createRange();r.selectNodeContents(el);var s=window.getSelection();s.removeAllRanges();s.addRange(r);b.textContent='Selected, press Ctrl+C'}
+  try{navigator.clipboard.writeText(txt).then(ok,fallback)}catch(err){fallback()}
+});
+
+function setAud(a){
+  aud=a;
+  $('#audNew').setAttribute('aria-pressed',String(a==='new'));$('#audEx').setAttribute('aria-pressed',String(a==='ex'));
+  $$('[data-aud]').forEach(function(x){x.hidden=x.dataset.aud!==a});
+  renderOut();renderDemo();build();
+  try{localStorage.setItem('kaplay-aud',a)}catch(e){}
+}
+$('#audNew').onclick=function(){setAud('new')};$('#audEx').onclick=function(){setAud('ex')};
+
+var VIEWS=['overview','bdr','ae','se','objections'];
+function show(v,push){
+  if(VIEWS.indexOf(v)<0)v='overview';
+  VIEWS.forEach(function(x){$('#v-'+x).hidden=x!==v});
+  $$('.tab').forEach(function(t){t.setAttribute('aria-selected',String(t.dataset.v===v))});
+  if(push){try{history.replaceState(null,'','#'+v)}catch(e){}window.scrollTo(0,0)}
+}
+$$('.tab').forEach(function(t){t.addEventListener('click',function(){show(t.dataset.v,true)})});
+window.addEventListener('hashchange',function(){show((location.hash||'').slice(1))});
+
+var a0='new';try{a0=localStorage.getItem('kaplay-aud')||'new'}catch(e){}
+setAud(a0==='ex'?'ex':'new');
+show((location.hash||'').slice(1));
+})();
+</script>
+</body></html>

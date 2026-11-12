@@ -1,34 +1,940 @@
 <!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="robots" content="noindex,nofollow">
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Kane CLI Sales Play</title>
+<meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600&family=Source+Sans+3:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400&display=swap">
-<link rel="stylesheet" href="../../assets/kit.css">
-</head>
-<body>
+<style>
+/* Layout: a field guide. Navy cover band, sticky stage tabs, one reading column (max 960px) of ruled sections. One brand navy, one steel-blue accent, muted status colours only for signal strength. */
+:root{
+  --bg:#F5F6F8; --card:#FFFFFF; --surface:#EFF2F6; --line:#DFE4EB;
+  --text:#18202E; --text-sec:#475264; --text-dim:#737E90;
+  --navy:#1B3355; --on-navy:#FFFFFF; --on-navy-2:#C9D4E5;
+  --accent:#2B5C8F; --tint:#E8EFF7;
+  --load:var(--accent); --plan:var(--accent); --exec:var(--accent); --pink:var(--accent);
+  --tint-load:var(--tint); --tint-plan:var(--tint); --tint-exec:var(--tint); --tint-pink:var(--tint);
+  --good:#2D7A4E; --warn:#99640F; --bad:#AE3A3A;
+  --tint-good:#E7F2EB; --tint-warn:#FAF1E0; --tint-bad:#F7E8E8;
+  --code-bg:#F1F4F8; --code-fg:#1F2A3C;
+  --display:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --sans:"Source Sans 3","Segoe UI",system-ui,-apple-system,sans-serif;
+  color-scheme:light;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--card)}
+a{color:var(--accent)}
+h1,h2,h3,h4{margin:0;text-wrap:balance;color:var(--text)}
+p{margin:0}
+.wrap{max-width:960px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.mono{font-family:var(--mono);font-size:.9em}
+.kicker{font:600 12px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim)}
+
+/* cover */
+.hero{background:var(--navy);color:var(--on-navy)}
+.hero .wrap{padding-block:30px 26px;display:grid;gap:12px}
+.brandrow{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between}
+.brand{font:600 12px var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--on-navy-2)}
+.hero h1{font:600 clamp(27px,4vw,36px)/1.15 var(--display);color:var(--on-navy);max-width:26ch}
+.hero p{color:var(--on-navy-2);max-width:70ch;font-size:16.5px}
+.hero a{color:#FFFFFF;text-underline-offset:3px}
+.aud{display:inline-flex;border:1px solid rgba(255,255,255,.28);border-radius:6px;overflow:hidden}
+.aud button{font:600 14px var(--sans);color:var(--on-navy-2);background:none;border:0;padding:7px 14px;cursor:pointer}
+.aud button+button{border-left:1px solid rgba(255,255,255,.28)}
+.aud button[aria-pressed="true"]{background:#FFFFFF;color:#1B3355}
+.aud button:focus-visible,.tab:focus-visible,.btn:focus-visible,.chip:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* stage tabs */
+.stagebar{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--card);border-bottom:1px solid var(--line)}
+.tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:0 0 auto;display:flex;flex-direction:column;align-items:flex-start;gap:0;background:none;border:0;border-bottom:3px solid transparent;padding:12px 16px 9px;cursor:pointer;color:var(--text-sec);font-family:var(--sans);text-align:left}
+.tab .who{font:600 11.5px var(--sans);letter-spacing:.07em;text-transform:uppercase;color:var(--text-dim)}
+.tab .nm{font-weight:600;font-size:15.5px}
+.tab:hover .nm{color:var(--text)}
+.tab[aria-selected="true"]{border-bottom-color:var(--accent);color:var(--text)}
+.tab[aria-selected="true"] .who{color:var(--accent)}
+
+/* page */
+main .wrap{padding-block:32px 72px;display:grid;gap:36px}
+section.view{display:grid;gap:36px}
+.vhead{display:grid;gap:10px;padding-bottom:22px;border-bottom:1px solid var(--line)}
+.vhead .kicker{color:var(--accent)!important}
+.vhead h2{font:600 clamp(23px,3vw,29px)/1.25 var(--display)}
+.vhead p{color:var(--text-sec);max-width:70ch;font-size:16.5px}
+.block{display:grid;gap:14px}
+.block>h3{font:600 20px/1.3 var(--display)}
+.block>.sub{color:var(--text-sec);max-width:72ch;margin-top:-6px}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:18px 20px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:14px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:14px}
+.grid2>*,.grid3>*{min-width:0}
+.grid2.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media (max-width:640px){.grid2.two{grid-template-columns:1fr}}
+.scripts{display:grid;gap:12px}
+.script{align-content:start}
+.tw td:first-child{min-width:150px}
+.tw td.mono:first-child{min-width:0;width:44px}
+
+/* stage gate */
+.gate{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));border:1px solid var(--line);border-radius:6px;background:var(--card);overflow:hidden}
+.gate>div{padding:16px 20px;display:grid;gap:6px;align-content:start;border-right:1px solid var(--line)}
+.gate>div:last-child{border-right:0}
+.gate .kicker{color:var(--accent)}
+.gate ul{margin:0;padding-left:18px;display:grid;gap:4px}
+.gate li,.gate p{color:var(--text-sec);font-size:15px}
+
+/* overview stages */
+.flow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:760px){.flow{grid-template-columns:1fr}}
+.stage{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:20px;display:grid;gap:10px;align-content:start}
+.stage .num{font:600 12px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.stage h3{font:600 19px/1.3 var(--display)}
+.stage ol{margin:0;padding-left:20px;color:var(--text-sec);display:grid;gap:4px;font-size:15px}
+.stage .exit{font-size:14.5px;background:var(--surface);border-radius:4px;padding:10px 12px;color:var(--text)}
+.target{font-size:15.5px;color:var(--text-sec)}
+.audnote{background:var(--tint);color:var(--text)!important;border-radius:4px;padding:10px 14px;font-size:15px}
+.target b{color:var(--text)}
+
+/* tables */
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:var(--card)}
+table{border-collapse:collapse;width:100%;min-width:640px;font-size:15px}
+th,td{text-align:left;vertical-align:top;padding:12px 16px;border-bottom:1px solid var(--line)}
+th{font:600 12px var(--sans);letter-spacing:.07em;text-transform:uppercase;color:var(--text-dim);background:var(--surface)}
+tr:last-child td{border-bottom:0}
+td b{font-weight:600}
+td .dim{color:var(--text-sec);font-size:14px}
+
+.pill{display:inline-block;font:600 11.5px var(--sans);letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:4px;white-space:nowrap}
+.p-strong{background:var(--tint-good);color:var(--good)}
+.p-med{background:var(--tint-warn);color:var(--warn)}
+.p-no{background:var(--tint-bad);color:var(--bad)}
+.p-info{background:var(--tint);color:var(--accent)}
+
+/* signals as a ruled list */
+.sig{display:grid;border:1px solid var(--line);border-radius:6px;background:var(--card);overflow:hidden}
+.sig .row{display:grid;grid-template-columns:90px 1fr;gap:2px 16px;align-items:start;padding:13px 18px;border-bottom:1px solid var(--line)}
+.sig .row:last-child{border-bottom:0}
+.sig .row .pill{margin-top:3px;justify-self:start}
+.sig .row b{font-weight:600}
+.sig .row span.d{grid-column:2;color:var(--text-sec);font-size:15px}
+@media (max-width:520px){.sig .row{grid-template-columns:1fr}.sig .row span.d{grid-column:1}}
+
+/* scripts */
+.script{background:var(--card);border:1px solid var(--line);border-radius:6px;overflow:hidden;display:grid}
+.script header{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--line)}
+.script header .t{font-weight:600;font-size:15px}
+.script header .m{font-size:13.5px;color:var(--text-dim);margin-left:6px}
+.script pre{margin:0;padding:16px 18px;white-space:pre-wrap;word-wrap:break-word;font:15px/1.65 var(--sans);color:var(--text)}
+.script pre .ph{background:var(--tint);color:var(--accent);border-radius:3px;padding:0 4px;font-weight:600}
+.btn{font:600 13.5px var(--sans);border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:4px;padding:5px 12px;cursor:pointer}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn.done{border-color:var(--good);color:var(--good)}
+code.bool{display:block;background:var(--code-bg);color:var(--code-fg);font:13.5px/1.6 var(--mono);padding:14px 18px;white-space:pre-wrap;word-break:break-word}
+
+/* discovery */
+.disc{display:grid;gap:0;border:1px solid var(--line);border-radius:6px;background:var(--card);overflow:hidden}
+.phase{display:flex;gap:10px;align-items:baseline;padding:12px 18px;background:var(--surface);border-bottom:1px solid var(--line)}
+.phase .n{font:700 13px var(--sans);color:var(--accent)}
+.phase h4{font:600 13px var(--sans);letter-spacing:.07em;text-transform:uppercase;color:var(--text-sec)}
+.q{padding:14px 18px;display:grid;gap:8px;border-bottom:1px solid var(--line)}
+.disc .q:last-child{border-bottom:0}
+.q .qt{font-weight:600;font-size:16px;display:flex;gap:12px}
+.qn{font:600 14px var(--sans);color:var(--accent);min-width:22px;font-variant-numeric:tabular-nums}
+.q .meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:6px 24px;font-size:14.5px;color:var(--text-sec);padding-left:34px}
+.q .meta div{min-width:0}
+.q .meta .k{font:600 11.5px var(--sans);letter-spacing:.07em;text-transform:uppercase;color:var(--text-dim);display:block}
+@media (max-width:520px){.q .meta{padding-left:0}}
+
+/* proposal builder */
+.builder{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:16px}
+@media (max-width:820px){.builder{grid-template-columns:1fr}}
+.form{display:grid;gap:16px;align-content:start}
+.field{display:grid;gap:6px}
+.field label,.field .lb{font-weight:600;font-size:14.5px}
+.field .hint{font-size:13px;color:var(--text-dim)}
+.field input[type=number],.field input[type=text],.field select{font:15.5px var(--sans);color:var(--text);background:var(--card);border:1px solid var(--line);border-radius:4px;padding:9px 11px;width:100%}
+.field input:focus{outline:2px solid var(--accent);outline-offset:0;border-color:var(--accent)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font:500 14px var(--sans);border:1px solid var(--line);background:var(--card);color:var(--text-sec);border-radius:4px;padding:5px 11px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--tint);border-color:var(--accent);color:var(--text)}
+.out{display:grid;gap:12px;align-content:start}
+.rec{border:1px solid var(--line);border-radius:6px;padding:16px 18px;background:var(--card);display:grid;gap:6px}
+.rec .plan{font:600 24px var(--display);color:var(--accent)}
+.rec ul{margin:0;padding-left:18px;color:var(--text-sec);font-size:15px;display:grid;gap:3px}
+.flags{display:grid;gap:8px}
+.flag{font-size:14.5px;padding:10px 14px;border-radius:4px;border:1px solid var(--line);background:var(--card)}
+.flag.w{border-color:transparent;background:var(--tint-warn)}
+.flag.b{border-color:transparent;background:var(--tint-bad)}
+
+/* objections */
+.search{font:16px var(--sans);color:var(--text);background:var(--card);border:1px solid var(--line);border-radius:4px;padding:11px 14px;width:100%}
+.objs{display:grid;border:1px solid var(--line);border-radius:6px;background:var(--card);overflow:hidden}
+details.o{border-bottom:1px solid var(--line)}
+details.o:last-child{border-bottom:0}
+details.o summary{cursor:pointer;list-style:none;padding:14px 18px;display:flex;gap:12px;align-items:baseline;justify-content:space-between}
+details.o summary::-webkit-details-marker{display:none}
+details.o summary .s{font-weight:600;font-size:16px}
+details.o summary::after{content:"+";color:var(--text-dim);font-weight:600;margin-left:4px}
+details.o[open] summary::after{content:"\2212"}
+details.o .body{padding:0 18px 16px;display:grid;gap:10px;font-size:15px}
+details.o .body .k{font:600 11.5px var(--sans);letter-spacing:.07em;text-transform:uppercase;color:var(--accent);display:block}
+details.o .body p{color:var(--text-sec)}
+
+/* content blocks */
+.qual{display:grid;gap:4px;align-content:start}
+.qual b{font-weight:600;font-size:16px}
+.qual p{color:var(--text-sec);font-size:15px}
+.cmp{display:grid;gap:10px;align-content:start}
+.cmp h4{font:600 18px/1.3 var(--display)}
+.cmp ul{margin:0;padding-left:18px;display:grid;gap:6px;color:var(--text-sec);font-size:15px}
+.cmp ul b{color:var(--text);font-weight:600}
+.warnline{font-size:14.5px;background:var(--tint-warn);border-radius:4px;padding:10px 12px}
+.formula{font-size:15.5px;background:var(--surface);border-radius:4px;padding:12px 16px}
+.coach{background:var(--tint);border-radius:4px;padding:12px 16px;font-size:15px;color:var(--text-sec)}
+.coach b{display:block;font:600 11.5px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:2px}
+.roles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media (max-width:640px){.roles{grid-template-columns:1fr}}
+.roles>*{min-width:0}
+.role{display:grid;gap:8px;align-content:start}
+.role .pill{justify-self:start}
+.role b{font-size:16px;font-weight:600}
+.role ul{margin:0;padding-left:18px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:3px 20px;color:var(--text-sec);font-size:15px}
+.prob{display:grid;gap:4px;align-content:start}
+.prob b{font-size:16px;font-weight:600}
+.prob p{color:var(--text-sec);font-size:15px}
+.cost{background:var(--navy);color:var(--on-navy);border-radius:6px;padding:14px 20px;display:flex;flex-wrap:wrap;gap:8px 22px;align-items:center;font-weight:600;font-size:15px}
+.cost .kicker{color:var(--on-navy-2)}
+.reasons{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,170px),1fr));gap:10px}
+.reasons>*{min-width:0}
+.reason{display:grid;gap:4px;align-content:start;padding:14px 16px}
+.reason .n{font:700 13px var(--sans);color:var(--accent);font-variant-numeric:tabular-nums}
+.reason b{font-size:15.5px;font-weight:600}
+.reason p{color:var(--text-sec);font-size:14.5px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:12px}
+.stats>*{min-width:0}
+.stat{display:grid;gap:4px;align-content:start}
+.stat .v{font:600 24px/1.2 var(--display);color:var(--accent);font-variant-numeric:tabular-nums}
+.stat .l{color:var(--text-sec);font-size:15px}
+.close{background:var(--navy);color:var(--on-navy);border-radius:6px;padding:24px;display:grid;gap:12px}
+.close .kicker{color:var(--on-navy-2)!important}
+.close q{font:600 clamp(19px,2.4vw,24px)/1.35 var(--display);color:var(--on-navy);quotes:none}
+.close p{color:var(--on-navy-2)}
+.pathchips{display:flex;flex-wrap:wrap;gap:8px}
+.pathchips span{border:1px solid rgba(255,255,255,.3);border-radius:4px;padding:4px 11px;font-size:14px;color:var(--on-navy)}
+.guard{border:1px solid var(--line);background:var(--card);border-radius:6px;padding:16px 20px;display:grid;gap:8px}
+.guard h3{font:600 12px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--bad)}
+.guard ul{margin:0;padding-left:18px;display:grid;gap:4px;color:var(--text-sec)}
+.note{font-size:14px;color:var(--text-dim);max-width:75ch}
+.links{display:flex;flex-wrap:wrap;gap:8px}
+.links a{font:600 14px var(--sans);text-decoration:none;border:1px solid var(--line);background:var(--card);border-radius:4px;padding:7px 12px;color:var(--text)}
+.links a:hover{border-color:var(--accent);color:var(--accent)}
+.steps{display:grid;border:1px solid var(--line);border-radius:6px;background:var(--card);overflow:hidden}
+.steps .st{display:grid;grid-template-columns:120px 1fr;gap:6px 16px;padding:14px 18px;border-bottom:1px solid var(--line)}
+.steps .st:last-child{border-bottom:0}
+.steps .st .when{font:600 14px var(--sans);color:var(--accent)}
+.steps .st b{display:block;margin-bottom:2px;font-weight:600}
+.steps .st p{color:var(--text-sec);font-size:15px}
+@media (max-width:560px){.steps .st{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head><body style="margin:0">
 <header class="hero">
   <div class="wrap">
-    <a class="back" href="../../">&larr; All sales kits</a>
-    <span class="brand">TestMu AI · Sales Play · Internal and confidential</span>
-    <h1>Kane CLI Sales Play</h1>
-    <p>The internal sales play for BDRs, AEs and SEs. This page is a placeholder until the kit is built.</p>
+    <a class="back" href="../../" style="font:600 14px var(--sans);text-decoration:none;color:var(--on-navy-2)">&larr; All sales kits</a>
+    <div class="brandrow">
+      <span class="brand">TestMu AI · Sales Play · Internal and confidential</span>
+      <div class="aud" role="group" aria-label="Account type">
+        <button type="button" id="audNew" aria-pressed="true">New logo</button>
+        <button type="button" id="audEx" aria-pressed="false">Existing TestMu customer</button>
+      </div>
+    </div>
+    <h1>Win developer and coding-agent deals with Kane CLI</h1>
+    <p>A field guide for BDRs, AEs and SEs selling to engineering teams that ship with Claude Code, Cursor, Codex or Copilot. Kane CLI is the verification layer for code an agent wrote: plain-English end-to-end checks from the terminal or the agent itself, with evidence and a CI exit code. The customer-facing story for Stage 3 lives in the <a href="../../stories/kane-cli/" target="_blank" rel="noopener">Kane CLI presentation</a>. For QA-led deals, use the <a href="../../plays/kaneai/">KaneAI play</a>.</p>
   </div>
 </header>
+
+<nav class="stagebar" aria-label="Stages">
+  <div class="wrap tabs" role="tablist">
+    <button class="tab" role="tab" data-v="overview"><span class="who">The play</span><span class="nm">Overview</span></button>
+    <button class="tab" role="tab" data-v="bdr"><span class="who">Stage 1 · BDR</span><span class="nm">Book the meeting</span></button>
+    <button class="tab" role="tab" data-v="ae"><span class="who">Stage 2 · AE + SE</span><span class="nm">Win the deal</span></button>
+    <button class="tab" role="tab" data-v="se"><span class="who">Stage 3 · SE</span><span class="nm">Prove it</span></button>
+    <button class="tab" role="tab" data-v="objections"><span class="who">Any stage</span><span class="nm">Objections</span></button>
+  </div>
+</nav>
+
 <main><div class="wrap">
-  <section class="view">
-    <div class="gate">
-      <div><span class="kicker">Status</span><p><span class="pill p-plan">Planned</span></p></div>
-      <div><span class="kicker">Timing</span><p>After Test Manager feedback</p></div>
+
+<section class="view" id="v-overview" hidden>
+  <div class="vhead">
+    <span class="kicker">Overview</span>
+    <h2>How to use this play</h2>
+    <p class="audnote" data-aud="ex" hidden>You are viewing the existing customer play: for accounts whose QA or automation team already uses TestMu, while their developers ship with coding agents and verify nothing end to end. It is an expansion into a new team, with the account manager involved from the first step.</p>
+    <p>Engineering teams now ship code written by coding agents faster than anyone can check it in a browser. Their agent can write a Playwright script, but nothing proves the feature works for a user, keeps that proof, or survives the next UI change. Kane CLI gives the developer, and the agent, a QA engineer in the terminal: describe the outcome in plain English, it drives a real browser or device, returns pass or fail with evidence, and exits with a code CI understands. Do not sell it as another test framework. Sell it as the check that makes agent-written code safe to merge.</p>
+  </div>
+
+  <div class="flow">
+    <div class="stage">
+      <span class="num">Stage 1 · For BDRs</span>
+      <h3>Book the first meeting</h3>
+      <ol data-aud="new"><li>Find engineering leaders who rolled out coding agents</li><li>Spot a signal: agents in use, flaky E2E, a PR review queue</li><li>Qualify with five questions</li><li>Handle the brush-off and book the call</li></ol>
+      <div class="exit" data-aud="new"><b>Exit:</b> a meeting with an engineering lead who owns developer tooling or CI, and the handoff note filled in.</div>
+      <ol data-aud="ex" hidden><li>Check the account and align with the AM</li><li>Ask the QA champion who leads engineering</li><li>Find which coding agents developers use</li><li>Qualify with five questions and book the call</li></ol>
+      <div class="exit" data-aud="ex" hidden><b>Exit:</b> a call with an engineering lead, the AM and the AE.</div>
     </div>
-    <div class="block"><h3>What this will contain</h3><ul class="ph-list"><li>Stage 1 for BDRs: personas, qualifiers, signals, peak timing, outreach scripts, five qualifying questions, brush-offs, handoff note</li><li>Stage 2 for AEs: discovery questions, the problem, the product answer, technical and business comparison, proof points, ROI calculator, proposal builder</li><li>Stage 3 for SEs: demo path, POC plan, success criteria</li><li>Objections, plus a New logo and an Existing TestMu customer view</li></ul></div>
-    <div class="block"><h3>Inputs needed from the product team</h3><ul class="ph-list"><li>Positioning and the one-line pitch</li><li>Decision owners, influencers and users</li><li>Pricing and packaging from deal desk</li><li>Competitors and how we win against each</li><li>Customer proof points cleared for use</li><li>Common objections from the field</li></ul>
-      <p class="coach"><b>Format</b>Same structure as the <a href="../../plays/performance-testing/">Performance Testing sales play</a>, so reps learn one layout for every product.</p></div>
-  </section>
+    <div class="stage">
+      <span class="num">Stage 2 · For AEs, with an SE</span>
+      <h3>Win the deal</h3>
+      <ol><li>Learn how agent-written code gets verified today</li><li>Name the problem</li><li>Map each problem to Kane CLI</li><li>Size the plan from real usage</li><li>Build the ROI and propose</li></ol>
+      <div class="exit"><b>Exit:</b> one repo, one staging URL and one PRD chosen, a named developer owner, and written POC success criteria.</div>
+    </div>
+    <div class="stage">
+      <span class="num">Stage 3 · For SEs</span>
+      <h3>Prove it</h3>
+      <ol><li>Demo the workflow on the story page</li><li>Install it in their repo and their agent</li><li>Wire it into CI on a real pull request</li><li>Read out and hand back to the AE</li></ol>
+      <div class="exit"><b>Exit:</b> the POC meets the agreed criteria and the AE sends a proposal.</div>
+    </div>
+  </div>
+  <p class="coach"><b>Coach's note</b>This is a bottom-up product. Developers can install it free and get 10,000 trial credits for 30 days, so many deals start with someone already using it. Check product sign-ups for the domain before you reach out. The deal is won when Kane CLI runs in their CI on a real pull request, not when a developer likes the demo.</p>
+
+  <div class="block">
+    <h3>Where to focus</h3>
+    <div class="grid3">
+      <div class="card"><span class="kicker">Best fit</span><p style="margin-top:6px">Product engineering teams with a web app, coding agents in daily use, GitHub or GitLab CI, and an E2E suite that is flaky or missing.</p></div>
+      <div class="card"><span class="kicker">Fastest path</span><p style="margin-top:6px">Domains with free Kane CLI sign-ups, then existing TestMu customers whose developers are not on the platform yet, then companies announcing coding agent rollouts.</p></div>
+      <div class="card"><span class="kicker">Best attach</span><p style="margin-top:6px">Kane CLI is in every KaneAI plan. Pro and Max add HyperExecute minutes for remote runs, and results land in Test Manager for the QA team.</p></div>
+    </div>
+  </div>
+
+  <div class="guard">
+    <h3>Do not say</h3>
+    <ul>
+      <li>"It's free." The CLI is free to install. Runs use KaneAI credits, and new users get 10,000 credits for 30 days.</li>
+      <li>That mobile runs locally on any laptop. Local mobile needs an Apple Silicon Mac. Otherwise saved tests run remotely on HyperExecute macOS.</li>
+      <li>That it exports to Selenium or Cypress. Kane CLI exports Playwright. KaneAI web exports the other frameworks.</li>
+      <li>The PRISM benchmark or the "16 of 16 vs 2 of 16" result as independent. Both were run by us. Say "our benchmark".</li>
+      <li>That it replaces their unit and integration tests. It verifies user journeys end to end.</li>
+      <li>That it tests desktop apps or solves CAPTCHAs. It does neither.</li>
+      <li>That it works with pnpm. Use npm or Homebrew; pnpm exits silently with code 2.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="view" id="v-bdr" hidden>
+  <div class="vhead">
+    <span class="kicker">Stage 1 · For BDRs</span>
+    <h2 data-aud="new">Find the engineering leaders shipping with coding agents, and book the meeting.</h2>
+    <p data-aud="new">You do not need to explain browser automation. You need someone who owns how code gets verified, a signal, and five questions that show whether there is a deal.</p>
+    <h2 data-aud="ex" hidden>Expand from the QA team to the developers who ship with coding agents.</h2>
+    <p data-aud="ex" hidden>QA already trusts us. Developers are a new buyer in the same account. Use the QA champion to find the engineering lead, and lead with one question: who checks what the agent wrote?</p>
+  </div>
+
+  <div class="gate" data-aud="ex" hidden>
+    <div><span class="kicker">Goal</span><p>A call with an engineering lead, the AM and the AE.</p></div>
+    <div><span class="kicker">Book the meeting when</span><ul><li>Developers use coding agents</li><li>End-to-end checks before merge are thin or manual</li><li>The AM agrees the account is healthy enough to expand</li></ul></div>
+    <div><span class="kicker">Hand off</span><ul><li>Fill in the attach handoff note at the bottom</li><li>Tag the opportunity as an expansion with Kane CLI in play</li></ul></div>
+  </div>
+
+  <div class="gate" data-aud="new">
+    <div><span class="kicker">Goal</span><p>A discovery call with the AE.</p></div>
+    <div><span class="kicker">Book the meeting when</span><ul><li>They build a web app, or a native mobile app</li><li>Developers use a coding agent</li><li>The person leads engineering, platform or developer tooling</li></ul></div>
+    <div><span class="kicker">Hand off</span><ul><li>Fill in the handoff note at the bottom</li><li>Tag the opportunity with Kane CLI as the product in play</li></ul></div>
+  </div>
+
+  <div class="block" data-aud="ex" hidden>
+    <h3>Check the account before you reach out</h3>
+    <div class="tw"><table>
+      <thead><tr><th>Check</th><th>Where</th><th>What it tells you</th></tr></thead>
+      <tbody>
+        <tr><td><b>Kane CLI sign-ups and credit use on their domain</b></td><td>Product usage, CRM</td><td>Developers already trying it give you a warm way in</td></tr>
+        <tr><td><b>Products, plans and renewal dates</b></td><td>CRM</td><td>Whether to add mid-term or co-term</td></tr>
+        <tr><td><b>KaneAI agents and HyperExecute plan</b></td><td>CRM</td><td>Kane CLI is already in their KaneAI plan. Remote runs need HyperExecute.</td></tr>
+        <tr><td><b>Open escalations</b></td><td>Support tool, the AM</td><td>Do not pitch a new team while the current one is unhappy</td></tr>
+      </tbody>
+    </table></div>
+    <p class="coach"><b>Coach's note</b>If they already own KaneAI agents, they already own Kane CLI. Then this is an adoption play for the engineering team, and the upsell is more agents or a Pro or Max upgrade for remote runs.</p>
+  </div>
+
+  <div class="block">
+    <h3 data-aud="new">Four personas own verification of agent-written code</h3>
+    <h3 data-aud="ex" hidden>Map the engineering side of the account</h3>
+    <div class="roles">
+      <div class="card role"><span class="pill p-info">Signs off budget</span><b>Engineering leaders</b><ul><li>VP or Director of Engineering</li><li>CTO at smaller companies</li><li>Head of Platform or Developer Experience</li></ul></div>
+      <div class="card role"><span class="pill p-info">Champion</span><b>Tooling owners</b><ul><li>Staff or Principal Engineer</li><li>Developer Productivity Lead</li><li>SDET or QA Automation Lead</li></ul></div>
+      <div class="card role"><span class="pill p-info">Feels the pain</span><b>Daily users</b><ul><li>Frontend and full-stack developers</li><li>Engineers reviewing agent PRs</li><li>The coding agent itself</li></ul></div>
+      <div class="card role"><span class="pill p-info">Influencer</span><b>CI and security</b><ul><li>DevOps or CI owner</li><li>AppSec reviewing agent tooling</li><li>Head of QA</li></ul></div>
+    </div>
+    <p class="coach"><b>Coach's note</b>Developers adopt it; engineering leaders pay for it. Lead with the tooling owner who set up the coding agents, and bring in a leader once a team uses it in CI. QA leaders are allies: the runs land in their Test Manager.</p>
+  </div>
+
+  <div class="block">
+    <h3>Qualifiers: is it a fit?</h3>
+    <div class="grid2 two">
+      <div class="card qual"><b>A web app, or native mobile</b><p>Desktop apps are out. Local mobile needs Apple Silicon Macs or remote runs on HyperExecute.</p></div>
+      <div class="card qual"><b>Coding agents in daily use</b><p>Claude Code, Cursor, Codex, Gemini CLI or Copilot, with real PR volume.</p></div>
+      <div class="card qual"><b>A CI pipeline they control</b><p>GitHub Actions, GitLab CI, Jenkins or Bitbucket, where exit codes can gate a merge.</p></div>
+      <div class="card qual"><b>A staging URL it can reach</b><p>Public, or reachable from where the CLI runs. Logins without CAPTCHA.</p></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>Signals: reach out now</h3>
+    <p class="sub">Two medium signals are worth as much as one strong one.</p>
+    <div class="sig">
+      <div class="row"><span class="pill p-strong">Strong</span><b>Free Kane CLI users on their domain</b><span class="d">Someone already installed it. Ask what they verified and what got in the way.</span></div>
+      <div class="row"><span class="pill p-strong">Strong</span><b>A public coding agent rollout</b><span class="d">Blog posts, talks or job posts naming Claude Code, Cursor or Copilot Enterprise across engineering.</span></div>
+      <div class="row"><span class="pill p-strong">Strong</span><b>Using Playwright MCP or browser tools in their agent</b><span class="d">They already want the agent to drive a browser. Use the Playwright MCP comparison.</span></div>
+      <div class="row"><span class="pill p-med">Medium</span><b>A flaky or abandoned E2E suite</b><span class="d">Job posts asking engineers to "stabilise" Cypress or Playwright, or CI reruns in public repos.</span></div>
+      <div class="row"><span class="pill p-med">Medium</span><b>CLAUDE.md or AGENTS.md in their public repos</b><span class="d">The team configures agents seriously. A line there makes Kane CLI the team default.</span></div>
+      <div class="row"><span class="pill p-med">Medium</span><b>Hiring platform or developer productivity engineers</b><span class="d">Someone owns tooling and has budget for it.</span></div>
+      <div class="row"><span class="pill p-no">Park</span><b>No web or mobile UI, or no outbound AI tools allowed</b><span class="d">Back-end only teams, or a ban on cloud AI. Note it and move on.</span></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>Finding the person on LinkedIn</h3>
+    <div class="grid2">
+      <div class="card" style="display:grid;gap:8px"><span class="kicker">Titles</span><p>VP Engineering, Director of Engineering, Head of Platform, Head of Developer Experience, Staff Engineer, Engineering Manager, Developer Productivity Lead, SDET Lead</p></div>
+      <div class="card" style="display:grid;gap:8px"><span class="kicker">Keywords in profile or skills</span><p>Claude Code, Cursor, Codex, Copilot, AI agents, Playwright, Playwright MCP, Cypress, end-to-end testing, developer productivity, platform engineering, CI/CD</p></div>
+    </div>
+    <div class="script"><header><span class="t">Sales Navigator keyword search</span><button class="btn" data-copy="bool">Copy</button></header>
+      <code class="bool" id="bool">("VP engineering" OR "director of engineering" OR "head of platform" OR "developer experience" OR "developer productivity" OR "staff engineer") AND ("Claude Code" OR Cursor OR Codex OR Copilot OR "AI agents" OR Playwright)</code>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>Outreach</h3>
+    <p class="sub">Replace the highlighted fields. Name the agent they use when you can.</p>
+    <div class="scripts" id="outreach"></div>
+  </div>
+
+  <div class="block">
+    <h3>Short on time? Ask these five</h3>
+    <p class="sub">Numbers refer to the full discovery list in Stage 2.</p>
+    <div class="tw"><table>
+      <thead><tr><th>#</th><th>Ask</th><th>Good answer</th><th>Watch out</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">1</td><td><b>Which coding agents does your team use, and for how much of the code?</b></td><td>A named agent, most PRs</td><td>"We're evaluating": book anyway, but expect a longer cycle.</td></tr>
+        <tr><td class="mono">5</td><td><b>Before an agent's PR merges, who checks it works in the browser?</b></td><td>The reviewer, by hand, or nobody</td><td>A healthy E2E gate: lead with maintenance and evidence instead.</td></tr>
+        <tr><td class="mono">7</td><td><b>How reliable is your end-to-end suite?</b></td><td>Flaky, slow, or missing</td><td>Write down the rerun rate or hours lost. The AE reuses it.</td></tr>
+        <tr><td class="mono">10</td><td><b>Which CI do you use, and can a check block a merge?</b></td><td>GitHub Actions or GitLab, with required checks</td><td>No CI control: find who owns it.</td></tr>
+        <tr><td class="mono">19</td><td><b>Who decides on developer tooling, and who pays for it?</b></td><td>A name and a role</td><td>Use it to bring the right people into the AE call.</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <div class="block">
+    <h3>Turn the brush-off into a conversation</h3>
+    <div class="tw"><table>
+      <thead><tr><th>They say</th><th>It usually means</th><th>You say</th></tr></thead>
+      <tbody>
+        <tr><td><b>"Our agent already writes Playwright tests."</b></td><td>Tests exist, maybe brittle</td><td>"Good. What happens to them after the next UI change, and who fixes them?"</td></tr>
+        <tr><td><b>"We use Playwright MCP."</b></td><td>The agent has a browser</td><td>"Makes sense. Does it give you assertions, a verdict and evidence, or just a browser?"</td></tr>
+        <tr><td><b>"We'll build this ourselves."</b></td><td>A strong platform team</td><td>"Fair. How long would healing, evidence and CI exit codes take to build and keep up?"</td></tr>
+        <tr><td><b>"Security won't allow another AI tool."</b></td><td>A process, not a no</td><td>"Understood. Who reviewed your coding agents? We can follow the same path."</td></tr>
+        <tr><td><b>"Just send me the link."</b></td><td>They might try it alone</td><td>"Here it is. Want 20 minutes to wire it into one PR check with an engineer?"</td></tr>
+        <tr><td><b>"That's QA's job."</b></td><td>Testing sits elsewhere</td><td>"Who checks agent PRs before merge, though? That's usually where it falls between teams."</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <div class="block" data-aud="ex" hidden>
+    <h3>Attach handoff note</h3>
+    <div class="script"><header><span class="t">Paste into the opportunity, and copy the AM</span><button class="btn" data-copy="handoffEx">Copy</button></header>
+<pre id="handoffEx">Account:
+Account manager:
+TestMu products, plans and renewal dates:
+KaneAI agents owned (Kane CLI included):
+QA champion and the engineering lead they named:
+Coding agents in use:
+Kane CLI sign-ups on the domain:
+CI and how merges are gated:
+Who approves developer tooling:
+What they said, in their words:</pre></div>
+  </div>
+
+  <div class="block" data-aud="new">
+    <h3>Handoff note to the AE</h3>
+    <div class="script"><header><span class="t">Paste into the opportunity</span><button class="btn" data-copy="handoff">Copy</button></header>
+<pre id="handoff">Account:
+Contact and role:
+Existing TestMu customer: Yes / No (if yes, use the Existing TestMu customer view)
+Signal that started this:
+Coding agents in use:
+Web, mobile or both:
+E2E framework today and how reliable it is:
+CI (GitHub Actions / GitLab / Jenkins / Bitbucket / other):
+Number of developers:
+Other people involved:
+What they said, in their words:</pre></div>
+  </div>
+</section>
+
+<section class="view" id="v-ae" hidden>
+  <div class="vhead">
+    <span class="kicker">Stage 2 · For AEs, with an SE</span>
+    <h2>Learn how agent-written code gets verified, name the problem, map it to Kane CLI and build the case.</h2>
+    <p>Bring an SE to the first technical call. Developers want to see it run in a terminal within ten minutes, not a deck.</p>
+  </div>
+
+  <div class="gate">
+    <div><span class="kicker">Goal</span><p>A proposal the engineering lead agrees is worth a POC.</p></div>
+    <div><span class="kicker">Move to Stage 3 when</span><ul><li>One repo, one staging URL and one PRD are chosen</li><li>A developer owner has time in week 1</li><li>CI access to add a check is agreed</li><li>Success criteria are written down</li></ul></div>
+    <div><span class="kicker">Stay in Stage 2 when</span><ul><li>Security has not cleared AI tooling</li><li>No coding agent is in real use</li></ul></div>
+  </div>
+
+  <div class="block" id="disc"></div>
+
+  <div class="block">
+    <h3>Six reasons agent-written code is hard to trust</h3>
+    <div class="grid3">
+      <div class="card prob"><b>Nobody checks the browser</b><p>The agent writes the feature and unit tests pass. Whether a user can complete the flow is checked by hand, or not at all.</p></div>
+      <div class="card prob"><b>Review becomes the bottleneck</b><p>Agent PRs arrive faster than people can review and click through them.</p></div>
+      <div class="card prob"><b>Scripts break on every UI change</b><p>Agent-generated Playwright code keeps selectors, not intent. The next redesign breaks it.</p></div>
+      <div class="card prob"><b>Flaky CI</b><p>E2E failures nobody trusts get rerun until green, so real failures get through.</p></div>
+      <div class="card prob"><b>No evidence</b><p>A green tick says nothing about what was checked. Nothing is left for the reviewer or an auditor.</p></div>
+      <div class="card prob"><b>Developers and QA apart</b><p>Developer checks never reach the QA team's test plan, so coverage is counted twice or not at all.</p></div>
+    </div>
+    <div class="cost"><span class="kicker">The cost</span><span>Bugs merged on a green build</span><span>Senior engineers clicking through PRs</span><span>CI reruns</span><span>An E2E suite nobody maintains</span></div>
+  </div>
+
+  <div class="block">
+    <h3>Every problem has a Kane CLI answer</h3>
+    <div class="tw"><table>
+      <thead><tr><th>The problem</th><th>How Kane CLI answers</th><th>Show in the demo</th></tr></thead>
+      <tbody>
+        <tr><td><b>Nobody checks the browser</b></td><td>The coding agent calls <span class="mono">kane-cli run "…" --agent</span> after it changes UI, drives real Chrome, and reads the NDJSON verdict. A skill installs it into Claude Code, Codex, Cursor or Gemini CLI.</td><td>Agent self-check</td></tr>
+        <tr><td><b>Review becomes the bottleneck</b></td><td>A GitHub Action posts a PR comment with the verdict and an evidence link, so reviewers see proof instead of clicking through.</td><td>PR comment</td></tr>
+        <tr><td><b>Scripts break on every UI change</b></td><td>Tests are stored as intent in <span class="mono">_test.md</span>. Unchanged steps replay from cache with no LLM cost; broken steps are re-authored and the change logged.</td><td>Heal a UI change</td></tr>
+        <tr><td><b>Flaky CI</b></td><td>Vision-based waiting, recovery through banners, timeouts and redirects, retries, and exit codes 0, 1, 2 and 3 that separate failures from errors.</td><td>CI exit codes</td></tr>
+        <tr><td><b>No evidence</b></td><td>Every run seals an evidence pack: steps, screenshots, console and network logs, and the verdict. The assurance commands map requirements to proven coverage.</td><td>Evidence and coverage</td></tr>
+        <tr><td><b>Developers and QA apart</b></td><td>Every run uploads to Test Manager as a test case by default, so QA sees what developers verified.</td><td>Traceability</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <div class="block">
+    <h3>Kane CLI vs the alternatives · technical view</h3>
+    <div class="grid2">
+      <div class="card cmp">
+        <span class="kicker">vs Playwright MCP</span>
+        <h4>MCP gives the agent a browser. Kane CLI gives it a QA engineer.</h4>
+        <ul>
+          <li><b>Intent.</b> Kept alongside the steps, so tests heal. MCP keeps only the script.</li>
+          <li><b>Assertions.</b> Built in, plus visual checks. MCP leaves verification to the developer.</li>
+          <li><b>Diagnosis.</b> Suggests probable causes; MCP reports that a step failed.</li>
+          <li><b>Real-user discipline.</b> Acts only on what a user can see, no JS injection.</li>
+          <li><b>Bifurcation.</b> One objective branches into parallel runs for roles or data.</li>
+        </ul>
+        <p class="warnline">Playwright MCP is free and open source, and many teams already use it. Do not attack it. Position Kane CLI as what turns its browser access into a verdict and evidence.</p>
+      </div>
+      <div class="card cmp">
+        <span class="kicker">vs the coding agent alone</span>
+        <h4>The agent writes it. Kane CLI proves it keeps working.</h4>
+        <ul>
+          <li><b>State.</b> A versioned set of tests re-run every release; the agent keeps no testing state between sessions.</li>
+          <li><b>Flakes.</b> Detects non-deterministic tests instead of one pass or fail.</li>
+          <li><b>Coverage.</b> Maps requirements to tests and shows gaps.</li>
+          <li><b>Triage.</b> Groups failures and finds the root cause.</li>
+        </ul>
+        <p class="warnline">It works with the agent, not instead of it. Show the agent calling Kane CLI.</p>
+      </div>
+      <div class="card cmp">
+        <span class="kicker">vs hand-written Playwright or Cypress</span>
+        <h4>Same output, less upkeep</h4>
+        <ul>
+          <li><b>Authoring.</b> A sentence instead of a script.</li>
+          <li><b>Upkeep.</b> Re-authors broken steps instead of a developer fixing selectors.</li>
+          <li><b>Exit.</b> Export any flow to Playwright code.</li>
+        </ul>
+        <p class="warnline">Our live-site test kept 16 of 16 tests passing over 11 rounds against 2 of 16 for Playwright. It is our own test, so say so.</p>
+      </div>
+      <div class="card cmp">
+        <span class="kicker">Kane CLI or KaneAI web?</span>
+        <h4>Sell by who authors</h4>
+        <ul>
+          <li><b>Kane CLI.</b> Developers and coding agents, in the terminal and CI. Lightweight human in the loop.</li>
+          <li><b>KaneAI web.</b> QA teams who review and approve tests, author mobile in the cloud, and export to five frameworks.</li>
+          <li><b>Both.</b> Every KaneAI plan includes Kane CLI, and both land in Test Manager.</li>
+        </ul>
+        <p class="warnline">If the buyer is a QA leader, switch to the KaneAI play.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>Ten reasons Kane CLI earns its price · business view</h3>
+    <div class="reasons">
+      <div class="card reason"><span class="n">01</span><b>Safer merges</b><p>Agent PRs checked in a real browser before review.</p></div>
+      <div class="card reason"><span class="n">02</span><b>Faster review</b><p>Reviewers read evidence instead of clicking through.</p></div>
+      <div class="card reason"><span class="n">03</span><b>Less upkeep</b><p>Tests heal instead of developers fixing selectors.</p></div>
+      <div class="card reason"><span class="n">04</span><b>Cheaper reruns</b><p>Unchanged steps replay from cache with no LLM cost.</p></div>
+      <div class="card reason"><span class="n">05</span><b>Fewer flaky builds</b><p>Errors, failures and timeouts get different exit codes.</p></div>
+      <div class="card reason"><span class="n">06</span><b>Proof on file</b><p>An evidence pack for every run.</p></div>
+      <div class="card reason"><span class="n">07</span><b>Coverage you can show</b><p>Requirements mapped to proven tests.</p></div>
+      <div class="card reason"><span class="n">08</span><b>No lock-in</b><p>Export to Playwright any time.</p></div>
+      <div class="card reason"><span class="n">09</span><b>Scale when needed</b><p>Remote runs on HyperExecute and real devices.</p></div>
+      <div class="card reason"><span class="n">10</span><b>QA in the loop</b><p>Runs land in Test Manager automatically.</p></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>Plans and capacity</h3>
+    <p class="sub">The CLI is free to install. Runs use KaneAI credits, local or cloud. Kane CLI comes with every KaneAI plan, priced per agent per month, billed annually.</p>
+    <div class="tw"><table>
+      <thead><tr><th>Plan</th><th>Price</th><th>Credits per agent</th><th>For Kane CLI users</th></tr></thead>
+      <tbody>
+        <tr><td><b>Trial</b></td><td>$0</td><td>10,000 for 30 days</td><td>New users, to try it on their own app</td></tr>
+        <tr><td><b>Starter</b></td><td>$17</td><td>2,000 a month</td><td>Local authoring and runs on their own browser</td></tr>
+        <tr><td><b>Pro</b></td><td>$89</td><td>12,000 a month</td><td>Adds cloud authoring and 100 HyperExecute minutes for remote runs</td></tr>
+        <tr><td><b>Max</b></td><td>$179</td><td>25,000 a month</td><td>Adds mobile cloud authoring and 300 HyperExecute minutes</td></tr>
+        <tr><td><b>Enterprise</b></td><td>Custom</td><td>Unlimited</td><td>SSO, IP allowlisting, negotiated minutes</td></tr>
+      </tbody>
+    </table></div>
+    <p class="note">From testmuai.com/pricing and testmuai.com/kane-cli, November 2026. Credits per run are not published: measure them in the POC. The page shows monthly prices of $19, $99 and $199 against the annual cards; confirm with deal desk. Remote suites need the remote-execution plugin and HyperExecute runners (macOS for mobile).</p>
+  </div>
+
+  <div class="block">
+    <h3>Numbers to put in front of buyers</h3>
+    <div class="stats">
+      <div class="card stat"><span class="v">16 of 16</span><span class="l">tests kept passing over 11 live-site rounds, against 2 of 16 for Playwright (our test)</span></div>
+      <div class="card stat"><span class="v">#1 of 7</span><span class="l">in our PRISM benchmark, 76.7% overall, 88.7% reliability (our benchmark)</span></div>
+      <div class="card stat"><span class="v">5</span><span class="l">surfaces: web, API, Android emulator, iOS simulator, real devices</span></div>
+      <div class="card stat"><span class="v">0 · 1 · 2 · 3</span><span class="l">exit codes for pass, fail, setup error and timeout, so CI can gate on them</span></div>
+      <div class="card stat"><span class="v">10,000</span><span class="l">trial credits for new users, valid 30 days</span></div>
+      <div class="card stat"><span class="v">$0</span><span class="l">LLM cost for unchanged steps on replay</span></div>
+    </div>
+    <p class="note">Industry figures on the product page (about half of agent PRs rejected despite green tests, five times longer review waits, three in ten main-branch builds failing) are third-party claims we cite. Check the source before quoting them.</p>
+  </div>
+
+  <div class="block">
+    <h3>ROI: build the business case with their own numbers</h3>
+    <div class="tw"><table>
+      <thead><tr><th>What to measure</th><th>Ask the customer</th></tr></thead>
+      <tbody>
+        <tr><td><b>Agent PRs a week × minutes to check each in a browser</b></td><td>"How long does a reviewer spend clicking through a UI change?"</td></tr>
+        <tr><td><b>Hours a week fixing E2E tests</b></td><td>"Who fixes the suite when the UI changes, and how long does it take?"</td></tr>
+        <tr><td><b>CI reruns from flaky tests</b></td><td>"How often do you rerun a pipeline to get it green?"</td></tr>
+        <tr><td><b>Bugs merged on a green build</b></td><td>"What did the last one cost you?"</td></tr>
+      </tbody>
+    </table></div>
+    <p class="formula"><b>Savings</b> = review minutes saved + E2E repair hours removed + reruns avoided, set against agents on the right plan.</p>
+  </div>
+
+  <div class="close">
+    <span class="kicker">The one-line pitch</span>
+    <q>"Your coding agent writes the code. Kane CLI proves it works, in a real browser, before it merges."</q>
+    <p>Plain-English checks from the terminal or the agent itself, with evidence for every run and an exit code your CI understands.</p>
+    <div class="pathchips"><span>One repo</span><span>One PR check</span><span>Evidence on every run</span></div>
+  </div>
+
+  <div class="block">
+    <h3>Write the proposal</h3>
+    <p class="sub">Fill in what you learned on the call. You get a starting plan, the cost and savings picture, risks to raise with the SE, and a recap email.</p>
+    <div class="builder">
+      <div class="card form">
+        <div class="field"><label for="bCo">Company</label><input type="text" id="bCo" value="Acme Cloud"></div>
+        <div class="field"><label for="bName">Contact first name</label><input type="text" id="bName" value="Sam"></div>
+        <div class="grid2">
+          <div class="field"><label for="bDevs">Developers who will use it</label><input type="number" id="bDevs" min="1" step="1" value="10"><span class="hint">One agent each, as a starting point</span></div>
+          <div class="field"><label for="bPrs">UI pull requests a week</label><input type="number" id="bPrs" min="0" step="1" value="60"></div>
+        </div>
+        <div class="grid2">
+          <div class="field"><label for="bMin">Minutes to check each by hand</label><input type="number" id="bMin" min="0" step="1" value="15"><span class="hint">Their figure, from discovery</span></div>
+          <div class="field"><label for="bFix">Hours a week fixing E2E tests</label><input type="number" id="bFix" min="0" step="1" value="8"></div>
+        </div>
+        <div class="field"><label for="bRate">Loaded engineer cost per hour (USD)</label><input type="number" id="bRate" min="1" step="1" value="80"><span class="hint">An example. Ask for their figure.</span></div>
+        <div class="field"><span class="lb">Where it runs</span><div class="chips" data-group="where">
+          <button type="button" class="chip" data-val="local" aria-pressed="true">Local and CI runners</button>
+          <button type="button" class="chip" data-val="cloud" aria-pressed="false">Remote on HyperExecute</button>
+          <button type="button" class="chip" data-val="mobile" aria-pressed="false">Native mobile too</button>
+        </div></div>
+        <div class="field"><span class="lb">Their setup</span><div class="chips" data-group="setup" data-multi="1">
+          <button type="button" class="chip" data-val="mcp" aria-pressed="false">Uses Playwright MCP</button>
+          <button type="button" class="chip" data-val="nomac" aria-pressed="false">No Apple Silicon Macs</button>
+          <button type="button" class="chip" data-val="pnpm" aria-pressed="false">pnpm monorepo</button>
+          <button type="button" class="chip" data-val="captcha" aria-pressed="false">CAPTCHA on staging</button>
+          <button type="button" class="chip" data-val="sso" aria-pressed="false">SSO or IP allowlist</button>
+          <button type="button" class="chip" data-val="data" aria-pressed="false">Heavy test data setup</button>
+        </div></div>
+        <div class="field"><span class="lb">Problems they confirmed</span><div class="chips" data-group="pains" data-multi="1">
+          <button type="button" class="chip" data-val="browser" aria-pressed="true">Nobody checks the browser</button>
+          <button type="button" class="chip" data-val="review" aria-pressed="true">Review is the bottleneck</button>
+          <button type="button" class="chip" data-val="brittle" aria-pressed="false">Scripts break on UI change</button>
+          <button type="button" class="chip" data-val="flaky" aria-pressed="false">Flaky CI</button>
+          <button type="button" class="chip" data-val="evidence" aria-pressed="false">No evidence</button>
+          <button type="button" class="chip" data-val="qa" aria-pressed="false">Developers and QA apart</button>
+        </div></div>
+        <div class="field"><label for="bDate">Deadline that drives it</label><input type="text" id="bDate" value="the end of the quarter"><span class="hint">A rollout, a release or a budget date</span></div>
+      </div>
+      <div class="out">
+        <div class="rec" id="rec"></div>
+        <div class="flags" id="flags"></div>
+        <div class="script"><header><span class="t">Recap email after the call</span><button class="btn" data-copy="recap">Copy</button></header><pre id="recap"></pre></div>
+      </div>
+    </div>
+    <p class="note">Public list prices, November 2026, recheck before quoting: Starter $17, Pro $89, Max $179 per agent per month billed annually. How many developers share one agent is a deal desk question; confirm before proposing.</p>
+  </div>
+</section>
+
+<section class="view" id="v-se" hidden>
+  <div class="vhead">
+    <span class="kicker">Stage 3 · SE</span>
+    <h2>Show the workflow, then prove it on a real pull request.</h2>
+    <p>The demo walks the seven-stage workflow on the story page, then runs live in a terminal. The POC installs Kane CLI in their repo and their coding agent, turns one PRD into tests, and gates one real pull request in CI. The result should answer: did it catch what reviewers check by hand, did it survive a UI change, and can CI trust it.</p>
+  </div>
+
+  <div class="gate">
+    <div><span class="kicker">Goal</span><p>A POC that meets the success criteria agreed in Stage 2.</p></div>
+    <div><span class="kicker">Before the POC</span><ul><li>Node 18+ and Chrome on dev machines, npm or Homebrew</li><li>A staging URL and test logins, no CAPTCHA</li><li>One PRD or spec for the feature in scope</li><li>Permission to add a CI check on one repo</li></ul></div>
+    <div><span class="kicker">Hand back to the AE</span><ul><li>Readout: catches, heals, CI stability, credits used</li><li>Developer count and plan</li></ul></div>
+  </div>
+
+  <div class="block">
+    <h3>Demo path</h3>
+    <p class="sub">Open the presentation, walk the workflow, then switch to a terminal for one live run with <span class="mono">--agent</span> so they see the NDJSON and the exit code.</p>
+    <div class="links" id="demoLinks"></div>
+  </div>
+
+  <div class="block">
+    <h3>POC plan</h3>
+    <div class="steps">
+      <div class="st"><span class="when">Day 0</span><div><b>Scope</b><p>Pick one repo, one staging URL, one PRD and one feature that changes in the next two weeks. Agree people and pass criteria in writing. Scope to user flows; leave unit-heavy fixtures and shared test data setup out.</p></div></div>
+      <div class="st"><span class="when">Day 1</span><div><b>Install</b><p><span class="mono">npm install -g @testmuai/kane-cli</span>, log in, run one objective. Install the agent skill and add a line to CLAUDE.md or AGENTS.md so the agent verifies UI changes with Kane CLI.</p></div></div>
+      <div class="st"><span class="when">Week 1</span><div><b>Requirements to tests</b><p>Ingest the PRD, review the extracted use cases, design tests, and run them with <span class="mono">testrun</span> in parallel. Show the coverage report.</p></div></div>
+      <div class="st"><span class="when">Week 2</span><div><b>Gate a real PR</b><p>Add the CI step with <span class="mono">--headless --agent</span>, credentials as secrets. Gate a real pull request, then make a UI change and show the heal and the evidence. Track credits used.</p></div></div>
+      <div class="st"><span class="when">Readout</span><div><b>Hand back to the AE</b><p>What it caught, heals logged, CI pass rate and reruns, credits per run, open gaps with status, and the agent count.</p></div></div>
+    </div>
+    <p class="coach"><b>Coach's note</b>POCs with large, data-heavy suites have stalled on test data and shared resources, not on Kane CLI itself. Keep the scope to flows the team checks by hand today. Log feature requests with honest status and no roadmap dates.</p>
+  </div>
+
+  <div class="block">
+    <h3>POC success criteria</h3>
+    <div class="script"><header><span class="t">Agree this before day 1</span><button class="btn" data-copy="crit">Copy</button></header>
+<pre id="crit">Repo and staging URL:
+Feature and PRD in scope:
+Developers and coding agent:
+Pass when:
+  - The coding agent runs Kane CLI after UI changes without being asked
+  - Tests generated from the PRD cover    of    acceptance criteria
+  - A CI check gates at least one real pull request
+  - Tests still pass, or heal with a logged change, after the agreed UI change
+  - CI run is stable:    % pass rate with no reruns on unchanged code
+  - Credits per run measured:
+Out of scope:
+Decision owner:                     Decision date:</pre></div>
+  </div>
+</section>
+
+<section class="view" id="v-objections" hidden>
+  <div class="vhead">
+    <span class="kicker">Any stage</span>
+    <h2>Objections and how to answer them.</h2>
+    <p>Ask a question back first. Some of these mean the deal is not a fit, and the answer says so.</p>
+  </div>
+  <input class="search" id="oSearch" type="search" placeholder="Search, for example: MCP, credits, mobile, security" aria-label="Search objections">
+  <div class="objs" id="objs"></div>
+  <p class="note" id="oEmpty" hidden>No objection matches that search. Check the docs.</p>
+</section>
+
 </div></main>
-</body>
-</html>
+
+<script>
+(function(){
+var STORY='../../stories/kane-cli/';
+var aud='new';
+function $(s){return document.querySelector(s)}
+function $$(s){return Array.prototype.slice.call(document.querySelectorAll(s))}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function ph(s){return esc(s).replace(/\{([^}]+)\}/g,'<span class="ph">{$1}</span>')}
+
+var OUT={
+ new:[
+  {t:'Cold call opener',m:'30 seconds',b:"Hi {name}, it's {you} from TestMu AI. I'll be quick. I saw {signal}. When {agent, e.g. Claude Code} writes a UI change, who checks it actually works in the browser before it merges? Kane CLI lets the agent do that itself, in plain English, with evidence and a CI exit code. How do you handle it today?"},
+  {t:'LinkedIn connection note',m:'Under 300 characters',b:"Hi {name}, saw your team ships with {agent}. I'm at TestMu AI. Kane CLI lets coding agents verify their own UI changes in a real browser, in plain English, before merge. Would be good to connect."},
+  {t:'Cold email',m:'Day 1',b:"Subject: who checks what {agent} wrote?\n\nHi {name},\n\nSaw {signal}. Coding agents write UI changes fast. Unit tests pass, and then someone still clicks through the app before merging, or nobody does.\n\nKane CLI gives the agent a QA engineer in the terminal. Describe the outcome in plain English; it drives a real browser, returns pass or fail with screenshots and logs, and exits with a code your CI can gate on. When the UI changes, tests heal instead of breaking.\n\nIt installs with one npm command. Worth 20 minutes to wire it into one PR check with your team?\n\n{you}"},
+  {t:'Follow-up email',m:'Day 4',b:"Subject: re: who checks what {agent} wrote?\n\nQuick one, {name}: how often does your E2E suite need a rerun to go green?\n\nIf it's often, I can show you a check that heals after a UI change, on a site like yours, in five minutes.\n\n{you}"},
+  {t:'Free user follow-up',m:'For a domain with sign-ups',b:"Subject: your Kane CLI runs\n\nHi {name}, I saw someone at {company} has been trying Kane CLI. What were you verifying, and did anything get in the way? I can get an engineer on a call to wire it into your CI, or extend credits for a proper trial.\n\n{you}"},
+  {t:'Voicemail',m:'20 seconds',b:"Hi {name}, {you} from TestMu AI. I'm calling about how {company} checks code your coding agents write. Kane CLI lets the agent verify UI changes in a real browser before merge, with evidence for every run. I'll send a short email. My number is {phone}."}
+ ],
+ ex:[
+  {t:'Ask the QA champion',m:'Message to your existing contact',b:"Hi {name}, your QA team already runs on TestMu. Who leads the developers who ship with coding agents? Kane CLI lets them verify UI changes in a real browser before merge, and the results land in your Test Manager. I'd like to show that person."},
+  {t:'Cold email',m:'Day 1',b:"Subject: your developers' coding agents and your QA team\n\nHi {name},\n\n{company}'s QA team already tests with TestMu. Kane CLI brings the same platform to your developers: their coding agents verify UI changes in a real browser before merge, with evidence, and every run lands in the Test Manager your QA team uses.\n\n{if they own KaneAI: It's already included in your KaneAI plan.}\n\nOpen to 20 minutes with {ae} and one of our engineers?\n\n{you}"},
+  {t:'Voicemail',m:'20 seconds',b:"Hi {name}, {you} from TestMu AI. Your QA team already tests with TestMu, and your developers can now verify their coding agents' UI changes with Kane CLI. I'll send a short note. My number is {phone}."}
+ ]};
+function renderOut(){
+  var box=$('#outreach');box.innerHTML='';
+  OUT[aud].forEach(function(o,i){
+    var id='out'+i,d=document.createElement('div');d.className='script';
+    d.innerHTML='<header><span><span class="t">'+esc(o.t)+'</span> <span class="m">'+esc(o.m)+'</span></span><button class="btn" data-copy="'+id+'">Copy</button></header><pre id="'+id+'">'+ph(o.b)+'</pre>';
+    box.appendChild(d);
+  });
+}
+
+var DISC=[
+ {n:'A',h:'Agents and stack',qs:[
+  {q:'Which coding agents does your team use, and for how much of the code?',l:'Claude Code, Cursor, Codex, Copilot, most PRs',p:'The agent skill, and the core pitch'},
+  {q:'What do you build: web, native mobile, or both?',l:'A web app, maybe mobile',p:'Fit, and whether they need Apple Silicon or remote runs'},
+  {q:'What machines do developers use?',l:'macOS on Apple Silicon, Linux, Windows',p:'Local mobile needs Apple Silicon'},
+  {q:'Do agents already drive a browser, through Playwright MCP or similar?',l:'Yes, MCP in their agent config',p:'The Playwright MCP comparison'}
+ ]},
+ {n:'B',h:'Verification today',qs:[
+  {q:'Before an agent PR merges, who checks it works in the browser?',l:'The reviewer by hand, or nobody',p:'Agent self-check and the PR comment'},
+  {q:'How many UI pull requests a week, and how long does each check take?',l:'A number and minutes',p:'Business case: review time'},
+  {q:'How reliable is your end-to-end suite?',l:'Flaky, slow or abandoned',p:'Healing, cache replay, exit codes'},
+  {q:'Who fixes E2E tests when the UI changes, and how long does it take?',l:'Hours a week, by developers',p:'Business case: repair hours'},
+  {q:'Do you test from requirements or PRDs, or after the fact?',l:'After the fact',p:'The assurance commands and coverage'}
+ ]},
+ {n:'C',h:'CI and release',qs:[
+  {q:'Which CI do you use, and can a check block a merge?',l:'GitHub Actions or GitLab with required checks',p:'Exit codes and the GitHub Action'},
+  {q:'How often do you rerun a pipeline to get it green?',l:'Often',p:'Business case: reruns'},
+  {q:'Where would tests run: dev laptops, CI runners, or the cloud?',l:'CI runners, maybe cloud',p:'Starter for local, Pro or Max for remote'}
+ ]},
+ {n:'D',h:'Pain, cost and risk',qs:[
+  {q:'What was the last bug that merged on a green build?',l:'A real incident',p:'The cost of no browser check'},
+  {q:'Does anyone need proof of what was tested, like QA, compliance or customers?',l:'Yes, or "we can\'t show it"',p:'Evidence packs and Test Manager'},
+  {q:'What would security need to approve another AI tool?',l:'The same review as the coding agents',p:'Plan the security path early'}
+ ]},
+ {n:'E',h:'Priority and buying process',qs:[
+  {q:'Is safe adoption of coding agents a priority this year?',l:'Yes, with a mandate',p:'The reason to act now'},
+  {q:'Has anyone on the team tried Kane CLI already?',l:'A name',p:'A champion with real usage'},
+  {q:'Who else would be involved, and who signs off developer tooling?',l:'Names and roles',p:'Write it into the POC success criteria'},
+  {q:'Who in QA should see the results?',l:'A QA lead',p:'Test Manager, and the KaneAI attach'},
+  {q:'What would success look like after one quarter?',l:'Agents verifying their own changes, fewer reruns',p:'Becomes the readout after the POC'}
+ ]}
+];
+(function(){
+  var h='<h3>Discovery: map how agent-written code gets verified</h3><p class="sub">Twenty questions in five groups. Spend most of the call on B and C, and quantify before you propose anything.</p><div class="disc">',k=0;
+  DISC.forEach(function(s){
+    h+='<div class="phase"><span class="n">'+s.n+'</span><h4>'+esc(s.h)+'</h4></div>';
+    s.qs.forEach(function(x){k++;h+='<div class="q"><div class="qt"><span class="qn">'+k+'</span>'+esc(x.q)+'</div><div class="meta"><div><span class="k">Listen for</span>'+esc(x.l)+'</div><div><span class="k">Points to</span>'+esc(x.p)+'</div></div></div>'});
+  });
+  h+='</div><p class="coach"><b>Coach’s note</b>Questions 2, 3 and 12 decide the plan: web on any machine fits Starter, remote runs need Pro, native mobile without Apple Silicon needs HyperExecute macOS. Write down every number from 6, 8 and 11.</p>';
+  $('#disc').innerHTML=h;
+})();
+
+var PAIN={
+ browser:'Your coding agent runs Kane CLI after UI changes and checks the flow in a real browser before the PR is opened.',
+ review:'A PR comment shows the verdict and an evidence link, so reviewers see proof instead of clicking through.',
+ brittle:'Tests are stored as intent and heal when the UI changes, and every change is logged.',
+ flaky:'Smart waiting, recovery and separate exit codes for failures, errors and timeouts keep CI honest.',
+ evidence:'Every run keeps steps, screenshots, console and network logs, and requirements map to proven coverage.',
+ qa:'Every run lands in Test Manager, where your QA team already tracks testing.'
+};
+var HEARD={browser:'Nobody reliably checks agent-written UI changes in a browser.',review:'Reviewing agent PRs has become the bottleneck.',brittle:'E2E scripts break when the UI changes.',flaky:'CI is flaky and gets rerun until green.',evidence:'There is no record of what was actually checked.',qa:'Developer checks and the QA test plan are disconnected.'};
+var PLAN={local:['Starter',17],cloud:['Pro',89],mobile:['Max',179]};
+function sel(g){return $$('[data-group="'+g+'"] .chip[aria-pressed="true"]').map(function(b){return b.dataset.val})}
+function fmt(n){return Number(Math.round(n)).toLocaleString('en-US')}
+function num(id,min,def){var v=parseFloat($(id).value);return isNaN(v)?def:Math.max(min,v)}
+function build(){
+  var devs=num('#bDevs',1,1),prs=num('#bPrs',0,0),mins=num('#bMin',0,0),fix=num('#bFix',0,0),rate=num('#bRate',1,1);
+  var where=sel('where')[0]||'local',setup=sel('setup'),pains=sel('pains');
+  var co=$('#bCo').value.trim()||'{company}',nm=$('#bName').value.trim()||'{name}',dl=$('#bDate').value.trim()||'{deadline}';
+  var ent=setup.indexOf('sso')>-1,p=PLAN[where],cost=devs*p[1]*12;
+  var review=prs*52*mins/60*rate,repair=fix*52*rate;
+  var rec='<span class="kicker">Starting plan</span><div class="plan">'+(ent?'Enterprise':p[0])+'</div><ul>';
+  rec+='<li>'+fmt(devs)+' agent'+(devs>1?'s':'')+', one per developer as a starting point. Confirm with deal desk how many developers can share one.</li>';
+  rec+=ent?'<li>SSO or IP allowlisting needs Enterprise, which has custom pricing.</li>':'<li>List: $'+fmt(cost)+' a year at $'+p[1]+' per agent per month, billed annually.</li>';
+  rec+='<li>Manual review today: about $'+fmt(review)+' a year ('+fmt(prs)+' PRs a week × '+fmt(mins)+' minutes).</li>';
+  rec+='<li>E2E repair today: about $'+fmt(repair)+' a year. Measure how much Kane CLI removes in the POC; do not quote a percentage.</li>';
+  rec+='<li>Start with the free trial credits on one repo before any commitment.</li>';
+  $('#rec').innerHTML=rec+'</ul>';
+  var f=[];
+  if(where==='mobile'&&setup.indexOf('nomac')>-1)f.push(['w','No Apple Silicon Macs: native mobile runs must go remote on HyperExecute macOS, with the remote-execution plugin. Check their plan covers macOS runners.']);
+  else if(where==='mobile')f.push(['','Local native mobile needs Apple Silicon, Xcode or Android Studio, and kane-cli doctor --install. Every mobile run needs --app.']);
+  if(where==='cloud')f.push(['','Remote runs: install the remote-execution plugin, keep web and mobile in separate runs, and allow about 10 minutes timeout.']);
+  if(setup.indexOf('mcp')>-1)f.push(['','They use Playwright MCP: do not attack it. Show what it lacks: assertions, a verdict, evidence, healing.']);
+  if(setup.indexOf('pnpm')>-1)f.push(['w','pnpm is not supported for install (silent exit 2). Install globally with npm or Homebrew.']);
+  if(setup.indexOf('captcha')>-1)f.push(['w','Kane CLI does not solve CAPTCHAs. Get a test key or turn the challenge off on staging before day 1.']);
+  if(setup.indexOf('data')>-1)f.push(['w','Heavy test data or shared resources: keep the POC to user flows and agree data setup up front. POCs have stalled here.']);
+  if(pains.indexOf('brittle')>-1)f.push(['','Export is Playwright only. If they need Selenium or Cypress code, that is KaneAI web.']);
+  if(!pains.length)f.push(['b','No confirmed problem yet. Go back to discovery before proposing.']);
+  $('#flags').innerHTML=f.map(function(x){return '<div class="flag '+x[0]+'">'+esc(x[1])+'</div>'}).join('');
+  var t='Subject: verifying agent-written code at '+co+': next steps\n\nHi '+nm+',\n\nThanks for the time today. What I heard:\n';
+  t+=pains.length?pains.map(function(p){return '- '+HEARD[p]}).join('\n'):'- {what you heard}';
+  t+='\n\nHow Kane CLI helps:\n'+(pains.length?pains.map(function(p){return '- '+PAIN[p]}).join('\n'):'- {value}')+'\n';
+  t+='\nProposed next step: a two-week POC on one repo. We install Kane CLI with your coding agent, turn one PRD into tests, and gate one real pull request in CI, finished before '+dl+'.\n\nCould you confirm the repo, a staging URL with test logins, and the developer who will own it?\n\nThanks,\n{you}';
+  $('#recap').innerHTML=ph(t);
+}
+$$('.chips').forEach(function(g){
+  var multi=g.dataset.multi==='1';
+  g.addEventListener('click',function(e){
+    var b=e.target.closest('.chip');if(!b)return;
+    if(multi){b.setAttribute('aria-pressed',String(b.getAttribute('aria-pressed')!=='true'))}
+    else{$$('[data-group="'+g.dataset.group+'"] .chip').forEach(function(x){x.setAttribute('aria-pressed',String(x===b))})}
+    build();
+  });
+});
+['#bCo','#bName','#bDevs','#bPrs','#bMin','#bFix','#bRate','#bDate'].forEach(function(s){$(s).addEventListener('input',build)});
+
+var DEMO=[['problem','The bottleneck'],['workflow','The workflow'],['objective','Write an objective'],['run','Run it'],['checks','Beyond the click'],['modes','Three ways to run'],['evidence','Evidence and coverage'],['mcp','vs Playwright MCP'],['proof','Proof'],['start','Get started'],['poc','Your POC']];
+function renderDemo(){$('#demoLinks').innerHTML=DEMO.map(function(d,i){return '<a href="'+STORY+'#'+d[0]+'" target="_blank" rel="noopener">'+(i+1)+'. '+esc(d[1])+'</a>'}).join('')+'<a href="'+STORY+'" target="_blank" rel="noopener">Open full presentation</a>'}
+
+var OBJ=[
+ {s:'We already use Playwright MCP.',a:'What does your agent do after it drives the browser?',r:'Keep it. MCP gives the agent a browser; Kane CLI adds the QA layer: captured intent for healing, built-in assertions, diagnosis, real-user discipline and evidence. Show the comparison card.',sh:'vs Playwright MCP'},
+ {s:'Our coding agent already writes Playwright tests.',a:'What happens to them after the next UI change?',r:'Agent-written scripts keep selectors, not intent, and nobody maintains them. Kane CLI stores the objective, heals broken steps, and can still export Playwright code.',sh:'Run it'},
+ {s:'Is it really free?',a:'How many runs a week would you expect?',r:'The CLI is free to install, and new users get 10,000 credits for 30 days. Runs use KaneAI credits after that, from a plan. Unchanged steps replay from cache with no LLM cost.',sh:''},
+ {s:'Can we run it offline or keep everything local?',a:'What exactly must stay inside your network?',r:'Runs can happen on your own machine, but the agent needs a TestMu account and credits, and sessions upload to Test Manager by default. Bring security in early and do not promise air-gapped use.',sh:''},
+ {s:'What LLM does it use, and is our data used for training?',a:'What does your AI policy require?',r:'Not published on the product page. Route it to security for the current AI data handling statement rather than answering from memory.',sh:''},
+ {s:'We need mobile testing.',a:'What machines do your developers use?',r:'Android emulator, iOS simulator and real devices are supported. Local runs need an Apple Silicon Mac. Otherwise run saved tests remotely on HyperExecute macOS.',sh:'Three ways to run'},
+ {s:'Can it export to Cypress or Selenium?',a:'Which framework do you want to keep?',r:'Kane CLI exports Playwright. For Selenium, Cypress, WebdriverIO or Appium code, use KaneAI web, which is in the same plan.',sh:''},
+ {s:'AI tests are non-deterministic. CI needs to be reliable.',a:'How do you handle flaky tests today?',r:'Exit codes separate a failure (1) from a setup error (2) and a timeout (3). Saved tests replay from cache, so unchanged steps behave the same every run. Measure the pass rate on unchanged code in the POC.',sh:'Run it'},
+ {s:'Security will not approve another AI tool.',a:'Who approved your coding agents, and how?',r:'Follow the same path. TestMu holds SOC 2 Type II and ISO 27001. Credentials go in as CI secrets and variables marked secret are masked. Bring the security documents early.',sh:''},
+ {s:'It does not fit our existing test data setup.',a:'Which tests depend on shared fixtures?',r:'Kane CLI verifies user flows; it does not replace unit and integration fixtures. Scope the POC to flows checked by hand today, and agree data setup up front.',sh:''},
+ {s:'We use pnpm.',a:'Can you install the CLI globally with npm or Homebrew?',r:'pnpm is not supported for install. npm or Homebrew both work, and the project itself can stay on pnpm.',sh:'Get started'},
+ {s:'Your benchmark numbers are your own.',a:'What would you want to measure instead?',r:'Agreed, and we say so. Run the same flows on their app before and after a UI change, with their framework next to Kane CLI. That is the comparison that matters.',sh:''},
+ {s:'How is this different from KaneAI?',a:'Who will author tests: developers or QA?',r:'Same engine. Kane CLI is for developers and coding agents in the terminal and CI. KaneAI web is for QA teams who review, approve and export to five frameworks. Every KaneAI plan includes both.',sh:''}
+];
+(function(){
+  $('#objs').innerHTML=OBJ.map(function(o){
+    return '<details class="o" data-q="'+esc((o.s+' '+o.a+' '+o.r).toLowerCase())+'"><summary><span class="s">“'+esc(o.s)+'”</span>'+(o.sh?'<span class="pill p-info">'+esc(o.sh)+'</span>':'')+'</summary><div class="body">'+
+      (o.a?'<div><span class="k">Ask back</span>'+esc(o.a)+'</div>':'')+
+      '<div><span class="k">Answer</span><p>'+esc(o.r)+'</p></div>'+
+      (o.sh?'<div><span class="k">Show</span>'+esc(o.sh)+'</div>':'')+'</div></details>';
+  }).join('');
+  $('#oSearch').addEventListener('input',function(){
+    var q=this.value.toLowerCase().trim(),n=0;
+    $$('details.o').forEach(function(d){var m=!q||d.dataset.q.indexOf(q)>-1;d.hidden=!m;if(m)n++;if(q&&m)d.open=true});
+    $('#oEmpty').hidden=n>0;
+  });
+})();
+
+document.addEventListener('click',function(e){
+  var b=e.target.closest('[data-copy]');if(!b)return;
+  var el=document.getElementById(b.dataset.copy),txt=el.innerText;
+  function ok(){b.textContent='Copied';b.classList.add('done');setTimeout(function(){b.textContent='Copy';b.classList.remove('done')},1500)}
+  function fallback(){var r=document.createRange();r.selectNodeContents(el);var s=window.getSelection();s.removeAllRanges();s.addRange(r);b.textContent='Selected, press Ctrl+C'}
+  try{navigator.clipboard.writeText(txt).then(ok,fallback)}catch(err){fallback()}
+});
+
+function setAud(a){
+  aud=a;
+  $('#audNew').setAttribute('aria-pressed',String(a==='new'));$('#audEx').setAttribute('aria-pressed',String(a==='ex'));
+  $$('[data-aud]').forEach(function(x){x.hidden=x.dataset.aud!==a});
+  renderOut();renderDemo();build();
+  try{localStorage.setItem('kcplay-aud',a)}catch(e){}
+}
+$('#audNew').onclick=function(){setAud('new')};$('#audEx').onclick=function(){setAud('ex')};
+
+var VIEWS=['overview','bdr','ae','se','objections'];
+function show(v,push){
+  if(VIEWS.indexOf(v)<0)v='overview';
+  VIEWS.forEach(function(x){$('#v-'+x).hidden=x!==v});
+  $$('.tab').forEach(function(t){t.setAttribute('aria-selected',String(t.dataset.v===v))});
+  if(push){try{history.replaceState(null,'','#'+v)}catch(e){}window.scrollTo(0,0)}
+}
+$$('.tab').forEach(function(t){t.addEventListener('click',function(){show(t.dataset.v,true)})});
+window.addEventListener('hashchange',function(){show((location.hash||'').slice(1))});
+
+var a0='new';try{a0=localStorage.getItem('kcplay-aud')||'new'}catch(e){}
+setAud(a0==='ex'?'ex':'new');
+show((location.hash||'').slice(1));
+})();
+</script>
+</body></html>
