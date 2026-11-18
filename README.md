@@ -20,7 +20,7 @@ products.json                  product list, status and timing
 | Test Manager | In progress | This week | `plays/test-manager/` | `stories/test-manager/` |
 | KaneAI | In progress | First draft, in review | `plays/kaneai/` | `stories/kaneai/` |
 | Kane CLI | In progress | First draft, in review | `plays/kane-cli/` | `stories/kane-cli/` |
-| Agent Testing | Planned | After KaneAI and Kane CLI | `plays/agent-testing/` | `stories/agent-testing/` |
+| Agent Testing | In progress | First draft, in review | `plays/agent-testing/` | `stories/agent-testing/` |
 | Accessibility Testing | Planned | Later | `plays/accessibility/` | `stories/accessibility/` |
 | SmartUI | Planned | Later | `plays/smartui/` | `stories/smartui/` |
 | HyperExecute | Planned | Longer term | `plays/hyperexecute/` | `stories/hyperexecute/` |
