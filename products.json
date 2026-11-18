@@ -35,9 +35,9 @@
     "slug": "agent-testing",
     "name": "Agent Testing",
     "sub": "",
-    "line": "Testing chat, voice and phone AI agents before they go live.",
-    "status": "plan",
-    "when": "After KaneAI and Kane CLI"
+    "line": "Testing chat, voice, phone, video and image AI agents before they go live, with scenarios from your documents, evidence on every reply and a go-live verdict.",
+    "status": "prog",
+    "when": "First draft, in review"
   },
   {
     "slug": "accessibility",
