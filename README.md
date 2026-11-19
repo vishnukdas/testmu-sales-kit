@@ -5,11 +5,14 @@ One place for every TestMu AI product's internal sales play and customer-facing 
 ## Layout
 
 ```
-index.html                     portal home: one card per product
-assets/kit.css                 shared styles for every page
+index.html                     portal home: one card per product (has its own styles)
+assets/kit.css                 base styles for the plays and placeholder pages
+assets/play.css                modern layer loaded after the base styles on every sales play
+assets/logos/<product>.*       product logos used on the home page and in the plays
 plays/<product>/index.html     internal sales play for BDRs, AEs and SEs
-stories/<product>/index.html   customer-facing SE demo story
+stories/<product>/index.html   customer-facing SE demo story (self-contained styles)
 products.json                  product list, status and timing
+STYLE.md                       style guide for the home page, plays and logos
 ```
 
 ## Kits
@@ -27,9 +30,12 @@ products.json                  product list, status and timing
 
 ## Adding or finishing a kit
 
-1. Replace the placeholder in `plays/<product>/index.html` with the sales play. Follow the Performance Testing play's sections and link `../../assets/kit.css`.
+Read [`STYLE.md`](STYLE.md) first. It has the design rules, the exact markup and the checks.
+
+1. Replace the placeholder in `plays/<product>/index.html` with the sales play. Follow the Performance Testing play's sections. After the base styles, link the Geist font and `../../assets/play.css`, and put the product logo before the `<h1>`.
 2. Replace `stories/<product>/index.html` with the demo story.
-3. Update the product's status in `products.json`, the card in `index.html` and the table above.
+3. Add the product logo to `assets/logos/`. Use the story's logo if it has one.
+4. Update the card, roadmap chip and counts in `index.html`, then the product in `products.json` and the table above.
 
 ## Access
 
