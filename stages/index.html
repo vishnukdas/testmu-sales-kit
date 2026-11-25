@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Sales Kits by Role</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+/* Role page: one role, every product. The content comes from each product's play, loaded in place. */
+:root{
+  --bg:#F6F7F9; --card:#FFFFFF;
+  --line:rgba(15,23,42,.08); --line-2:rgba(15,23,42,.14);
+  --text:#0B1220; --text-2:#4A5568; --text-3:#7A8599;
+  --accent:#3E6BF0; --accent-soft:rgba(62,107,240,.10);
+  --live:#16A34A; --live-soft:rgba(22,163,74,.10);
+  --prog:#D97706; --prog-soft:rgba(217,119,6,.10);
+  --plan:#64748B; --plan-soft:rgba(100,116,139,.10);
+  --shadow:0 1px 2px rgba(15,23,42,.04),0 2px 8px rgba(15,23,42,.04);
+  --ease-out:cubic-bezier(.23,1,.32,1);
+  --sans:"Geist",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"Geist Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --pc1:#3E6BF0; --pc2:#6F8CFF;
+  --barh:54px;
+  color-scheme:light only;
+}
+body[data-role="ae"]{--pc1:#7C3AED;--pc2:#A78BFA}
+body[data-role="se"]{--pc1:#0D9488;--pc2:#22C3B5}
+body[data-role="overview"]{--pc1:#475569;--pc2:#94A3B8}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:400 15.5px/1.6 var(--sans);-webkit-font-smoothing:antialiased;font-feature-settings:"ss01","cv11"}
+a{color:inherit}
+h1,h2,p{margin:0}
+[hidden]{display:none!important}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:8px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.wrap{max-width:1680px;margin:0 auto;padding-inline:max(16px,env(safe-area-inset-left,0px)) max(16px,env(safe-area-inset-right,0px))}
+@media (min-width:720px){.wrap{padding-inline:32px}}
+
+/* top bar: brand, the role you picked, switch role */
+.bar{position:sticky;top:0;z-index:50;height:var(--barh);background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(16px);-webkit-backdrop-filter:saturate(180%) blur(16px);border-bottom:1px solid var(--line)}
+.bar .wrap{height:100%;display:flex;align-items:center;gap:14px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:600;font-size:15px;letter-spacing:-.01em;white-space:nowrap}
+.mark{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;background:linear-gradient(135deg,#6F8CFF,#3E6BF0 55%,#22C3B5);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 4px 12px -2px rgba(62,107,240,.5)}
+.mark svg{width:14px;height:14px}
+.logo .dim{color:var(--text-3);font-weight:500}
+@media (max-width:560px){.logo .txt{display:none}}
+.sep{width:1px;height:22px;background:var(--line-2)}
+.role{display:flex;align-items:center;gap:10px;min-width:0}
+.rico{flex:none;width:30px;height:30px;border-radius:9px;display:grid;place-items:center;color:#fff;background:linear-gradient(135deg,var(--pc2),var(--pc1));box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 6px 14px -6px var(--pc1)}
+.rico svg{width:16px;height:16px}
+.role b{font-weight:600;font-size:15px;white-space:nowrap}
+#rstage{font:500 11.5px var(--mono);letter-spacing:.04em;text-transform:uppercase;color:var(--pc1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:640px){#rstage{display:none}}
+.bar-r{margin-left:auto;display:flex;align-items:center;gap:8px}
+.conf{display:none;align-items:center;gap:6px;font:500 12px var(--sans);color:var(--text-2);border:1px solid var(--line-2);border-radius:999px;padding:4px 10px;white-space:nowrap}
+.conf svg{width:12px;height:12px}
+@media (min-width:1100px){.conf{display:inline-flex}}
+.switch{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;border:1px solid var(--line-2);background:#fff;font:500 13.5px var(--sans);text-decoration:none;white-space:nowrap;transition:transform .16s var(--ease-out),border-color .2s ease,color .2s ease}
+.switch:active{transform:scale(.97)}
+.switch svg{width:14px;height:14px}
+@media (hover:hover) and (pointer:fine){.switch:hover{border-color:var(--accent);color:var(--accent)}}
+
+/* layout: products on the left, content on the right */
+.layout{display:grid;grid-template-columns:232px minmax(0,1fr);gap:24px;align-items:start;padding-block:16px 40px}
+@media (max-width:900px){.layout{grid-template-columns:minmax(0,1fr);gap:0;padding-top:0}}
+
+.side{position:sticky;top:calc(var(--barh) + 16px);display:grid;gap:4px}
+.side .h{font:500 11px var(--mono);letter-spacing:.05em;text-transform:uppercase;color:var(--text-3);padding:0 10px 6px}
+.side .h.later{margin-top:14px}
+.pb{all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:11px;padding:8px 10px;border-radius:12px;font:500 14.5px var(--sans);color:var(--text-2);transition:background-color .2s ease,color .2s ease,transform .16s var(--ease-out)}
+.pb:active{transform:scale(.98)}
+.pb:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.pb .nm{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pb .dot{width:7px;height:7px;border-radius:50%;flex:none}
+.pb[data-status="live"] .dot{background:var(--live);box-shadow:0 0 0 3px var(--live-soft)}
+.pb[data-status="prog"] .dot{background:var(--prog)}
+.pb[data-status="plan"] .dot{background:var(--plan)}
+.pb[data-status="plan"]{color:var(--text-3)}
+.pb[data-status="plan"] .plogo{filter:grayscale(.6);opacity:.75}
+@media (hover:hover) and (pointer:fine){.pb:hover{background:rgba(15,23,42,.04);color:var(--text)}}
+.pb[aria-selected="true"]{background:#fff;color:var(--text);box-shadow:var(--shadow),inset 0 0 0 1px var(--line);font-weight:600}
+.pb[aria-selected="true"] .plogo{filter:none;opacity:1}
+.legend{margin-top:16px;padding:12px 10px 0;border-top:1px solid var(--line);display:grid;gap:4px;font-size:12.5px;color:var(--text-3)}
+.legend span{display:flex;align-items:center;gap:8px}
+.legend i{width:6px;height:6px;border-radius:50%}
+
+/* phones: products become a sticky scroll strip */
+@media (max-width:900px){
+  .side{top:var(--barh);z-index:40;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin-inline:calc(-1 * max(16px,env(safe-area-inset-left,0px)));padding:10px max(16px,env(safe-area-inset-left,0px));background:rgba(246,247,249,.9);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+  .side::-webkit-scrollbar{display:none}
+  .side .h,.legend{display:none}
+  .pb{flex:none;padding:5px 12px 5px 5px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:14px}
+  .pb .nm{overflow:visible}
+  .pb[aria-selected="true"]{background:var(--text);color:#fff;border-color:var(--text);box-shadow:none}
+  .pb .plogo{width:26px;height:26px;border-radius:999px}
+  .pb .plogo i{width:14px;height:14px}
+}
+@media (min-width:720px) and (max-width:900px){.side{margin-inline:-32px;padding-inline:32px}}
+
+/* logo tiles (same as home and plays) */
+.plogo{position:relative;flex:none;width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(135deg,color-mix(in srgb,var(--c1) 12%,#fff),color-mix(in srgb,var(--c2) 14%,#fff));border:1px solid color-mix(in srgb,var(--c1) 18%,transparent)}
+.plogo i{width:17px;height:17px;background:linear-gradient(135deg,var(--c1),var(--c2));-webkit-mask:var(--m) center/contain no-repeat;mask:var(--m) center/contain no-repeat}
+.plogo.pimg{background:linear-gradient(135deg,#F1EEFF,#E8EEFF);border-color:rgba(99,102,241,.18)}
+.plogo.pimg img{width:68%;height:auto}
+.plogo.ptile{background:#000;border-color:#000;overflow:hidden}
+.plogo.ptile img{width:100%;height:100%;display:block}
+.plogo.lg{width:40px;height:40px;border-radius:14px;box-shadow:0 4px 12px -6px rgba(15,23,42,.35)}
+.plogo.lg i{width:25px;height:25px}
+
+/* content */
+.content{min-width:0}
+@media (max-width:900px){.content{padding-top:20px}}
+.phead{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.phead .id{display:flex;align-items:center;gap:12px;min-width:0;flex:0 1 auto}
+.phead h1{font-weight:600;font-size:clamp(20px,2vw,24px);line-height:1.15;letter-spacing:-.035em}
+.phead h1 small{font-weight:400;font-size:14px;color:var(--text-3);letter-spacing:0}
+.meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin-top:4px;font-size:13.5px;color:var(--text-2)}
+.status{display:inline-flex;align-items:center;gap:6px;font:500 12px var(--sans);border-radius:999px;padding:2px 9px}
+.status i{width:6px;height:6px;border-radius:50%;background:currentColor}
+.status.live{color:var(--live);background:var(--live-soft)}
+.status.prog{color:var(--prog);background:var(--prog-soft)}
+.status.plan{color:var(--plan);background:var(--plan-soft)}
+.acts{display:flex;flex-wrap:wrap;gap:8px}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:999px;border:1px solid var(--line-2);background:#fff;font:500 13.5px var(--sans);text-decoration:none;white-space:nowrap;transition:transform .16s var(--ease-out),border-color .2s ease,color .2s ease}
+.btn:active{transform:scale(.97)}
+.btn svg{width:13px;height:13px}
+@media (hover:hover) and (pointer:fine){.btn:hover{border-color:var(--accent);color:var(--accent)}}
+.opts{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-left:auto}
+.seg{display:inline-flex;padding:3px;border-radius:999px;background:#EBEEF3}
+.seg button{all:unset;box-sizing:border-box;cursor:pointer;padding:6px 14px;border-radius:999px;font:500 13.5px var(--sans);color:var(--text-2);white-space:nowrap;transition:background-color .2s ease,color .2s ease,transform .16s var(--ease-out)}
+.seg button:active{transform:scale(.97)}
+.seg button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.seg button[aria-pressed="true"]{background:#fff;color:var(--text);box-shadow:0 1px 2px rgba(15,23,42,.12)}
+.stage{position:relative;min-height:320px}
+.stage iframe{display:block;width:100%;border:0;height:600px;background:transparent}
+.stage iframe.loading{visibility:hidden}
+.spin{position:absolute;top:56px;left:50%;width:22px;height:22px;margin-left:-11px;border-radius:50%;border:2px solid var(--line-2);border-top-color:var(--pc1);animation:sp .6s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.empty{margin-top:20px;padding:28px;border:1px dashed var(--line-2);border-radius:16px;background:#fff;color:var(--text-2)}
+.empty b{display:block;color:var(--text);font-size:17px;margin-bottom:6px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media (min-width:901px){
+  .phead .id>div{display:flex;align-items:center;flex-wrap:wrap;gap:4px 12px}
+  .phead .meta{margin-top:0}
+  .phead{padding-bottom:10px}
+}
+body.wide .phead{display:none}
+body.wide .bar-r .opts{margin:0;flex-wrap:nowrap}
+body.wide .bar-r .seg{flex-wrap:nowrap}
+body.wide .bar-r .seg button{padding:5px 12px;font-size:13px}
+body.wide .bar-r .btn{padding:6px 11px;font-size:13px}
+body.wide .content{padding-top:2px}
+@media (max-width:1499px){body.wide .conf{display:none}}
+.legend .lock{margin-top:6px;font-weight:600;color:var(--text-2)}
+/* objections and FAQ: its own highlighted button */
+.seg:has(.objb){background:none;padding:0;gap:8px}
+.seg:has(.objb) button{border:1px solid var(--line-2);background:#fff}
+.seg:has(.objb) button[data-k="stage"][aria-pressed="true"]{background:var(--text);color:#fff;border-color:var(--text);box-shadow:none}
+.seg .objb{display:inline-flex!important;align-items:center;gap:6px;background:#FFF7E6!important;border-color:rgba(217,119,6,.4)!important;color:#92400E!important;font-weight:600!important}
+.seg .objb svg{width:15px;height:15px}
+.seg .objb[aria-pressed="true"]{background:#D97706!important;border-color:#D97706!important;color:#fff!important;box-shadow:0 6px 16px -8px #D97706!important}
+@media (hover:hover) and (pointer:fine){.seg .objb:not([aria-pressed="true"]):hover{background:#FDECC8!important}}
+</style>
+</head>
+<body data-role="bdr">
+
+<header class="bar">
+  <div class="wrap">
+    <a class="logo" href="../" aria-label="TestMu AI Sales Kits home">
+      <span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4 10-10"/></svg></span>
+      <span class="txt">TestMu AI <span class="dim">Sales Kits</span></span>
+    </a>
+    <span class="sep" aria-hidden="true"></span>
+    <div class="role"><span class="rico" id="rico" aria-hidden="true"></span><b id="rname">BDR</b><span id="rstage">Stage 1 · Book the meeting</span></div>
+    <div class="bar-r">
+      <span class="conf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Internal and confidential</span>
+      <a class="switch" href="../"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3l4 4-4 4M21 7H8M7 21l-4-4 4-4M3 17h13"/></svg>Switch role</a>
+    </div>
+  </div>
+</header>
+
+<div class="wrap layout">
+  <nav class="side" id="side" aria-label="Products" role="tablist" aria-orientation="vertical"></nav>
+
+  <main class="content">
+    <div class="phead">
+      <div class="id">
+        <span id="plogo"></span>
+        <div>
+          <h1 id="pname"></h1>
+          <div class="meta"><span class="status" id="pstatus"><i></i><span></span></span><span id="pwhen"></span></div>
+        </div>
+      </div>
+      <div class="opts" id="opts">
+      <div class="seg" role="group" aria-label="Show">
+        <button type="button" data-k="stage" aria-pressed="true" id="kStage">Play</button>
+        <button type="button" data-k="objections" aria-pressed="false" class="objb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.5 7.2L4 20l1-4.5A8 8 0 1 1 21 12z"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6M12 16.5h.01"/></svg>Objections &amp; FAQ</button>
+      </div>
+      <div class="seg" role="group" aria-label="Account type">
+        <button type="button" data-a="new" aria-pressed="true">New logo</button>
+        <button type="button" data-a="ex" aria-pressed="false">Existing customer</button>
+      </div>
+    </div>
+      <div class="acts">
+        <a class="btn" id="pstory" href="#">SE demo story<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"/></svg></a>
+      </div>
+    </div>
+    <div class="stage" id="stage"><span class="spin" id="spin" hidden></span></div>
+    <div class="empty" id="empty" hidden><b>This kit is planned.</b><span id="emptyTxt"></span></div>
+  </main>
+</div>
+
+<script>
+(function(){
+var I='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">';
+var ROLES={
+  bdr:{name:'BDR',stage:'Stage 1 · Book the meeting',tab:'Stage 1 play',icon:I+'<path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>'},
+  ae:{name:'AE / AM',stage:'Stage 2 · Win the deal',tab:'Stage 2 play',icon:I+'<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18"/></svg>'},
+  se:{name:'Solution Engineer',stage:'Stage 3 · Prove it',tab:'Stage 3 play',icon:I+'<rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4M10 8.5v5l4-2.5z"/></svg>'},
+  overview:{name:'Everyone else',stage:'Product overviews',tab:'Overview',icon:I+'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17.5" cy="9.5" r="2.5"/><path d="M16 14.6a5 5 0 0 1 5.5 5.4"/></svg>'}
+};
+/* Keep in the same order and status as products.json. Logo tiles follow STYLE.md section 4. */
+var PRODUCTS=[
+  {slug:'performance-testing',name:'Performance Testing',sub:'on HyperExecute',status:'live',when:'Live',logo:{c1:'#3E6BF0',c2:'#22C3B5',svg:1}},
+  {slug:'test-manager',name:'Test Manager',status:'prog',when:'This week',logo:{c1:'#3E6BF0',c2:'#6F8CFF',svg:1}},
+  {slug:'kaneai',name:'KaneAI',status:'prog',when:'First draft, in review',logo:{img:'pimg',ext:'png'}},
+  {slug:'kane-cli',name:'Kane CLI',status:'prog',when:'First draft, in review',logo:{img:'ptile',ext:'png'}},
+  {slug:'agent-testing',name:'Agent Testing',status:'prog',when:'First draft, in review',logo:{img:'ptile',ext:'png'}},
+  {slug:'accessibility',name:'Accessibility Testing',status:'plan',when:'Later',logo:{c1:'#059669',c2:'#14B8A6',svg:1}},
+  {slug:'smartui',name:'SmartUI',status:'plan',when:'Later',logo:{c1:'#E11D48',c2:'#F59E0B',svg:1}},
+  {slug:'hyperexecute',name:'HyperExecute',status:'plan',when:'Longer term',logo:{c1:'#EA580C',c2:'#E11D48',svg:1}}
+];
+var LABEL={live:'Live',prog:'In progress',plan:'Planned'};
+var $=function(s){return document.querySelector(s)},$$=function(s){return Array.prototype.slice.call(document.querySelectorAll(s))};
+var state={s:'bdr',p:PRODUCTS[0].slug,k:'stage',a:'new'};
+try{state.a=localStorage.getItem('stages-aud')||'new'}catch(e){}
+/* ?aud=new or ?aud=ex comes from the role cards on the home page (AE = new logo, AM = existing customer). */
+var qa=(location.search.match(/[?&]aud=(new|ex)/)||[])[1];if(qa){state.a=qa;try{localStorage.setItem('stages-aud',qa)}catch(e){}}
+var frames={};
+/* Bump when assets/bdr.js or assets/play.css change, so browsers load matching copies. */
+var ASSET_V='202611252025';
+
+function tile(p,cls){
+  var L=p.logo,src='../assets/logos/'+p.slug+'.'+(L.ext||'svg'),c=cls?' '+cls:'';
+  if(L.svg)return '<span class="plogo'+c+'" style="--c1:'+L.c1+';--c2:'+L.c2+'" aria-hidden="true"><i style="--m:url('+src+')"></i></span>';
+  return '<span class="plogo '+L.img+c+'" aria-hidden="true"><img src="'+src+'" alt=""></span>';
+}
+function btn(p){return '<button class="pb" role="tab" type="button" data-p="'+p.slug+'" data-status="'+p.status+'">'+tile(p)+'<span class="nm">'+p.name+'</span><span class="dot" aria-hidden="true"></span><span class="sr"> ('+LABEL[p.status]+')</span></button>'}
+var ready=PRODUCTS.filter(function(p){return p.status!=='plan'}),later=PRODUCTS.filter(function(p){return p.status==='plan'});
+$('#side').innerHTML='<span class="h">Products</span>'+ready.map(btn).join('')+
+  (later.length?'<span class="h later">Planned</span>'+later.map(btn).join(''):'')+
+  '<div class="legend" aria-hidden="true"><span><i style="background:var(--live)"></i>Live</span><span><i style="background:var(--prog)"></i>In progress, may still change</span><span><i style="background:var(--plan)"></i>Planned</span><span class="lock">Internal and confidential</span></div>';
+
+function prod(){for(var i=0;i<PRODUCTS.length;i++)if(PRODUCTS[i].slug===state.p)return PRODUCTS[i];return PRODUCTS[0]}
+function view(){return state.k==='objections'?'objections':state.s}
+
+/* Fit the frame to its content. */
+function fit(f){try{var d=f.contentDocument;if(!d||!d.body)return;f.style.height=Math.ceil(d.body.getBoundingClientRect().height)+'px'}catch(e){}}
+
+function prepare(f,slug){
+  var d=f.contentDocument,w=f.contentWindow;if(!d)return;
+  var st=d.createElement('style');
+  st.textContent='.hero,.stagebar{display:none!important}html,body{height:auto!important;min-height:0!important;background:transparent!important;overflow:hidden!important}main{padding-top:0!important}main .wrap{padding-block:12px 8px!important}main>.wrap{padding-inline:0!important;max-width:none!important}';
+  d.head.appendChild(st);
+  /* This page shows one role. Links that jump to another stage become plain text. */
+  d.querySelectorAll('a[href^="#"]').forEach(function(a){var v=a.getAttribute('href').slice(1);if(['overview','bdr','ae','se'].indexOf(v)>-1&&v!==state.s){var sp=d.createElement('span');sp.textContent=a.textContent;a.replaceWith(sp)}});
+  d.addEventListener('click',function(e){
+    var a=e.target.closest&&e.target.closest('a[href]');if(!a)return;
+    var h=a.getAttribute('href');
+    if(h.charAt(0)==='#'){
+      /* A jump to another role's stage opens the full play in a new tab, so this page stays on your role. */
+      var v=h.slice(1);
+      if(['overview','bdr','ae','se'].indexOf(v)>-1&&v!==state.s){e.preventDefault()}
+      else if(v==='objections'&&state.k!=='objections'){e.preventDefault();state.k='objections';render(true)}
+      return;
+    }
+    if(!a.target)a.target='_top';
+  },true);
+  try{new w.ResizeObserver(function(){fit(f)}).observe(d.body)}catch(e){}
+  w.addEventListener('hashchange',function(){fit(f)});
+  syncAud(f);
+}
+var lastShown={p:null,k:null};
+function resetObj(f){try{var d=f.contentDocument,q=d.getElementById('oSearch');if(q){q.value='';q.dispatchEvent(new Event('input',{bubbles:true}))}d.querySelectorAll('#v-objections details').forEach(function(x){x.open=false});f.contentWindow.scrollTo(0,0)}catch(e){}}
+function syncAud(f){try{var b=f.contentDocument.getElementById(state.a==='ex'?'audEx':'audNew');if(b&&b.getAttribute('aria-pressed')!=='true')b.click()}catch(e){}}
+
+function render(push){
+  var p=prod(),R=ROLES[state.s];
+  document.body.dataset.role=state.s;
+  $('#rico').innerHTML=R.icon;$('#rname').textContent=R.name;$('#rstage').textContent=R.stage;
+  document.title=R.name+' · '+p.name+' · Sales Kits';
+  $$('.pb').forEach(function(b){var on=b.dataset.p===state.p;b.setAttribute('aria-selected',String(on));b.tabIndex=on?0:-1});
+  $$('[data-k]').forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.k===state.k))});
+  $$('[data-a]').forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.a===state.a))});
+  $('#kStage').textContent=R.tab;
+  $('#plogo').innerHTML=tile(p,'lg');
+  $('#pname').innerHTML=p.name+(p.sub?' <small>'+p.sub+'</small>':'');
+  var ps=$('#pstatus');ps.className='status '+p.status;ps.lastChild.textContent=LABEL[p.status];
+  $('#pwhen').textContent=p.status==='live'?'':p.when;
+  $('#pstory').href='../stories/'+p.slug+'/';
+  var planned=p.status==='plan';
+  $('#opts').hidden=planned;$('#empty').hidden=!planned;
+  if(planned)$('#emptyTxt').textContent=p.name+' does not have a sales play yet ('+p.when.toLowerCase()+'). It will show here when the kit is built.';
+  Object.keys(frames).forEach(function(k){frames[k].hidden=planned||k!==p.slug});
+  $('#spin').hidden=true;
+  if(!planned){
+    var f=frames[p.slug];
+    if(!f){
+      var slug=p.slug;
+      f=document.createElement('iframe');f.title=p.name+' sales play';f.className='loading';
+      f.src='../plays/'+slug+'/?v='+ASSET_V+'#'+view();
+      $('#spin').hidden=false;
+      f.addEventListener('load',function(){prepare(f,slug);fit(f);f.classList.remove('loading');if(slug===state.p)$('#spin').hidden=true});
+      frames[slug]=f;$('#stage').appendChild(f);
+    }else{
+      try{if(f.contentWindow.location.hash!=='#'+view())f.contentWindow.location.hash=view();syncAud(f);
+        /* coming back to a product or to Objections & FAQ starts it fresh */
+        if(lastShown.p!==p.slug||lastShown.k!==state.k){if(state.k==='objections')resetObj(f);else if(f.contentWindow.BDRStage)f.contentWindow.BDRStage.resetCurrent()}
+        fit(f)}catch(e){}
+    }
+  }
+  if(!planned)lastShown={p:p.slug,k:state.k};
+  var h='#'+state.s+'/'+state.p+(state.k==='objections'?'/objections':'');
+  if(location.hash!==h){try{history[push?'pushState':'replaceState'](null,'',h)}catch(e){}}
+}
+
+function read(){
+  var parts=(location.hash||'').slice(1).split('/');
+  if(ROLES[parts[0]])state.s=parts[0];
+  if(parts[1]&&PRODUCTS.some(function(p){return p.slug===parts[1]}))state.p=parts[1];
+  state.k=parts[2]==='objections'?'objections':'stage';
+}
+
+function pick(slug){
+  state.p=slug;render(true);
+  var c=$('.content'),top=c.getBoundingClientRect().top+window.scrollY-($('.bar').offsetHeight+(window.innerWidth<=900?$('#side').offsetHeight:0))-12;
+  if(window.scrollY>top)window.scrollTo({top:top,behavior:'instant'});
+  var b=$('.pb[data-p="'+slug+'"]');if(b&&b.scrollIntoView&&window.innerWidth<=900)b.scrollIntoView({block:'nearest',inline:'center',behavior:'smooth'});
+}
+$('#side').addEventListener('click',function(e){var b=e.target.closest('.pb');if(b)pick(b.dataset.p)});
+/* Arrow keys move between products. */
+$('#side').addEventListener('keydown',function(e){
+  if(['ArrowDown','ArrowUp','ArrowRight','ArrowLeft'].indexOf(e.key)<0)return;
+  var bs=$$('.pb'),i=bs.indexOf(document.activeElement);if(i<0)return;
+  var n=bs[(i+((e.key==='ArrowDown'||e.key==='ArrowRight')?1:-1)+bs.length)%bs.length];n.focus();pick(n.dataset.p);e.preventDefault();
+});
+$$('[data-k]').forEach(function(b){b.addEventListener('click',function(){state.k=b.dataset.k;render(true)})});
+$$('[data-a]').forEach(function(b){b.addEventListener('click',function(){state.a=b.dataset.a;try{localStorage.setItem('stages-aud',state.a)}catch(e){}Object.keys(frames).forEach(function(k){syncAud(frames[k])});render()})});
+window.addEventListener('popstate',function(){read();render()});
+window.addEventListener('resize',function(){Object.keys(frames).forEach(function(k){fit(frames[k])})});
+/* On wide screens the toggles and the story link sit in the top bar, so the scene gets the height. */
+var mq=window.matchMedia('(min-width:1400px)'),home={opts:$('#opts').parentNode,next:$('#opts').nextElementSibling};
+function place(){var o=$('#opts'),a=$('.acts'),br=$('.bar-r');
+  if(mq.matches){br.insertBefore(a,br.querySelector('.switch'));br.insertBefore(o,a);document.body.classList.add('wide')}
+  else{home.opts.insertBefore(o,home.next);home.opts.insertBefore(a,null);document.body.classList.remove('wide')}
+  Object.keys(frames).forEach(function(k){fit(frames[k])})}
+if(mq.addEventListener)mq.addEventListener('change',place);else if(mq.addListener)mq.addListener(place);
+place();
+read();render();
+})();
+</script>
+</body>
+</html>

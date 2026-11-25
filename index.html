@@ -77,37 +77,68 @@ h1,h2,h3{text-wrap:balance;letter-spacing:-.02em}
 @media (max-width:920px){.hero-in{grid-template-columns:minmax(0,1fr);gap:36px;padding-block:48px 44px}}
 .eyebrow{display:inline-flex;align-items:center;gap:8px;font:500 13px var(--sans);color:var(--text-2);background:rgba(255,255,255,.8);border:1px solid var(--line-2);border-radius:999px;padding:5px 12px 5px 6px;width:max-content;max-width:100%;line-height:1.35;box-shadow:var(--shadow);backdrop-filter:blur(6px)}
 .eyebrow b{font-weight:600;color:#fff;background:linear-gradient(135deg,#6F8CFF,#3E6BF0);border-radius:999px;padding:1px 8px;font-size:11.5px;letter-spacing:.02em}
-.hero h1{margin-top:20px;font-weight:600;font-size:clamp(38px,6vw,64px);line-height:1.02;letter-spacing:-.045em;
+.hero h1{margin-top:20px;font-weight:600;font-size:clamp(34px,5.2vw,58px);line-height:1.02;letter-spacing:-.045em;
   background:linear-gradient(180deg,#0B1220 35%,#3B4A6B);-webkit-background-clip:text;background-clip:text;color:transparent}
 .hero .lede{margin-top:18px;font-size:clamp(16px,1.6vw,18px);line-height:1.55;color:var(--on-hero-2);max-width:54ch}
-.stats{margin-top:32px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;max-width:560px}
-@media (max-width:480px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
-.stat{all:unset;box-sizing:border-box;cursor:pointer;display:grid;gap:2px;padding:12px 14px;border-radius:12px;background:rgba(255,255,255,.8);border:1px solid var(--line);box-shadow:var(--shadow);backdrop-filter:blur(6px);transition:transform .16s var(--ease-out),box-shadow .25s ease,border-color .2s ease}
-.stat:active{transform:scale(.97)}
-@media (hover:hover) and (pointer:fine){.stat:hover{border-color:var(--line-2);box-shadow:var(--shadow-lift)}}
-.stat:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.stat b{font:600 26px/1.1 var(--sans);letter-spacing:-.03em;font-variant-numeric:tabular-nums;color:var(--text)}
-.stat span{font-size:12.5px;color:var(--text-2);display:flex;align-items:center;gap:6px}
-.stat i{width:6px;height:6px;border-radius:50%;background:currentColor;flex:none}
-.stat.live i{color:var(--live);box-shadow:0 0 0 3px var(--live-soft)}
-.stat.prog i{color:var(--prog)}
-.stat.plan i{color:var(--plan)}
-
-/* stages panel */
-.stages{position:relative;border-radius:20px;padding:8px;background:rgba(255,255,255,.82);border:1px solid var(--line);box-shadow:0 1px 2px rgba(15,23,42,.04),0 30px 60px -30px rgba(30,50,110,.25);backdrop-filter:blur(10px)}
-.stages-h{display:flex;align-items:center;justify-content:space-between;padding:10px 12px 12px;font:500 12.5px var(--sans);color:var(--text-3)}
-.stages-h .dots{display:flex;gap:5px}
-.stages-h .dots i{width:8px;height:8px;border-radius:50%;background:rgba(15,23,42,.1)}
-.stages ol{list-style:none;margin:0;padding:0;display:grid;gap:4px;position:relative}
-.stg{position:relative;display:grid;grid-template-columns:36px 1fr;gap:2px 14px;padding:14px;border-radius:14px;cursor:default;transition:background-color .25s ease}
-.stg::before{content:"";position:absolute;left:31px;top:52px;bottom:-10px;width:1px;background:linear-gradient(var(--line-2),transparent)}
-.stg:last-child::before{display:none}
-.stg .n{grid-row:span 2;width:36px;height:36px;border-radius:11px;display:grid;place-items:center;font:600 14px var(--mono);color:var(--text-2);background:#F3F5F9;border:1px solid var(--line);transition:background-color .25s ease,border-color .25s ease,color .25s ease,box-shadow .25s ease}
-.stg .who{font:500 11.5px var(--mono);letter-spacing:.04em;text-transform:uppercase;color:var(--text-3)}
-.stg .what{font-weight:600;font-size:16px;line-height:1.35;color:var(--text)}
-.stg .what small{display:block;font-weight:400;font-size:13.5px;color:var(--text-2);margin-top:3px}
-.stg.on{background:var(--accent-soft)}
-.stg.on .n{color:#fff;background:linear-gradient(135deg,#6F8CFF,#3E6BF0);border-color:transparent;box-shadow:0 6px 16px -6px rgba(62,107,240,.7)}
+/* persona entry points: the deal journey, then everyone else */
+.hero-in{display:block;padding-block:64px 64px}
+@media (max-width:720px){.hero-in{padding-block:40px 48px}}
+.hero-copy{max-width:760px}
+.journey{margin-top:44px;display:grid;grid-template-columns:minmax(0,1fr) 64px minmax(0,1fr) 64px minmax(0,1fr);align-items:stretch}
+.pc{--mx:50%;--my:0%;position:relative;display:flex;flex-direction:column;padding:24px;border-radius:20px;background:rgba(255,255,255,.9);border:1px solid var(--line);box-shadow:0 1px 2px rgba(15,23,42,.04),0 24px 48px -28px rgba(30,50,110,.28);backdrop-filter:blur(8px);overflow:hidden;transition:transform .35s var(--ease-out),box-shadow .3s ease,border-color .2s ease}
+.pc::before{content:"";position:absolute;inset:0;border-radius:inherit;background:radial-gradient(380px circle at var(--mx) var(--my),color-mix(in srgb,var(--pc1) 10%,transparent),transparent 45%);opacity:0;transition:opacity .3s ease;pointer-events:none}
+.pc::after{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,var(--pc1),var(--pc2))}
+.pc.bdr,.hand.h1{--pc1:#3E6BF0;--pc2:#6F8CFF}
+.pc.ae,.hand.h2{--pc1:#7C3AED;--pc2:#A78BFA}
+.pc.se{--pc1:#0D9488;--pc2:#22C3B5}
+.hand.h1{--pn:#7C3AED}.hand.h2{--pn:#0D9488}
+@media (hover:hover) and (pointer:fine){.pc:hover{transform:translateY(-4px);border-color:color-mix(in srgb,var(--pc1) 35%,transparent);box-shadow:var(--shadow-lift)}.pc:hover::before{opacity:1}.pc:hover .go svg{transform:translateX(3px)}}
+.pc:has(.go:active){transform:scale(.985)}
+.pc-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.pico{flex:none;width:46px;height:46px;border-radius:14px;display:grid;place-items:center;color:#fff;background:linear-gradient(135deg,var(--pc2),var(--pc1));box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 8px 18px -8px var(--pc1)}
+.pico svg{width:22px;height:22px}
+.pstage{display:inline-flex;align-items:center;gap:7px;font:500 11.5px var(--mono);letter-spacing:.04em;text-transform:uppercase;color:var(--pc1)}
+.pstage b{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-weight:600;font-size:11.5px;color:var(--pc1);background:color-mix(in srgb,var(--pc1) 12%,transparent)}
+.pc-id{margin-top:18px}
+.pc h2{font-weight:600;font-size:26px;line-height:1.1;letter-spacing:-.035em}
+.pwho{margin-top:4px;font-size:13px;color:var(--text-3)}
+.pwhat{margin-top:14px;padding:10px 12px;border-radius:10px;background:color-mix(in srgb,var(--pc1) 7%,#fff);border:1px solid color-mix(in srgb,var(--pc1) 14%,transparent);font-weight:600;font-size:15px;color:var(--text)}
+.pc ul{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:9px;font-size:14px;color:var(--text-2);line-height:1.45}
+.pc li{display:flex;gap:9px;align-items:flex-start}
+.pc li svg{flex:none;width:14px;height:14px;margin-top:3px;color:var(--pc1)}
+.pc-cta{margin-top:auto;padding-top:22px;display:grid;gap:10px;justify-items:center}
+.pc .go{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;padding:12px 16px;border-radius:12px;background:var(--text);color:#fff;font:600 14.5px var(--sans);text-decoration:none;white-space:nowrap;transition:background-color .2s ease}
+.pc .go::after{content:"";position:absolute;inset:0;border-radius:20px}
+.pc .go svg{width:15px;height:15px;flex:none;transition:transform .25s var(--ease-out)}
+@media (hover:hover) and (pointer:fine){.pc .go:hover{background:color-mix(in srgb,var(--text) 80%,var(--pc1))}}
+.pc .sub{position:relative;z-index:1;font:500 13.5px var(--sans);color:var(--text-2);text-decoration:underline;text-decoration-color:var(--line-2);text-underline-offset:3px;white-space:nowrap;transition:color .2s ease}
+@media (hover:hover) and (pointer:fine){.pc .sub:hover{color:var(--pc1);text-decoration-color:currentColor}}
+/* handoff between stages */
+.hand{position:relative;display:grid;place-items:center;align-content:center;gap:8px}
+.hand::before{content:"";position:absolute;left:0;right:0;top:50%;height:2px;margin-top:-1px;background:linear-gradient(90deg,var(--pc1),var(--pn));opacity:.35}
+.ha{position:relative;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:#fff;border:1px solid var(--line-2);color:var(--pn);box-shadow:var(--shadow)}
+.ha svg{width:14px;height:14px}
+.hl{position:absolute;bottom:calc(50% + 22px);font:500 10.5px var(--mono);letter-spacing:.04em;text-transform:uppercase;color:var(--text-3);white-space:nowrap;writing-mode:vertical-rl;transform:rotate(180deg)}
+/* everyone else */
+.oth{position:relative;margin-top:16px;display:flex;align-items:center;gap:16px;padding:16px 18px;border-radius:16px;background:rgba(255,255,255,.7);border:1px dashed var(--line-2);text-decoration:none;color:var(--text);--pc1:#475569;--pc2:#94A3B8;transition:border-color .2s ease,background-color .2s ease,transform .16s var(--ease-out)}
+.oth:active{transform:scale(.99)}
+.oth .pico{width:40px;height:40px;border-radius:12px}
+.oth .pico svg{width:19px;height:19px}
+.oth-t{display:grid;gap:2px;min-width:0;flex:1}
+.oth-t b{font-weight:600;font-size:16px}
+.oth-t span{font-size:14px;color:var(--text-2)}
+.oth-go{flex:none;display:inline-flex;align-items:center;gap:6px;font:600 14px var(--sans);color:var(--text);white-space:nowrap}
+.oth-go svg{width:14px;height:14px;transition:transform .25s var(--ease-out)}
+@media (hover:hover) and (pointer:fine){.oth:hover{border-style:solid;border-color:var(--line-2);background:#fff}.oth:hover .oth-go svg{transform:translateX(3px)}}
+@media (max-width:980px){
+  .journey{grid-template-columns:minmax(0,1fr);max-width:560px}
+  .hand{height:56px}
+  .hand::before{left:50%;right:auto;top:0;bottom:0;width:2px;height:auto;margin:0 0 0 -1px;background:linear-gradient(180deg,var(--pc1),var(--pn))}
+  .ha{transform:rotate(90deg)}
+  .hl{position:absolute;bottom:auto;left:calc(50% + 24px);writing-mode:horizontal-tb;transform:none}
+  .oth{max-width:560px}
+}
+@media (max-width:560px){.oth{flex-wrap:wrap}.oth-go{width:100%;padding-left:56px}}
 
 /* ---------- main ---------- */
 main{padding-block:72px 96px;display:grid;gap:96px}
@@ -117,111 +148,6 @@ main>section{width:100%}
 .sec-h .kick{font:500 12.5px var(--mono);letter-spacing:.04em;text-transform:uppercase;color:var(--accent)}
 .sec-h h2{margin-top:8px;font-weight:600;font-size:clamp(26px,3.4vw,36px);line-height:1.1;letter-spacing:-.035em}
 .sec-h p{margin-top:10px;color:var(--text-2);max-width:58ch}
-
-/* toolbar: filter + search */
-.tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
-.seg{position:relative;display:inline-flex;padding:4px;border-radius:12px;background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);overflow-x:auto;scrollbar-width:none;max-width:100%}
-.seg::-webkit-scrollbar{display:none}
-.seg-ind{position:absolute;top:4px;bottom:4px;left:0;width:0;border-radius:9px;background:var(--text);transition:transform .35s var(--ease-out),width .35s var(--ease-out);pointer-events:none}
-.seg button{all:unset;position:relative;z-index:1;cursor:pointer;display:inline-flex;align-items:center;gap:7px;padding:7px 13px;border-radius:9px;font:500 13.5px var(--sans);color:var(--text-2);white-space:nowrap;transition:color .2s ease}
-.seg button:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
-@media (hover:hover) and (pointer:fine){.seg button:hover{color:var(--text)}}
-.seg button[aria-pressed="true"]{color:var(--bg-2)}
-.seg button .c{font:500 11.5px var(--mono);color:inherit;opacity:.6}
-.search{position:relative;flex:1 1 220px;max-width:320px}
-.search svg{position:absolute;left:12px;top:50%;width:15px;height:15px;transform:translateY(-50%);color:var(--text-3);pointer-events:none}
-.search input{width:100%;font:400 14px var(--sans);color:var(--text);background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 40px 10px 36px;box-shadow:var(--shadow);transition:border-color .2s ease,box-shadow .2s ease}
-.search input::placeholder{color:var(--text-3)}
-.search input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
-.search kbd{position:absolute;right:10px;top:50%;transform:translateY(-50%);font:500 11.5px var(--mono);color:var(--text-3);border:1px solid var(--line-2);border-radius:6px;padding:1px 6px;pointer-events:none}
-@media (hover:none){.search kbd{display:none}}
-
-/* kit cards */
-.kits{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:16px}
-.kit{--mx:50%;--my:0%;position:relative;display:flex;flex-direction:column;gap:14px;padding:24px;border-radius:var(--r);background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);overflow:hidden;transition:transform .35s var(--ease-out),box-shadow .35s var(--ease-out),border-color .25s ease}
-.kit::before{content:"";position:absolute;inset:0;border-radius:inherit;background:radial-gradient(420px circle at var(--mx) var(--my),var(--spot),transparent 45%);opacity:0;transition:opacity .3s ease;pointer-events:none}
-.kit::after{content:"";position:absolute;left:24px;right:24px;top:0;height:1px;background:linear-gradient(90deg,transparent,var(--tone),transparent);opacity:.7}
-.kit[data-status="live"]{--tone:var(--live);--tone-soft:var(--live-soft)}
-.kit[data-status="prog"]{--tone:var(--prog);--tone-soft:var(--prog-soft)}
-.kit[data-status="plan"]{--tone:var(--plan);--tone-soft:var(--plan-soft)}
-@media (hover:hover) and (pointer:fine){
-  .kit:hover{transform:translateY(-3px);box-shadow:var(--shadow-lift);border-color:var(--line-2)}
-  .kit:hover::before{opacity:1}
-}
-.kit.flash{animation:flash 1.2s var(--ease-out)}
-@keyframes flash{0%,40%{box-shadow:0 0 0 3px var(--accent-soft),0 0 0 1px var(--accent)}100%{box-shadow:var(--shadow)}}
-.kit-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
-.status{display:inline-flex;align-items:center;gap:7px;font:500 12.5px var(--sans);color:var(--tone);background:var(--tone-soft);border-radius:999px;padding:3px 10px 3px 8px}
-.status i{position:relative;width:7px;height:7px;border-radius:50%;background:currentColor}
-.kit[data-status="live"] .status i::after{content:"";position:absolute;inset:0;border-radius:50%;background:currentColor;animation:ping 2s var(--ease-out) infinite}
-@keyframes ping{0%{transform:scale(1);opacity:.6}80%,100%{transform:scale(2.6);opacity:0}}
-.when{display:inline-flex;align-items:center;gap:5px;font:400 12px var(--mono);color:var(--text-3);white-space:nowrap}
-.when svg{width:12px;height:12px;flex:none}
-.kit h3{font-weight:600;font-size:22px;line-height:1.2;letter-spacing:-.025em}
-.kit h3 small{display:block;margin-top:3px;font-weight:400;font-size:13.5px;letter-spacing:0;color:var(--text-3)}
-.kit .desc{color:var(--text-2);font-size:14.5px;line-height:1.55}
-.kit .note{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--text-3)}
-.kit .note::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--tone);flex:none}
-.links{margin-top:auto;padding-top:6px;display:grid;gap:8px}
-.lnk{position:relative;display:flex;align-items:center;gap:10px;white-space:nowrap;text-decoration:none;padding:12px 14px;border-radius:var(--r-sm);border:1px solid var(--line-2);background:var(--card-2);color:var(--text);transition:transform .16s var(--ease-out),background-color .2s ease,border-color .2s ease}
-.lnk:active{transform:scale(.97)}
-.lnk .l{order:2;margin-left:auto;font:400 11.5px var(--sans);color:var(--text-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
-.lnk .t{display:contents;font-weight:600;font-size:14.5px}
-.lnk .t svg{order:3}
-.lnk .t svg{width:15px;height:15px;transition:transform .25s var(--ease-out)}
-.lnk.play{background:var(--text);border-color:var(--text);color:var(--bg-2)}
-.lnk.play .l{color:color-mix(in srgb,var(--bg-2) 62%,transparent)}
-@media (hover:hover) and (pointer:fine){
-  .lnk:hover{border-color:var(--accent)}
-  .lnk:hover .t svg{transform:translateX(3px)}
-  .lnk.play:hover{background:color-mix(in srgb,var(--text) 86%,var(--accent));border-color:transparent}
-}
-.kit[data-status="plan"]{background:var(--card-2);box-shadow:none}
-.kit[data-status="plan"] .links{display:flex;gap:16px;padding-top:2px}
-.kit[data-status="plan"] .lnk{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:5px;font:500 13.5px var(--sans);color:var(--text-2);transition:color .2s ease}
-.kit[data-status="plan"] .lnk svg{width:13px;height:13px;transition:transform .25s var(--ease-out)}
-.kit[data-status="plan"] .lnk:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
-@media (hover:hover) and (pointer:fine){.kit[data-status="plan"] .lnk:hover{color:var(--accent)}.kit[data-status="plan"] .lnk:hover svg{transform:translateX(2px)}}
-/* product logo tiles */
-.plogo{position:relative;flex:none;width:46px;height:46px;border-radius:13px;display:grid;place-items:center;
-  background:linear-gradient(135deg,color-mix(in srgb,var(--c1) 14%,#fff),color-mix(in srgb,var(--c2) 10%,#fff));
-  border:1px solid color-mix(in srgb,var(--c1) 18%,transparent);box-shadow:inset 0 1px 0 #fff,0 4px 12px -6px color-mix(in srgb,var(--c1) 55%,transparent);
-  transition:transform .35s var(--ease-out)}
-.plogo i{width:24px;height:24px;background:linear-gradient(135deg,var(--c1),var(--c2));-webkit-mask:var(--m) center/contain no-repeat;mask:var(--m) center/contain no-repeat}
-.plogo.pimg{background:linear-gradient(135deg,#F1EEFF,#E8EEFF);border-color:rgba(99,102,241,.18)}
-.plogo.pimg img{width:30px;height:auto;filter:drop-shadow(0 3px 5px rgba(91,60,200,.3))}
-.plogo.ptile{background:#000;border-color:#000;box-shadow:0 4px 12px -6px rgba(0,0,0,.5);overflow:hidden}
-.plogo.ptile img{width:100%;height:100%;display:block}
-.chip .plogo.pimg img{width:18px}
-@media (hover:hover) and (pointer:fine){.kit:hover .plogo{transform:rotate(-4deg) scale(1.06)}}
-.chip .plogo{width:26px;height:26px;border-radius:8px;box-shadow:none}
-.chip .plogo i{width:15px;height:15px}
-.chip .nm{display:flex;align-items:center;gap:10px;font:inherit;color:inherit;text-align:left}
-.kit h3+.when,.kit h3~.when{margin-top:-8px}
-.empty{grid-column:1/-1;text-align:center;padding:48px 16px;color:var(--text-3);border:1px dashed var(--line-2);border-radius:var(--r)}
-.empty button{all:unset;cursor:pointer;color:var(--accent);font-weight:500;text-decoration:underline;text-underline-offset:3px}
-
-/* ---------- roadmap track ---------- */
-.track{position:relative;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
-.track::before{content:"";position:absolute;left:12px;right:12px;top:11px;height:2px;border-radius:2px;background:linear-gradient(90deg,var(--live) 0%,var(--prog) 30%,var(--plan) 62%,color-mix(in srgb,var(--plan) 30%,transparent) 100%);opacity:.5}
-.lane{position:relative;display:grid;gap:10px;align-content:start;padding-top:36px}
-.lane::before{content:"";position:absolute;left:4px;top:4px;width:16px;height:16px;border-radius:50%;background:var(--bg);border:2px solid var(--tone);box-shadow:0 0 0 4px var(--bg)}
-.lane.live{--tone:var(--live)} .lane.prog{--tone:var(--prog)} .lane.plan{--tone:var(--plan)}
-.lane .lk{font:500 11.5px var(--mono);letter-spacing:.04em;text-transform:uppercase;color:var(--tone)}
-.lane .lt{font-weight:600;font-size:16px;letter-spacing:-.01em;margin-top:-6px}
-.lane ul{list-style:none;margin:0;padding:0;display:grid;gap:6px}
-.chip{all:unset;box-sizing:border-box;cursor:pointer;width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border-radius:10px;background:var(--card);border:1px solid var(--line);font:500 14px var(--sans);color:var(--text);transition:transform .16s var(--ease-out),border-color .2s ease}
-.chip>span:last-child{font:400 12px var(--mono);color:var(--text-3);text-align:right}
-.chip:active{transform:scale(.98)}
-.chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-@media (hover:hover) and (pointer:fine){.chip:hover{border-color:var(--tone)}}
-@media (max-width:860px){
-  .track{grid-template-columns:1fr;gap:4px}
-  .track::before{left:11px;right:auto;top:12px;bottom:12px;width:2px;height:auto;background:linear-gradient(180deg,var(--live),var(--prog) 30%,var(--plan) 62%,transparent)}
-  .lane{padding:0 0 24px 40px}
-  .lane::before{top:2px}
-  .lane .lt{margin-top:-6px}
-}
 
 /* ---------- format ---------- */
 .fmt{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
@@ -250,9 +176,8 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-betw
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   .js .rv{transform:none;filter:none;transition:opacity .3s ease}
-  .kit,.lnk,.chip,.stat,.seg-ind,.hero .glow{transition-property:opacity,background-color,border-color,color,box-shadow!important}
-  .kit:hover{transform:none!important}
-  .kit[data-status="live"] .status i::after{animation:none}
+  .pc,.hero .glow{transition-property:opacity,background-color,border-color,color,box-shadow!important}
+  .pc:hover{transform:none!important}
   ::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}
 }
 </style>
@@ -274,177 +199,45 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-betw
 <section class="hero" id="hero">
   <div class="glow" aria-hidden="true"></div>
   <div class="wrap hero-in">
-    <div>
+    <div class="hero-copy">
       <span class="eyebrow rv"><b>Internal</b>TestMu AI · Sales Kits · Internal and confidential</span>
-      <h1 class="rv" style="--d:1">TestMu AI Sales Kits</h1>
-      <p class="lede rv" style="--d:2">One place for every product's sales play and SE demo story. Every play follows the same three stages, so reps learn one layout and use it for every product.</p>
-      <div class="stats rv" style="--d:3" aria-label="Kit status. Select one to filter the kits.">
-        <button class="stat" type="button" data-f="all"><b data-count="8">8</b><span>products</span></button>
-        <button class="stat live" type="button" data-f="live"><b data-count="1">1</b><span><i></i>live</span></button>
-        <button class="stat prog" type="button" data-f="prog"><b data-count="4">4</b><span><i></i>in progress</span></button>
-        <button class="stat plan" type="button" data-f="plan"><b data-count="3">3</b><span><i></i>planned</span></button>
-      </div>
+      <h1 class="rv" style="--d:1">Pick your role.<br>Get your part of every deal.</h1>
+      <p class="lede rv" style="--d:2">Every product's sales play, organised by who you are. Choose your role to get your stage for every product in one place.</p>
     </div>
-    <div class="stages rv" style="--d:3">
-      <div class="stages-h"><span>How every play runs</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
-      <ol>
-        <li class="stg on"><span class="n">1</span><span class="who">Stage 1 · BDR</span><span class="what">Book the meeting<small>Personas, signals, outreach and qualifying questions</small></span></li>
-        <li class="stg"><span class="n">2</span><span class="who">Stage 2 · AE + SE</span><span class="what">Win the deal<small>Discovery, the problem, comparisons, ROI and the proposal</small></span></li>
-        <li class="stg"><span class="n">3</span><span class="who">Stage 3 · SE</span><span class="what">Prove it<small>Demo on the story page, then a POC with agreed criteria</small></span></li>
-      </ol>
+    <div class="journey" aria-label="Choose your role">
+      <article class="pc bdr rv" style="--d:3">
+        <div class="pc-top"><span class="pico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg></span><span class="pstage">Stage 1</span></div>
+        <div class="pc-id"><h2>BDR</h2><p class="pwho">Business development</p></div>
+        <p class="pwhat">Book the meeting</p>
+        <ul><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l4 4 10-10"/></svg>Who to target and the signals to act on</li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l4 4 10-10"/></svg>Outreach scripts and sequences</li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l4 4 10-10"/></svg>Qualifying questions and the AE handoff</li></ul>
+        <div class="pc-cta"><a class="go" href="stages/#bdr"><span>Open the BDR play</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a><a class="sub" href="stages/#bdr/performance-testing/objections">Objections</a></div>
+      </article>
+      <div class="hand h1" aria-hidden="true"><span class="hl">Meeting booked</span><span class="ha"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+      <article class="pc ae rv" style="--d:4">
+        <div class="pc-top"><span class="pico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18"/></svg></span><span class="pstage">Stage 2</span></div>
+        <div class="pc-id"><h2>AE / AM</h2><p class="pwho">Account executive, account manager</p></div>
+        <p class="pwhat">Win the deal, grow the account</p>
+        <ul><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l4 4 10-10"/></svg>Discovery questions and the problem to name</li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l4 4 10-10"/></svg>Comparisons, ROI and the proposal builder</li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l4 4 10-10"/></svg>Expansion plays for existing customers</li></ul>
+        <div class="pc-cta"><a class="go" href="stages/?aud=new#ae"><span>AE: new logo</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a><a class="sub" href="stages/?aud=ex#ae">AM: existing customer</a></div>
+      </article>
+      <div class="hand h2" aria-hidden="true"><span class="hl">POC agreed</span><span class="ha"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+      <article class="pc se rv" style="--d:5">
+        <div class="pc-top"><span class="pico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4M10 8.5v5l4-2.5z"/></svg></span><span class="pstage">Stage 3</span></div>
+        <div class="pc-id"><h2>Solution Engineer</h2><p class="pwho">Pre-sales, solutions</p></div>
+        <p class="pwhat">Prove it</p>
+        <ul><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l4 4 10-10"/></svg>The demo path on each product's story page</li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l4 4 10-10"/></svg>A POC plan with agreed success criteria</li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l4 4 10-10"/></svg>Technical objections and answers</li></ul>
+        <div class="pc-cta"><a class="go" href="stages/#se"><span>Open the SE play</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a><a class="sub" href="stages/#se/performance-testing/objections">Objections</a></div>
+      </article>
     </div>
+    <a class="oth rv" style="--d:6" href="stages/#overview">
+      <span class="pico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17.5" cy="9.5" r="2.5"/><path d="M16 14.6a5 5 0 0 1 5.5 5.4"/></svg></span>
+      <span class="oth-t"><b>Everyone else</b><span>Marketing, CS, leadership and partners: what each product does, who buys it and how the play runs.</span></span>
+      <span class="oth-go">Product overviews<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+    </a>
   </div>
 </section>
 
 <main>
-  <section class="wrap" aria-labelledby="kits-h" id="kits">
-    <div class="sec-h">
-      <div class="rv">
-        <span class="kick">Kits</span>
-        <h2 id="kits-h">Every product, one layout</h2>
-        <p>Live kits are ready for the field. In progress kits are being built now. Planned kits link to a placeholder that lists what the kit will contain.</p>
-      </div>
-      <div class="tools rv" style="--d:1">
-        <div class="seg" role="group" aria-label="Filter kits by status">
-          <span class="seg-ind" aria-hidden="true"></span>
-          <button type="button" data-f="all" aria-pressed="true">All <span class="c">8</span></button>
-          <button type="button" data-f="live" aria-pressed="false">Live <span class="c">1</span></button>
-          <button type="button" data-f="prog" aria-pressed="false">In progress <span class="c">4</span></button>
-          <button type="button" data-f="plan" aria-pressed="false">Planned <span class="c">3</span></button>
-        </div>
-        <label class="search"><span class="sr">Search kits</span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
-          <input id="q" type="search" placeholder="Search products" autocomplete="off">
-          <kbd aria-hidden="true">/</kbd>
-        </label>
-      </div>
-    </div>
-
-    <div class="kits" id="grid">
-      <article class="kit rv" id="k-performance-testing" data-status="live" style="--d:0;view-transition-name:k-performance-testing">
-        <div class="kit-top"><span class="plogo" style="--c1:#3E6BF0;--c2:#22C3B5" aria-hidden="true"><i style="--m:url(assets/logos/performance-testing.svg)"></i></span><span class="status"><i></i>Live</span></div>
-        <h3>Performance Testing<small>on HyperExecute</small></h3>
-        <span class="when"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span class="sr">Timing: </span>Live</span>
-        <p class="desc">Load, stress, spike and soak tests with existing JMeter, Gatling and k6 scripts, split across multiple regions in one job.</p>
-        <div class="links">
-          <a class="lnk play" href="plays/performance-testing/"><span class="l">Internal · BDR, AE, SE</span><span class="t">Sales play<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a>
-          <a class="lnk" href="stories/performance-testing/"><span class="l">Customer-facing · Stage 3</span><span class="t">SE demo story<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a>
-        </div>
-      </article>
-
-      <article class="kit rv" id="k-test-manager" data-status="prog" style="--d:1;view-transition-name:k-test-manager">
-        <div class="kit-top"><span class="plogo" style="--c1:#3E6BF0;--c2:#6F8CFF" aria-hidden="true"><i style="--m:url(assets/logos/test-manager.svg)"></i></span><span class="status"><i></i>In progress</span></div>
-        <h3>Test Manager</h3>
-        <span class="when"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span class="sr">Timing: </span>This week</span>
-        <p class="desc">AI-assisted test case management with Jira and Azure DevOps sync, and migration from other test management tools.</p>
-        <p class="note">Being built now. Content may still change.</p>
-        <div class="links">
-          <a class="lnk play" href="plays/test-manager/"><span class="l">Internal · BDR, AE, SE</span><span class="t">Sales play<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a>
-          <a class="lnk" href="stories/test-manager/"><span class="l">Customer-facing · Stage 3</span><span class="t">SE demo story<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a>
-        </div>
-      </article>
-
-      <article class="kit rv" id="k-kaneai" data-status="prog" style="--d:2;view-transition-name:k-kaneai">
-        <div class="kit-top"><span class="plogo pimg" aria-hidden="true"><img src="assets/logos/kaneai.png" alt=""></span><span class="status"><i></i>In progress</span></div>
-        <h3>KaneAI</h3>
-        <span class="when"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span class="sr">Timing: </span>First draft, in review</span>
-        <p class="desc">AI-native test authoring: plain-English tests that heal themselves and export to code.</p>
-        <p class="note">Being built now. Content may still change.</p>
-        <div class="links">
-          <a class="lnk play" href="plays/kaneai/"><span class="l">Internal · BDR, AE, SE</span><span class="t">Sales play<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a>
-          <a class="lnk" href="stories/kaneai/"><span class="l">Customer-facing · Stage 3</span><span class="t">SE demo story<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a>
-        </div>
-      </article>
-
-      <article class="kit rv" id="k-kane-cli" data-status="prog" style="--d:0;view-transition-name:k-kane-cli">
-        <div class="kit-top"><span class="plogo ptile" aria-hidden="true"><img src="assets/logos/kane-cli.png" alt=""></span><span class="status"><i></i>In progress</span></div>
-        <h3>Kane CLI</h3>
-        <span class="when"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span class="sr">Timing: </span>First draft, in review</span>
-        <p class="desc">KaneAI from the terminal and CI pipelines.</p>
-        <p class="note">Being built now. Content may still change.</p>
-        <div class="links">
-          <a class="lnk play" href="plays/kane-cli/"><span class="l">Internal · BDR, AE, SE</span><span class="t">Sales play<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a>
-          <a class="lnk" href="stories/kane-cli/"><span class="l">Customer-facing · Stage 3</span><span class="t">SE demo story<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a>
-        </div>
-      </article>
-
-      <article class="kit rv" id="k-agent-testing" data-status="prog" style="--d:1;view-transition-name:k-agent-testing">
-        <div class="kit-top"><span class="plogo ptile" aria-hidden="true"><img src="assets/logos/agent-testing.png" alt=""></span><span class="status"><i></i>In progress</span></div>
-        <h3>Agent Testing</h3>
-        <span class="when"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span class="sr">Timing: </span>First draft, in review</span>
-        <p class="desc">Testing chat, voice, phone, video and image AI agents before they go live, with scenarios from your documents, evidence on every reply and a go-live verdict.</p>
-        <p class="note">Being built now. Content may still change.</p>
-        <div class="links">
-          <a class="lnk play" href="plays/agent-testing/"><span class="l">Internal · BDR, AE, SE</span><span class="t">Sales play<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a>
-          <a class="lnk" href="stories/agent-testing/"><span class="l">Customer-facing · Stage 3</span><span class="t">SE demo story<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a>
-        </div>
-      </article>
-
-      <article class="kit rv" id="k-accessibility" data-status="plan" style="--d:2;view-transition-name:k-accessibility">
-        <div class="kit-top"><span class="plogo" style="--c1:#059669;--c2:#14B8A6" aria-hidden="true"><i style="--m:url(assets/logos/accessibility.svg)"></i></span><span class="status"><i></i>Planned</span></div>
-        <h3>Accessibility Testing</h3>
-        <span class="when"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span class="sr">Timing: </span>Later</span>
-        <p class="desc">Accessibility checks for web and mobile apps.</p>
-        <div class="links">
-          <a class="lnk" href="plays/accessibility/">Sales play<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-          <a class="lnk" href="stories/accessibility/">SE demo story<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-        </div>
-      </article>
-
-      <article class="kit rv" id="k-smartui" data-status="plan" style="--d:0;view-transition-name:k-smartui">
-        <div class="kit-top"><span class="plogo" style="--c1:#E11D48;--c2:#F59E0B" aria-hidden="true"><i style="--m:url(assets/logos/smartui.svg)"></i></span><span class="status"><i></i>Planned</span></div>
-        <h3>SmartUI</h3>
-        <span class="when"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span class="sr">Timing: </span>Later</span>
-        <p class="desc">Visual regression testing.</p>
-        <div class="links">
-          <a class="lnk" href="plays/smartui/">Sales play<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-          <a class="lnk" href="stories/smartui/">SE demo story<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-        </div>
-      </article>
-
-      <article class="kit rv" id="k-hyperexecute" data-status="plan" style="--d:1;view-transition-name:k-hyperexecute">
-        <div class="kit-top"><span class="plogo" style="--c1:#EA580C;--c2:#E11D48" aria-hidden="true"><i style="--m:url(assets/logos/hyperexecute.svg)"></i></span><span class="status"><i></i>Planned</span></div>
-        <h3>HyperExecute</h3>
-        <span class="when"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span class="sr">Timing: </span>Longer term</span>
-        <p class="desc">Test orchestration for functional suites: faster runs and less infrastructure.</p>
-        <div class="links">
-          <a class="lnk" href="plays/hyperexecute/">Sales play<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-          <a class="lnk" href="stories/hyperexecute/">SE demo story<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-        </div>
-      </article>
-
-      <p class="empty" id="empty" hidden>No kits match. <button type="button" id="reset">Show all kits</button></p>
-    </div>
-  </section>
-
-  <section class="wrap" aria-labelledby="road-h" id="roadmap">
-    <div class="sec-h">
-      <div class="rv">
-        <span class="kick">Roadmap</span>
-        <h2 id="road-h">Where each kit stands</h2>
-        <p>Planned kits, in the order they will be built. Select a product to jump to its kit.</p>
-      </div>
-    </div>
-    <div class="track">
-      <div class="lane live rv" style="--d:0"><span class="lk">Live</span><span class="lt">In the field</span>
-        <ul><li><button class="chip" type="button" data-go="k-performance-testing"><span class="nm"><span class="plogo" style="--c1:#3E6BF0;--c2:#22C3B5" aria-hidden="true"><i style="--m:url(assets/logos/performance-testing.svg)"></i></span>Performance Testing</span><span>Live</span></button></li></ul></div>
-      <div class="lane prog rv" style="--d:1"><span class="lk">In progress</span><span class="lt">Being built now</span>
-        <ul>
-          <li><button class="chip" type="button" data-go="k-test-manager"><span class="nm"><span class="plogo" style="--c1:#3E6BF0;--c2:#6F8CFF" aria-hidden="true"><i style="--m:url(assets/logos/test-manager.svg)"></i></span>Test Manager</span><span>This week</span></button></li>
-          <li><button class="chip" type="button" data-go="k-kaneai"><span class="nm"><span class="plogo pimg" aria-hidden="true"><img src="assets/logos/kaneai.png" alt=""></span>KaneAI</span><span>In review</span></button></li>
-          <li><button class="chip" type="button" data-go="k-kane-cli"><span class="nm"><span class="plogo ptile" aria-hidden="true"><img src="assets/logos/kane-cli.png" alt=""></span>Kane CLI</span><span>In review</span></button></li>
-          <li><button class="chip" type="button" data-go="k-agent-testing"><span class="nm"><span class="plogo ptile" aria-hidden="true"><img src="assets/logos/agent-testing.png" alt=""></span>Agent Testing</span><span>In review</span></button></li>
-        </ul></div>
-      <div class="lane plan rv" style="--d:2"><span class="lk">After that</span><span class="lt">Later</span>
-        <ul>
-          <li><button class="chip" type="button" data-go="k-accessibility"><span class="nm"><span class="plogo" style="--c1:#059669;--c2:#14B8A6" aria-hidden="true"><i style="--m:url(assets/logos/accessibility.svg)"></i></span>Accessibility Testing</span><span>Planned</span></button></li>
-          <li><button class="chip" type="button" data-go="k-smartui"><span class="nm"><span class="plogo" style="--c1:#E11D48;--c2:#F59E0B" aria-hidden="true"><i style="--m:url(assets/logos/smartui.svg)"></i></span>SmartUI</span><span>Planned</span></button></li>
-        </ul></div>
-      <div class="lane plan rv" style="--d:3"><span class="lk">Further out</span><span class="lt">Longer term</span>
-        <ul><li><button class="chip" type="button" data-go="k-hyperexecute"><span class="nm"><span class="plogo" style="--c1:#EA580C;--c2:#E11D48" aria-hidden="true"><i style="--m:url(assets/logos/hyperexecute.svg)"></i></span>HyperExecute</span><span>Planned</span></button></li></ul></div>
-    </div>
-  </section>
-
   <section class="wrap" aria-labelledby="what-h" id="format">
     <div class="sec-h">
       <div class="rv">
@@ -489,64 +282,17 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-betw
     var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{rootMargin:'0px 0px -8% 0px'});
     rv.forEach(function(el){io.observe(el)});
   }else{rv.forEach(function(el){el.classList.add('in')})}
-  /* once revealed, drop the stagger delay so hover and filter feel instant */
-  document.querySelectorAll('.kit').forEach(function(k){k.addEventListener('transitionend',function f(ev){if(ev.propertyName==='opacity'){k.classList.remove('rv');k.style.removeProperty('--d');k.removeEventListener('transitionend',f)}})});
-
-  /* count up the hero numbers */
-  if(!reduce){document.querySelectorAll('[data-count]').forEach(function(el){
-    var to=+el.dataset.count,t0=null;el.textContent='0';
-    function step(t){if(!t0)t0=t;var p=Math.min(1,(t-t0)/900),v=1-Math.pow(1-p,4);el.textContent=Math.round(to*v);if(p<1)requestAnimationFrame(step)}
-    setTimeout(function(){requestAnimationFrame(step)},350);
-  })}
-
-  /* hero glow follows the pointer, stages highlight on hover */
+  /* hero glow follows the pointer */
   if(fine&&!reduce){
     var glow=hero.querySelector('.glow');
     hero.addEventListener('pointermove',function(e){var r=hero.getBoundingClientRect();glow.style.setProperty('--gx',(e.clientX-r.left)+'px');glow.style.setProperty('--gy',(e.clientY-r.top)+'px')});
   }
-  var stg=document.querySelectorAll('.stg');
-  stg.forEach(function(s){s.addEventListener('pointerenter',function(){stg.forEach(function(x){x.classList.toggle('on',x===s)})})});
 
   /* spotlight on cards */
-  if(fine){document.querySelectorAll('.kit').forEach(function(k){
+  if(fine){document.querySelectorAll('.pc').forEach(function(k){
     k.addEventListener('pointermove',function(e){var r=k.getBoundingClientRect();k.style.setProperty('--mx',(e.clientX-r.left)+'px');k.style.setProperty('--my',(e.clientY-r.top)+'px')});
   })}
 
-  /* filter + search */
-  var kits=[].slice.call(document.querySelectorAll('.kit')),seg=document.querySelector('.seg'),ind=seg.querySelector('.seg-ind'),
-      btns=[].slice.call(seg.querySelectorAll('button')),q=document.getElementById('q'),empty=document.getElementById('empty'),f='all';
-  function moveInd(){var b=seg.querySelector('[aria-pressed="true"]');ind.style.width=b.offsetWidth+'px';ind.style.transform='translateX('+b.offsetLeft+'px)'}
-  function apply(){
-    var term=q.value.trim().toLowerCase(),shown=0;
-    var run=function(){kits.forEach(function(k){
-      var ok=(f==='all'||k.dataset.status===f)&&(!term||k.textContent.toLowerCase().indexOf(term)>-1);
-      k.hidden=!ok;if(ok){shown++;k.classList.add('in')}
-    });empty.hidden=shown>0};
-    if(document.startViewTransition&&!reduce)document.startViewTransition(run);else run();
-  }
-  function setF(v){f=v;btns.forEach(function(b){b.setAttribute('aria-pressed',b.dataset.f===v)});moveInd();apply()}
-  btns.forEach(function(b){b.addEventListener('click',function(){setF(b.dataset.f)})});
-  document.querySelectorAll('.stat').forEach(function(s){s.addEventListener('click',function(){setF(s.dataset.f);document.getElementById('kits').scrollIntoView({behavior:reduce?'auto':'smooth'})})});
-  var qt;q.addEventListener('input',function(){clearTimeout(qt);qt=setTimeout(apply,120)});
-  document.getElementById('reset').addEventListener('click',function(){q.value='';setF('all')});
-  document.addEventListener('keydown',function(e){
-    if(e.key==='/'&&document.activeElement!==q&&!/input|textarea/i.test(document.activeElement.tagName)){e.preventDefault();q.focus()}
-    else if(e.key==='Escape'&&document.activeElement===q){q.value='';apply();q.blur()}
-  });
-  moveInd();
-  /* skip the indicator's slide on first paint and when fonts load */
-  ind.style.transition='none';requestAnimationFrame(function(){requestAnimationFrame(function(){ind.style.transition=''})});
-  if(document.fonts)document.fonts.ready.then(function(){ind.style.transition='none';moveInd();requestAnimationFrame(function(){ind.style.transition=''})});
-  window.addEventListener('resize',moveInd);
-
-  /* roadmap chips jump to their kit */
-  document.querySelectorAll('.chip').forEach(function(c){c.addEventListener('click',function(){
-    var k=document.getElementById(c.dataset.go);
-    if(k.hidden){q.value='';setF('all')}
-    k.scrollIntoView({behavior:reduce?'auto':'smooth',block:'center'});
-    k.classList.remove('flash');void k.offsetWidth;k.classList.add('flash');
-    var a=k.querySelector('a');if(a)setTimeout(function(){a.focus({preventScroll:true})},reduce?0:500);
-  })});
 })();
 </script>
 </body>

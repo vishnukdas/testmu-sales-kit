@@ -1,5 +1,10 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<html lang="en"><head><meta charset="utf-8">
+<script>
+/* Plays are shown inside the role pages. Opened on their own, they go to the matching role page. */
+(function(){if(window.top!==window)return;var h=(location.hash||'').slice(1),m={bdr:'bdr',ae:'ae',se:'se',overview:'overview'};var slug=location.pathname.replace(/\/index\.html$/,'').replace(/\/$/,'').split('/').pop();location.replace('../../stages/'+(h==='objections'?'#bdr/'+slug+'/objections':'#'+(m[h]||'bdr')+'/'+slug))})();
+</script>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Test Manager Sales Play</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -244,7 +249,7 @@ details.o .body p{color:var(--text-sec)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="../../assets/play.css">
+<link rel="stylesheet" href="../../assets/play.css?v=202611252025">
 </head><body style="margin:0">
 <header class="hero">
   <div class="wrap">
